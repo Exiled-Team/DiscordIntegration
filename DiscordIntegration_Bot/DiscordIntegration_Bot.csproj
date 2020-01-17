@@ -189,6 +189,7 @@
     <ItemGroup>
         <Compile Include="Bot.cs" />
         <Compile Include="Config.cs" />
+        <Compile Include="PermLevel.cs" />
         <Compile Include="ProcessSTT.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

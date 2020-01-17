@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -52,6 +53,7 @@ namespace DiscordIntegration_Bot
 		public async Task HandleCommand(ICommandContext context)
 		{
 			string[] args = context.Message.Content.Split(' ');
+			IGuildUser user = (IGuildUser) context.Message.Author;
 			if (context.Message.Content.StartsWith(context.Guild.EveryoneRole.Mention))
 			{
 				await context.Channel.SendMessageAsync("You cannot mention everyone in a command.");
@@ -66,8 +68,35 @@ namespace DiscordIntegration_Bot
 					await context.Channel.SendMessageAsync($"Pong!");
 					return;
 			}
-			if (program.Config.AllowedCommands.Contains(args[0].ToLower()))
-				ProcessSTT.SendData(context.Message.Content, program.Config.Port, context.Message.Author.Username, context.Channel.Id);
+
+			if (program.Config.AllowedCommands.ContainsKey(args[0].ToLower()))
+			{
+				PermLevel lvl = PermLevel.PermLevel0;
+				foreach (ulong id in user.RoleIds.Where(s => s == program.Config.PermLevel1Id || s == program.Config.Permlevel2Id || s == program.Config.Permlevel3Id || s == program.Config.Permlevel4Id))
+				{
+					if (GetPermlevel(id) > lvl)
+						lvl = GetPermlevel(id);
+				}
+
+				if (lvl >= program.Config.AllowedCommands[args[0].ToLower()])
+					ProcessSTT.SendData(context.Message.Content, program.Config.Port, context.Message.Author.Username,
+						context.Channel.Id);
+				else
+					await context.Channel.SendMessageAsync("Permission denied.");
+			}
+		}
+
+		public PermLevel GetPermlevel(ulong id)
+		{
+			if (program.Config.PermLevel1Id == id)
+				return PermLevel.PermLevel1;
+			if (program.Config.Permlevel2Id == id)
+				return PermLevel.PermLevel2;
+			if (program.Config.Permlevel3Id == id)
+				return PermLevel.PermLevel3;
+			if (program.Config.Permlevel4Id == id)
+				return PermLevel.PermLevel4;
+			return PermLevel.PermLevel0;
 		}
 	}
 }

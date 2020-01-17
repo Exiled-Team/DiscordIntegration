@@ -13,7 +13,7 @@ namespace DiscordIntegration_Bot
 		public ulong Permlevel4Id { get; set; }
 		public ulong CommandLogChannelId { get; set; }
 		public ulong GameLogChannelId { get; set; }
-		public List<string> AllowedCommands { get; set; }
+		public Dictionary<string, PermLevel> AllowedCommands { get; set; }
 		
 		public static readonly Config Default = new Config
 		{
@@ -26,7 +26,7 @@ namespace DiscordIntegration_Bot
 			Permlevel4Id = 0,
 			CommandLogChannelId = 0,
 			GameLogChannelId = 0,
-			AllowedCommands = new List<string>()
+			AllowedCommands = new Dictionary<string, PermLevel>() { {"hello", PermLevel.PermLevel1} }
 		};
 	}
 }
