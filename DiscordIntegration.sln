@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordIntegration_Plugin", "DiscordIntegration\DiscordIntegration_Plugin.csproj", "{56A08520-835E-4D09-BB5C-6EF47E2313FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordIntegration_Bot", "DiscordIntegration_Bot\DiscordIntegration_Bot.csproj", "{B6C5E945-4B3F-42A8-A559-06644AD5D64A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializedData", "SerializedData\SerializedData.csproj", "{AD758434-672C-4BBE-8D17-8A19FC91845F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56A08520-835E-4D09-BB5C-6EF47E2313FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56A08520-835E-4D09-BB5C-6EF47E2313FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56A08520-835E-4D09-BB5C-6EF47E2313FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56A08520-835E-4D09-BB5C-6EF47E2313FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD758434-672C-4BBE-8D17-8A19FC91845F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD758434-672C-4BBE-8D17-8A19FC91845F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD758434-672C-4BBE-8D17-8A19FC91845F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD758434-672C-4BBE-8D17-8A19FC91845F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
