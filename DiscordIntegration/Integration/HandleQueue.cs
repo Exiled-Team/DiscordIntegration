@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MEC;
 
 namespace DiscordIntegration_Plugin
@@ -44,6 +45,7 @@ namespace DiscordIntegration_Plugin
 
 				try
 				{
+					command = command.Substring(1);
 					GameCore.Console.singleton.TypeCommand($"/{command}", new BotSender(result.Name));
 				}
 				catch (Exception e)

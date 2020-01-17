@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Threading;
 using EXILED;
+using GameCore;
 using MEC;
 
 namespace DiscordIntegration_Plugin
@@ -40,6 +42,7 @@ namespace DiscordIntegration_Plugin
 
 			new Thread(ProcessSTT.Init).Start();
 			Timing.RunCoroutine(HandleQueue.Handle(), "handle");
+			Timing.RunCoroutine(UpdateStatus(), "update");
 		}
 
 		public override void OnDisable()
@@ -58,6 +61,16 @@ namespace DiscordIntegration_Plugin
 			Events.PlayerJoinEvent -= EventHandlers.OnPlayerJoin;
 			EventHandlers = null;
 			Timing.KillCoroutines("handle");
+			Timing.KillCoroutines("update");
+		}
+		
+		public IEnumerator<float> UpdateStatus()
+		{
+			for (;;)
+			{
+				ProcessSTT.SendData($"updateStatus {PlayerManager.players.Count}/{ConfigFile.ServerConfig.GetInt("max_players")}", 0);
+				yield return Timing.WaitForSeconds(5f);
+			}
 		}
 
 		public override void OnReload()

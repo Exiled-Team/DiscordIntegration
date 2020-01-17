@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using EXILED;
+using GameCore;
 using Grenades;
+using MEC;
 using UnityEngine;
 
 namespace DiscordIntegration_Plugin
@@ -10,10 +13,10 @@ namespace DiscordIntegration_Plugin
 		private readonly Plugin plugin;
 		public EventHandlers(Plugin plugin) => this.plugin = plugin;
 		
-		public void OnCommand(ref string query, ref CommandSender sender, ref bool allow)
+		public void OnCommand(ref RACommandEvent ev)
 		{
 			if (plugin.RaCommands)
-				ProcessSTT.SendData($"{sender.Nickname} used command: {query}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{ev.Sender.Nickname} used command: {ev.Command}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnWaitingForPlayers()
@@ -34,28 +37,26 @@ namespace DiscordIntegration_Plugin
 				ProcessSTT.SendData($"Round ended: {Plugin.GetHubs().Count} players online.", HandleQueue.GameLogChannelId);
 		}
 
-		public void OnCheaterReport(string reporterid, string reportedid, string reportedip, string reason, int serverid, ref bool allow)
+		public void OnCheaterReport(ref CheaterReportEvent ev)
 		{
 			if (plugin.CheaterReport)
-				ProcessSTT.SendData($"**Cheater report filed: {reporterid} reported {reportedid} for {reason}.**", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"**Cheater report filed: {ev.ReporterId} reported {ev.ReportedId} for {ev.Report}.**", HandleQueue.GameLogChannelId);
 		}
 
-		public void OnPlayerHurt(PlayerStats stats, ref PlayerStats.HitInfo info, GameObject obj)
+		public void OnPlayerHurt(ref PlayerHurtEvent ev)
 		{
 			if (plugin.PlayerHurt)
 			{
-				ReferenceHub target = Plugin.GetPlayer(stats.gameObject);
-				ReferenceHub attacker = Plugin.GetPlayer(info.Attacker);
 				try
 				{
-					if (attacker != null && attacker.characterClassManager != null && Plugin.GetTeam(target.characterClassManager.CurClass) == Plugin.GetTeam(attacker.characterClassManager.CurClass))
+					if (ev.Attacker != null && ev.Attacker.characterClassManager != null && Plugin.GetTeam(ev.Player.characterClassManager.CurClass) == Plugin.GetTeam(ev.Attacker.characterClassManager.CurClass))
 						ProcessSTT.SendData(
-							$"**{attacker.nicknameSync.MyNick} - {attacker.characterClassManager.UserId} ({attacker.characterClassManager.CurClass}) damaged {target.nicknameSync.MyNick} - {target.characterClassManager.UserId} ({target.characterClassManager.CurClass}) for {info.Amount} with {info.Tool}.**",
+							$"**{ev.Attacker.nicknameSync.MyNick} - {ev.Attacker.characterClassManager.UserId} ({ev.Attacker.characterClassManager.CurClass}) damaged {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) for {ev.Info.Amount} with {ev.Info.Tool}.**",
 							HandleQueue.GameLogChannelId);
 					else
 					{
 						ProcessSTT.SendData(
-							$"{info.Attacker}  damaged {target.nicknameSync.MyNick} - {target.characterClassManager.UserId} ({target.characterClassManager.CurClass}) for {info.Amount} with {info.Tool}.",
+							$"{ev.Info.Attacker}  damaged {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) for {ev.Info.Amount} with {ev.Info.Tool}.",
 							HandleQueue.GameLogChannelId);
 					}
 				}
@@ -66,81 +67,78 @@ namespace DiscordIntegration_Plugin
 			}
 		}
 		
-		public void OnPlayerDeath(PlayerStats stats, ref PlayerStats.HitInfo info, GameObject obj)
+		public void OnPlayerDeath(ref PlayerDeathEvent ev)
 		{
 			if (plugin.PlayerDeath)
 			{
-				ReferenceHub target = Plugin.GetPlayer(stats.gameObject);
-				ReferenceHub attacker = Plugin.GetPlayer(info.Attacker);
 				try
 				{
-					if (attacker != null && attacker.characterClassManager != null && Plugin.GetTeam(target.characterClassManager.CurClass) == Plugin.GetTeam(attacker.characterClassManager.CurClass))
+					if (ev.Killer != null && ev.Killer.characterClassManager != null && Plugin.GetTeam(ev.Player.characterClassManager.CurClass) == Plugin.GetTeam(ev.Killer.characterClassManager.CurClass))
 						ProcessSTT.SendData(
-							$"**{attacker.nicknameSync.MyNick} - {attacker.characterClassManager.UserId} ({attacker.characterClassManager.CurClass}) killed {target.nicknameSync.MyNick} - {target.characterClassManager.UserId} ({target.characterClassManager.CurClass}) with {info.Tool}.**",
+							$"**{ev.Killer.nicknameSync.MyNick} - {ev.Killer.characterClassManager.UserId} ({ev.Killer.characterClassManager.CurClass}) killed {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) with {ev.Info.Tool}.**",
 							HandleQueue.GameLogChannelId);
 					else
+					{
 						ProcessSTT.SendData(
-							$"{info.Attacker} killed {target.nicknameSync.MyNick} - {target.characterClassManager.UserId} ({target.characterClassManager.CurClass}) with {info.Tool}.",
+							$"{ev.Info.Attacker} killed {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) with {ev.Info.Tool}.",
 							HandleQueue.GameLogChannelId);
+					}
 				}
 				catch (Exception e)
 				{
-					Plugin.Error($"Player Death error: {e}");
+					Plugin.Error($"Player Hurt error: {e}");
 				}
 			}
 		}
 
-		public void OnGrenadeThrown(ref GrenadeManager gm, ref int id, ref bool slow, ref double fuse, ref bool allow)
+		public void OnGrenadeThrown(ref GrenadeThrownEvent ev)
 		{
 			if (plugin.GrenadeThrown)
 			{
-				ReferenceHub hub = Plugin.GetPlayer(gm.gameObject);
-				if (hub == null)
+				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($"{hub.nicknameSync.MyNick} - {hub.characterClassManager.UserId} ({hub.characterClassManager.CurClass}) threw a grenade.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) threw a grenade.", HandleQueue.GameLogChannelId);
 			}
 		}
 
-		public void OnMedicalItem(GameObject obj, ItemType type)
+		public void OnMedicalItem(MedicalItemEvent ev)
 		{
 			if (plugin.MedicalItem)
 			{
-				ReferenceHub hub = Plugin.GetPlayer(obj);
-				if (hub == null)
+				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($"{hub.nicknameSync.MyNick} - {hub.characterClassManager.UserId} ({hub.characterClassManager.CurClass}) user a {type}", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) user a {ev.Item}", HandleQueue.GameLogChannelId);
 			}
 		}
 
-		public void OnSetClass(CharacterClassManager ccm, RoleType id)
+		public void OnSetClass(SetClassEvent ev)
 		{
 			if (plugin.SetClass)
 			{
-				ReferenceHub hub = Plugin.GetPlayer(ccm.gameObject);
-				if (hub == null)
+				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($"{hub.nicknameSync.MyNick} - {hub.characterClassManager.UserId} has been changed to a {id}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} has been changed to a {ev.Role}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
-		public void OnRespawn(ref bool ischaos, ref int maxrespawn, ref List<GameObject> torespawn)
+		public void OnRespawn(ref TeamRespawnEvent ev)
 		{
 			if (plugin.Respawn)
 			{
 				string msg;
-				if (ischaos)
+				if (ev.IsChaos)
 					msg = "Chaos Insurgency";
 				else
 					msg = "Nine-Tailed Fox";
-				ProcessSTT.SendData($"{msg} has spawned with {torespawn.Count} players.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{msg} has spawned with {ev.ToRespawn.Count} players.", HandleQueue.GameLogChannelId);
 			}
 		}
 
-		public void OnPlayerJoin(ReferenceHub hub)
+		public void OnPlayerJoin(PlayerJoinEvent ev)
 		{
 			if (plugin.PlayerJoin)
-				if (hub.nicknameSync.MyNick != "Dedicated Server")
-					ProcessSTT.SendData($"{hub.nicknameSync.MyNick} - {hub.characterClassManager.UserId} has joined the game.", HandleQueue.GameLogChannelId);
+				if (ev.Player.nicknameSync.MyNick != "Dedicated Server")
+					ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} has joined the game.", HandleQueue.GameLogChannelId);
 		}
 	}
 }

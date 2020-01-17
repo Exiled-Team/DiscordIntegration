@@ -66,7 +66,7 @@ namespace DiscordIntegration_Plugin
 			try
 			{
 				if (!tcpClient.Connected)
-					throw new InvalidOperationException("Tcp Client not connected!");
+					return;
 
 				SerializedData.SerializedData serializedData = new SerializedData.SerializedData
 				{

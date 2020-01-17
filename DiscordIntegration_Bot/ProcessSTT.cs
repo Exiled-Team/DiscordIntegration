@@ -5,10 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Webhook;
 using Discord.WebSocket;
 
@@ -161,16 +163,24 @@ namespace DiscordIntegration_Bot
 					}
 					else
 						heartbeats[data.Port]--;
+					
 					SendData("set gameid", data.Port, "bot", GameChannelId);
 					SendData("set cmdid",data.Port, "bot", CmdChannelId);
 					return;
 				}
 
-				Console.WriteLine(data.Data);
-				data.Data = data.Data.Substring(data.Data.IndexOf('#') + 1);
-				if (data.Data.Contains("0/25"))
+				if (data.Data.StartsWith("updateStatus"))
+				{
+					string status = data.Data.Replace("updateStatus ", "");
+					if (status.StartsWith("0"))
+						await Bot.Client.SetStatusAsync(UserStatus.Idle);
+					else
+						await Bot.Client.SetStatusAsync(UserStatus.Online);
+					await Bot.Client.SetActivityAsync(new Game(status));
 					return;
-
+				}
+				data.Data = data.Data.Substring(data.Data.IndexOf('#') + 1);
+				
 				Console.WriteLine("Getting guild.");
 				SocketGuild guild = Bot.Client.Guilds.FirstOrDefault();
 				Console.WriteLine("Getting channel");
