@@ -7,18 +7,17 @@ namespace DiscordIntegration_Plugin
 {
 	public class HandleQueue
 	{
-		public static ulong channelid;
-		public static ulong GameLogChannelId;
-		public static ulong CommandLogChannelId;
+		public static ulong ChannelId;
+		public static ulong GameLogChannelId = 1;
+		public static ulong CommandLogChannelId = 2;
 		
 		public static void HandleQueuedItems()
 		{
 			while (ProcessSTT.dataQueue.TryDequeue(out SerializedData.SerializedData result))
 			{
 				string command = result.Data;
-				Plugin.Debug($"STT: Received {result.Data} for {result.Port}");
-				if (result.Port != ServerConsole.Port) 
-					return;
+				Plugin.Info($"STT: Received {result.Data} for {result.Port} at {result.Channel}");
+				
 				
 				if (result.Data == "ping")
 				{
@@ -41,7 +40,7 @@ namespace DiscordIntegration_Plugin
 					return;
 				}
 
-				channelid = result.Channel;
+				ChannelId = result.Channel;
 
 				try
 				{
@@ -79,12 +78,12 @@ namespace DiscordIntegration_Plugin
 	{
 		public override void RaReply(string text, bool success, bool logToConsole, string overrideDisplay)
 		{
-			ProcessSTT.SendData($"{text}", HandleQueue.channelid);
+			ProcessSTT.SendData($"{text}", HandleQueue.ChannelId);
 		}
 
 		public override void Print(string text)
 		{
-			ProcessSTT.SendData($"{text}", HandleQueue.channelid);
+			ProcessSTT.SendData($"{text}", HandleQueue.ChannelId);
 		}
 
 		public string Name;

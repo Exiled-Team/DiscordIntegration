@@ -68,11 +68,13 @@ namespace DiscordIntegration_Bot
 		private static List<TcpListener> listener = new List<TcpListener>();
 		public static void Init(Program program)
 		{
-			TcpListener list = new TcpListener(IPAddress.Loopback, program.Config.Port);
-			Console.WriteLine($"STT: Listener started for port {program.Config.Port}");
-			GameChannelId = program.Config.GameLogChannelId;
-			CmdChannelId = program.Config.CommandLogChannelId;
+			TcpListener list = new TcpListener(IPAddress.Any, Program.Config.Port);
+			Program.Log($"STT started for {Program.Config.Port}");
+			GameChannelId = Program.Config.GameLogChannelId;
+			CmdChannelId = Program.Config.CommandLogChannelId;
+			Program.Log("STT: Adding listener to list", true);
 			listener.Add(list);
+			Program.Log("STT: Starting listener.");
 			list.Start();
 			ThreadPool.QueueUserWorkItem(ListenForConn, list); 
 		}
@@ -110,12 +112,13 @@ namespace DiscordIntegration_Bot
 
 		public static void ListenForConn(object token)
 		{
-			Console.WriteLine("STT: Listener started.");
+			Program.Log($"STT: Listener started.", true);
 			TcpListener listen = token as TcpListener;
 				for (;;)
 				{
 					try
 					{
+						Program.Log($"STT: Attempting to start connection.");
 						TcpClient thing = listen.AcceptTcpClient();
 						ThreadPool.QueueUserWorkItem(ListenOn, thing);
 					}
@@ -135,10 +138,11 @@ namespace DiscordIntegration_Bot
 					Console.WriteLine("STT: Received data null");
 					return;
 				}
-
+				
+				Program.Log($"Receiving data: {data.Data} Channel: {data.Channel} for {data.Port}", true);
 				if (data.Data.Contains("REQUEST_DATA PLAYER_LIST SILENT"))
 					return;
-
+				
 				if (data.Data == "ping")
 				{
 					if (!bag.ContainsKey(data.Port))
@@ -163,14 +167,26 @@ namespace DiscordIntegration_Bot
 					}
 					else
 						heartbeats[data.Port]--;
-					
-					SendData("set gameid", data.Port, "bot", GameChannelId);
-					SendData("set cmdid",data.Port, "bot", CmdChannelId);
+
+					Program.Log($"Updating channelID's for plugin..{data.Port}", true);
+					try
+					{
+						Program.Log($"GameChannelID: {GameChannelId}", true);
+						SendData("set gameid", data.Port, "bot", GameChannelId);
+						Program.Log($"CommandChannelID: {CmdChannelId}", true);
+						SendData("set cmdid", data.Port, "bot", CmdChannelId);
+					}
+					catch (Exception e)
+					{
+						Program.Log(e.ToString());
+					}
+
 					return;
 				}
 
 				if (data.Data.StartsWith("updateStatus"))
 				{
+					Program.Log($"updating status for bot", true);
 					string status = data.Data.Replace("updateStatus ", "");
 					if (status.StartsWith("0"))
 						await Bot.Client.SetStatusAsync(UserStatus.Idle);
@@ -189,7 +205,20 @@ namespace DiscordIntegration_Bot
 					Console.WriteLine("Guild not found.");
 					return;
 				}
-				SocketTextChannel chan = guild.GetTextChannel(data.Channel);
+
+				SocketTextChannel chan = null;
+				if (data.Channel == 1)
+					chan = guild.GetTextChannel(GameChannelId);
+				else if (data.Channel == 2)
+					chan = guild.GetTextChannel(CmdChannelId);
+				else
+					chan = guild.GetTextChannel(data.Channel);
+				
+				if (chan == null)
+				{
+					await Program.Log(new LogMessage(LogSeverity.Critical, "recievedData", "Channel not found."));
+					return;
+				}
 				Console.WriteLine("Sending message.");
 				await chan.SendMessageAsync($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data}");
 				
@@ -218,7 +247,7 @@ namespace DiscordIntegration_Bot
 					}
 					
 					serializedData = formatter.Deserialize(client.GetStream()) as SerializedData.SerializedData;
-					new Thread(() => ReceiveData(serializedData, client)).Start();
+					ReceiveData(serializedData, client);
 				}
 			}
 			catch (SerializationException s)

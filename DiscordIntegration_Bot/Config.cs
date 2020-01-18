@@ -4,6 +4,7 @@ namespace DiscordIntegration_Bot
 {
 	public class Config
 	{
+		public bool Debug { get; set; }
 		public string BotPrefix { get; set; }
 		public string BotToken { get; set; }
 		public int Port { get; set; }
@@ -14,9 +15,10 @@ namespace DiscordIntegration_Bot
 		public ulong CommandLogChannelId { get; set; }
 		public ulong GameLogChannelId { get; set; }
 		public Dictionary<string, PermLevel> AllowedCommands { get; set; }
-		
+
 		public static readonly Config Default = new Config
 		{
+			Debug = false,
 			BotPrefix = "!",
 			BotToken = "",
 			Port = 0,

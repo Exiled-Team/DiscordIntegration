@@ -22,10 +22,13 @@ namespace DiscordIntegration_Bot
 
 		private async Task InitBot()
 		{
+			Program.Log("Setting up bot..", true);
 			Client.Log += Program.Log;
 			Client.MessageReceived += OnMessageReceived;
-			await Client.LoginAsync(TokenType.Bot, program.Config.BotToken);
+			Program.Log("Logging into bot..", true);
+			await Client.LoginAsync(TokenType.Bot, Program.Config.BotToken);
 			await Client.StartAsync();
+			Program.Log("Login successful, starting STT..");
 			new Thread((() => ProcessSTT.Init(program))).Start();
 			await Task.Delay(-1);
 		}
@@ -36,7 +39,7 @@ namespace DiscordIntegration_Bot
 			if (context.Message.Author.IsBot)
 				return;
 
-			if (message.Content.StartsWith(program.Config.BotPrefix) ||
+			if (message.Content.StartsWith(Program.Config.BotPrefix) ||
 			    message.Content.StartsWith(Client.CurrentUser.Mention))
 			{
 				try
@@ -60,7 +63,7 @@ namespace DiscordIntegration_Bot
 				return;
 			}
 
-			args[0] = args[0].Replace(program.Config.BotPrefix, "");
+			args[0] = args[0].Replace(Program.Config.BotPrefix, "");
 
 			switch (args[0].ToLower())
 			{
@@ -69,17 +72,17 @@ namespace DiscordIntegration_Bot
 					return;
 			}
 
-			if (program.Config.AllowedCommands.ContainsKey(args[0].ToLower()))
+			if (Program.Config.AllowedCommands.ContainsKey(args[0].ToLower()))
 			{
 				PermLevel lvl = PermLevel.PermLevel0;
-				foreach (ulong id in user.RoleIds.Where(s => s == program.Config.PermLevel1Id || s == program.Config.Permlevel2Id || s == program.Config.Permlevel3Id || s == program.Config.Permlevel4Id))
+				foreach (ulong id in user.RoleIds.Where(s => s == Program.Config.PermLevel1Id || s == Program.Config.Permlevel2Id || s == Program.Config.Permlevel3Id || s == Program.Config.Permlevel4Id))
 				{
 					if (GetPermlevel(id) > lvl)
 						lvl = GetPermlevel(id);
 				}
 
-				if (lvl >= program.Config.AllowedCommands[args[0].ToLower()])
-					ProcessSTT.SendData(context.Message.Content, program.Config.Port, context.Message.Author.Username,
+				if (lvl >= Program.Config.AllowedCommands[args[0].ToLower()])
+					ProcessSTT.SendData(context.Message.Content, Program.Config.Port, context.Message.Author.Username,
 						context.Channel.Id);
 				else
 					await context.Channel.SendMessageAsync("Permission denied.");
@@ -88,13 +91,13 @@ namespace DiscordIntegration_Bot
 
 		public PermLevel GetPermlevel(ulong id)
 		{
-			if (program.Config.PermLevel1Id == id)
+			if (Program.Config.PermLevel1Id == id)
 				return PermLevel.PermLevel1;
-			if (program.Config.Permlevel2Id == id)
+			if (Program.Config.Permlevel2Id == id)
 				return PermLevel.PermLevel2;
-			if (program.Config.Permlevel3Id == id)
+			if (Program.Config.Permlevel3Id == id)
 				return PermLevel.PermLevel3;
-			if (program.Config.Permlevel4Id == id)
+			if (Program.Config.Permlevel4Id == id)
 				return PermLevel.PermLevel4;
 			return PermLevel.PermLevel0;
 		}

@@ -22,7 +22,7 @@ namespace DiscordIntegration_Plugin
 			Thread.Sleep(1000);
 			try
 			{
-				Plugin.Debug($"STT: Starting INIT.");
+				Plugin.Info($"STT: Starting INIT for {ServerConsole.Port}");
 				tcpClient?.Close();
 				tcpClient = new TcpClient();
 				while (!tcpClient.Connected)
@@ -31,7 +31,10 @@ namespace DiscordIntegration_Plugin
 					Thread.Sleep(2000);
 					try
 					{
-						tcpClient.Connect("127.0.0.1", ServerConsole.Port);
+						if (Plugin.Egg)
+							tcpClient.Connect(Plugin.EggAddress, ServerConsole.Port + 4130);
+						else
+							tcpClient.Connect("127.0.0.1", ServerConsole.Port);
 					}
 					catch (SocketException)
 					{
@@ -65,13 +68,18 @@ namespace DiscordIntegration_Plugin
 		{
 			try
 			{
-				if (!tcpClient.Connected)
+				if (tcpClient == null || !tcpClient.Connected)
 					return;
 
 				SerializedData.SerializedData serializedData = new SerializedData.SerializedData
 				{
 					Data = data, Port = ServerConsole.Port, Channel = channel
 				};
+				if (Plugin.Egg)
+					serializedData = new SerializedData.SerializedData
+					{
+						Data = data, Port = ServerConsole.Port + 4130, Channel = channel
+					};
 				BinaryFormatter formatter = new BinaryFormatter();
 				formatter.Serialize(tcpClient.GetStream(), serializedData);
 				Plugin.Debug($"Sent {data}");

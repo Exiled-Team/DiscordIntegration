@@ -22,7 +22,8 @@ namespace DiscordIntegration_Plugin
 				ev.Allow = false;
 				string message = "";
 				foreach (ReferenceHub hub in Plugin.GetHubs())
-					message += $"{hub.nicknameSync.MyNick} ({hub.characterClassManager.UserId})";
+					message +=
+						$"{hub.nicknameSync.MyNick} - {hub.characterClassManager.UserId}\n";
 				if (string.IsNullOrEmpty(message))
 					message = "No players online.";
 				ev.Sender.RAMessage(message);

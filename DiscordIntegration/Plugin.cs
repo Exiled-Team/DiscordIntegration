@@ -22,6 +22,8 @@ namespace DiscordIntegration_Plugin
 		public bool SetClass = true;
 		public bool Respawn = true;
 		public bool PlayerJoin = true;
+		public static bool Egg = false;
+		public static string EggAddress = "";
 		
 		public override void OnEnable()
 		{
@@ -94,6 +96,8 @@ namespace DiscordIntegration_Plugin
 			SetClass = Config.GetBool("discord_set_class", true);
 			Respawn = Config.GetBool("discord_respawn", true);
 			PlayerJoin = Config.GetBool("discord_player_join", true);
+			Egg = Config.GetBool("discord_egg_mode", false);
+			EggAddress = Config.GetString("discord_ip_address", string.Empty);
 		}
 		
 	}
