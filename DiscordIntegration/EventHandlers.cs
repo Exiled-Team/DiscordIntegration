@@ -23,10 +23,31 @@ namespace DiscordIntegration_Plugin
 				string message = "";
 				foreach (ReferenceHub hub in Plugin.GetHubs())
 					message +=
-						$"{hub.nicknameSync.MyNick} - {hub.characterClassManager.UserId}\n";
+						$"{hub.nicknameSync.MyNick} - ({hub.characterClassManager.UserId})\n";
 				if (string.IsNullOrEmpty(message))
 					message = "No players online.";
 				ev.Sender.RAMessage(message);
+			}
+			else if (ev.Command.ToLower() == "stafflist")
+			{
+				ev.Allow = false;
+				Plugin.Info("Staff listen");
+				bool isStaff = false;
+				string names = "";
+				foreach (GameObject o in PlayerManager.players)
+				{
+					ReferenceHub rh = o.GetComponent<ReferenceHub>();
+					
+					if (rh.serverRoles.RemoteAdmin)
+					{
+						isStaff = true;
+						names += $"{rh.nicknameSync.MyNick} ";
+					}
+				}
+
+				Plugin.Info($"Bool: {isStaff} Names: {names}");
+				string response = isStaff ? names : "No staff online.";
+				ev.Sender.RAMessage($"{PlayerManager.players.Count}/25 {response}");
 			}
 		}
 
