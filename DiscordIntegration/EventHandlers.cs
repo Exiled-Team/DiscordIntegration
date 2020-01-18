@@ -17,6 +17,16 @@ namespace DiscordIntegration_Plugin
 		{
 			if (plugin.RaCommands)
 				ProcessSTT.SendData($"{ev.Sender.Nickname} used command: {ev.Command}", HandleQueue.CommandLogChannelId);
+			if (ev.Command.ToLower() == "list")
+			{
+				ev.Allow = false;
+				string message = "";
+				foreach (ReferenceHub hub in Plugin.GetHubs())
+					message += $"{hub.nicknameSync.MyNick} ({hub.characterClassManager.UserId})";
+				if (string.IsNullOrEmpty(message))
+					message = "No players online.";
+				ev.Sender.RAMessage(message);
+			}
 		}
 
 		public void OnWaitingForPlayers()
