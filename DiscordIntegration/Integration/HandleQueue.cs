@@ -16,7 +16,7 @@ namespace DiscordIntegration_Plugin
 			while (ProcessSTT.dataQueue.TryDequeue(out SerializedData.SerializedData result))
 			{
 				string command = result.Data;
-				Plugin.Info($"STT: Received {result.Data} for {result.Port} at {result.Channel}");
+				Plugin.Debug($"STT: Received {result.Data} for {result.Port} at {result.Channel}");
 				
 				
 				if (result.Data == "ping")

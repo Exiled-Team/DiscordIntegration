@@ -13,17 +13,18 @@ namespace DiscordIntegration_Plugin
 		public bool RaCommands = true;
 		public bool RoundStart = true;
 		public bool RoundEnd = true;
-		public bool WaitingForPlayers = true;
-		public bool CheaterReport = true;
+		public bool WaitingForPlayers = false;
+		public bool CheaterReport = false;
 		public bool PlayerHurt = true;
 		public bool PlayerDeath = true;
 		public bool GrenadeThrown = true;
 		public bool MedicalItem = true;
-		public bool SetClass = true;
+		public bool SetClass = false;
 		public bool Respawn = true;
 		public bool PlayerJoin = true;
 		public static bool Egg = false;
 		public static string EggAddress = "";
+		public bool OnlyFriendlyFire = true;
 		
 		public override void OnEnable()
 		{
@@ -98,6 +99,7 @@ namespace DiscordIntegration_Plugin
 			PlayerJoin = Config.GetBool("discord_player_join", true);
 			Egg = Config.GetBool("discord_egg_mode", false);
 			EggAddress = Config.GetString("discord_ip_address", string.Empty);
+			OnlyFriendlyFire = Config.GetBool("discord_only_ff", true);
 		}
 		
 	}

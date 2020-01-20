@@ -22,6 +22,7 @@ namespace DiscordIntegration_Bot
 		private static ConcurrentDictionary<int, int> heartbeats = new ConcurrentDictionary<int, int>();
 		public static ulong GameChannelId;
 		public static ulong CmdChannelId;
+		private static Dictionary<ulong, string> _messages = new Dictionary<ulong, string>();
 
 		public static void SendData(string data, int port, string name, ulong channel = 0)
 		{
@@ -77,6 +78,7 @@ namespace DiscordIntegration_Bot
 			Program.Log("STT: Starting listener.");
 			list.Start();
 			ThreadPool.QueueUserWorkItem(ListenForConn, list); 
+			new Thread(() => DequeueMessages()).Start();
 		}
 
 		public static async Task Heartbeat(int port)
@@ -196,6 +198,8 @@ namespace DiscordIntegration_Bot
 					return;
 				}
 				data.Data = data.Data.Substring(data.Data.IndexOf('#') + 1);
+
+				
 				
 				Console.WriteLine("Getting guild.");
 				SocketGuild guild = Bot.Client.Guilds.FirstOrDefault();
@@ -219,6 +223,15 @@ namespace DiscordIntegration_Bot
 					await Program.Log(new LogMessage(LogSeverity.Critical, "recievedData", "Channel not found."));
 					return;
 				}
+				
+				if (chan.Id == GameChannelId || chan.Id == CmdChannelId)
+				{
+					if (!_messages.ContainsKey(chan.Id))
+						_messages.Add(chan.Id, string.Empty);
+
+					_messages[chan.Id] += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data} {Environment.NewLine}";
+					return;
+				}
 				Console.WriteLine("Sending message.");
 				await chan.SendMessageAsync($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data}");
 				
@@ -228,6 +241,29 @@ namespace DiscordIntegration_Bot
 				Console.WriteLine(e);
 			}
 
+		}
+
+		private static void DequeueMessages()
+		{
+			for (;;)
+			{
+				if (_messages.Count < 1)
+					continue;
+				
+				foreach (KeyValuePair<ulong, string> kvp in _messages)
+				{
+					SocketTextChannel chan = Bot.Client.Guilds.FirstOrDefault()?.GetTextChannel(kvp.Key);
+					if (chan == null)
+					{
+						Program.Log(new LogMessage(LogSeverity.Critical, "DequeueSend", "Channel not found!"));
+						continue;
+					}
+
+					chan.SendMessageAsync(kvp.Value);
+				}
+
+				Thread.Sleep(3000);
+			}
 		}
 
 		public static void ListenOn(object token)

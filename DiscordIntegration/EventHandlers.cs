@@ -85,7 +85,7 @@ namespace DiscordIntegration_Plugin
 						ProcessSTT.SendData(
 							$"**{ev.Attacker.nicknameSync.MyNick} - {ev.Attacker.characterClassManager.UserId} ({ev.Attacker.characterClassManager.CurClass}) damaged {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) for {ev.Info.Amount} with {ev.Info.Tool}.**",
 							HandleQueue.GameLogChannelId);
-					else
+					else if (!plugin.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
 							$"{ev.Info.Attacker}  damaged {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) for {ev.Info.Amount} with {ev.Info.Tool}.",
@@ -109,7 +109,7 @@ namespace DiscordIntegration_Plugin
 						ProcessSTT.SendData(
 							$"**{ev.Killer.nicknameSync.MyNick} - {ev.Killer.characterClassManager.UserId} ({ev.Killer.characterClassManager.CurClass}) killed {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) with {ev.Info.Tool}.**",
 							HandleQueue.GameLogChannelId);
-					else
+					else if (!plugin.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
 							$"{ev.Info.Attacker} killed {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) with {ev.Info.Tool}.",
