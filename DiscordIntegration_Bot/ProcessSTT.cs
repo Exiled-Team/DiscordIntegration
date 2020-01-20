@@ -77,7 +77,7 @@ namespace DiscordIntegration_Bot
 			listener.Add(list);
 			Program.Log("STT: Starting listener.");
 			list.Start();
-			ThreadPool.QueueUserWorkItem(ListenForConn, list); 
+			ThreadPool.QueueUserWorkItem(ListenForConn, list);
 			new Thread(() => DequeueMessages()).Start();
 		}
 
@@ -223,13 +223,16 @@ namespace DiscordIntegration_Bot
 					await Program.Log(new LogMessage(LogSeverity.Critical, "recievedData", "Channel not found."));
 					return;
 				}
-				
-				if (chan.Id == GameChannelId || chan.Id == CmdChannelId)
-				{
-					if (!_messages.ContainsKey(chan.Id))
-						_messages.Add(chan.Id, string.Empty);
 
-					_messages[chan.Id] += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data} {Environment.NewLine}";
+				if (chan.Id == Program.Config.GameLogChannelId || chan.Id == Program.Config.CommandLogChannelId)
+				{
+					Program.Log("Storing message.", true);
+					lock (_messages)
+					{
+						if (!_messages.ContainsKey(chan.Id))
+							_messages.Add(chan.Id, string.Empty);
+						_messages[chan.Id] += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data} {Environment.NewLine}";
+					}
 					return;
 				}
 				Console.WriteLine("Sending message.");
@@ -247,19 +250,24 @@ namespace DiscordIntegration_Bot
 		{
 			for (;;)
 			{
-				if (_messages.Count < 1)
-					continue;
-				
-				foreach (KeyValuePair<ulong, string> kvp in _messages)
+				Program.Log("For loop start", true);
+
+				lock (_messages)
 				{
-					SocketTextChannel chan = Bot.Client.Guilds.FirstOrDefault()?.GetTextChannel(kvp.Key);
-					if (chan == null)
+					foreach (KeyValuePair<ulong, string> kvp in _messages)
 					{
-						Program.Log(new LogMessage(LogSeverity.Critical, "DequeueSend", "Channel not found!"));
-						continue;
+						Program.Log($"Sending messages.{_messages[kvp.Key]}", true);
+						SocketTextChannel chan = Bot.Client.Guilds.FirstOrDefault()?.GetTextChannel(kvp.Key);
+						if (chan == null)
+						{
+							Program.Log(new LogMessage(LogSeverity.Critical, "DequeueSend", "Channel not found!"));
+							continue;
+						}
+
+						chan.SendMessageAsync(kvp.Value);
 					}
 
-					chan.SendMessageAsync(kvp.Value);
+					_messages.Clear();
 				}
 
 				Thread.Sleep(3000);
