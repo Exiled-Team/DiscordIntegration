@@ -6,7 +6,7 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 Installation:
 1. Extract the Plugin.dll and the bot.zip archive from the initial archive.
 2. Place the plugin dll inside the EXILED "Plugins" folder like any other plugin.
-3. Place the included "SerializedData.dll" file in "EXILED/dependenciies".
+3. Place the included "SerializedData.dll" file in "Plugins/dependenciies".
 4. Extract the included bot.zip archive, then edit the "IntegrationBotConfig.json" file.
         4a. In this file, you will need to enter your preferred Prefix, the token for the Discord bot to use, the ID of the channel you want RA commands to be logged to, and the channel to log everything else to. If you want to allow people to run commands via the bot, you need to add the command to the "AllowedCommands" list, and assign it a required permission level to be used, like so ``"AllowedCommands":{"list":0, "command":1, "anothercommand":3}`` etc.. Note that only the command name needs to be present, not it's arguments. IE: "bc" would allow people to run "bc 10 hello".
 
