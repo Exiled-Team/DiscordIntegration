@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Newtonsoft.Json;
@@ -12,6 +13,7 @@ namespace DiscordIntegration_Bot
 		public static Bot _bot;
 		private const string kCfgFile = "IntegrationBotConfig.json";
 		public static Config Config = GetConfig();
+		public static bool fileLocked = false;
 
 		public static void Main()
 		{
@@ -35,8 +37,16 @@ namespace DiscordIntegration_Bot
 		public static Task Log(LogMessage msg)
 		{
 			Console.Write(msg.ToString() + Environment.NewLine);
+			while (fileLocked)
+				Thread.Sleep(1000);
+
 			if (LogFile != null)
+			{
+				fileLocked = true;
 				File.AppendAllText(LogFile, msg.ToString());
+			}
+
+			fileLocked = false;
 			return Task.CompletedTask;
 		}
 

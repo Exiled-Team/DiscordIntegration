@@ -57,6 +57,12 @@ namespace DiscordIntegration_Plugin
 				_locked = false;
 				_init.Start();
 			}
+			catch (SocketException)
+			{
+				_init = new Thread(Init);
+				_locked = false;
+				_init.Start();
+			}
 			catch (Exception e)
 			{
 				_locked = false;
