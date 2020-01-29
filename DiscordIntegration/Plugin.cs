@@ -113,7 +113,7 @@ namespace DiscordIntegration_Plugin
 		{
 			string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			string pluginsPath = Path.Combine(appData, "Plugins");
-			string configPath = Path.Combine(pluginsPath, "DiscordIntegration");
+			string configPath = Path.Combine(pluginsPath, "Integration");
 			string translationFileName = Path.Combine(configPath, "translations.json");
 
 			if (!Directory.Exists(configPath))
