@@ -5,6 +5,7 @@ using System.Threading;
 using EXILED;
 using GameCore;
 using MEC;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace DiscordIntegration_Plugin
@@ -153,6 +154,7 @@ namespace DiscordIntegration_Plugin
 		}
 
 		public static Translation translation = new Translation();
+		private bool refreshTranslationFile = false;
 
 		public void LoadTranslation()
 		{
@@ -176,11 +178,28 @@ namespace DiscordIntegration_Plugin
 
 			string fileText = File.ReadAllText(translationFileName);
 
-			translation = JObject.Parse(fileText).ToObject<Translation>();
+			JObject o = JObject.Parse(fileText);
+			JsonSerializer j = new JsonSerializer();
+			j.Error += Plugin_Error;
+			translation = o.ToObject<Translation>(j);
+
+			if (refreshTranslationFile)
+			{
+				string json = JObject.FromObject(translation).ToString();
+
+				File.WriteAllText(translationFileName, json);
+				return;
+			}
 		}
-		
+
+		private void Plugin_Error(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs e)
+		{
+			refreshTranslationFile = true;
+			e.ErrorContext.Handled = true;
+		}
 	}
 
+	[JsonObject(ItemRequired = Required.Always)]
 	public class Translation
 	{
 		public string usedCommand = "used command";
@@ -205,5 +224,21 @@ namespace DiscordIntegration_Plugin
 		public string hasSpawnedWith = "has spawned with";
 		public string players = "players";
 		public string hasJoinedTheGame = "has joined the game";
+		public string hasBeenFreedBy = "has been freed by";
+		public string hasBeenHandcuffedBy = "has been handcuffed by";
+		public string wasBannedBy = "was banned by";
+		public string hasStartedUsingTheIntercom = "has started using the intercom";
+		public string hasPickedUp = "has picked up";
+		public string hasDropped = "has dropped";
+		public string decontaminationHasBegun = "Deconamination has begun";
+		public string hasRunClientConsoleCommand = "has run a client-console command";
+		public string hasEnteredPocketDimension = "has entered the pocket dimension";
+		public string hasEscapedPocketDimension = "has escaped the pocket dimension";
+		public string hasTraveledThroughTheirPortal = "has traveled through their portal";
+		public string hasTriggeredATeslaGate = "has triggered a tesla gate";
+		public string scp914HasProcessedTheFollowingPlayers = "SCP-914 has processed the following players";
+		public string andItems = "and items";
+		public string hasClosedADoor = "has closed a door";
+		public string hasOpenedADoor = "has opened a door";
 	}
 }
