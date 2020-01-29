@@ -15,6 +15,11 @@ namespace DiscordIntegration_Bot
 		private static DiscordSocketClient client;
 		public static DiscordSocketClient Client => client ?? (client = new DiscordSocketClient());
 		private readonly Program program;
+		private static string _appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		private static string _plugins = Path.Combine(_appData, "Plugins");
+		private static string _diPath = Path.Combine(_plugins, "Integration");
+		private string roleSync = Path.Combine(_diPath, "Sync-Roles.txt");
+		private string userSync = Path.Combine(_diPath, "Sync-Users.txt");
 
 		public Bot(Program program)
 		{
@@ -98,7 +103,7 @@ namespace DiscordIntegration_Bot
 						return;
 					}
 					
-					File.AppendAllText("Sync-Users.txt", $"{userId}:{steamId}\n");
+					File.AppendAllText(userSync, $"{userId}:{steamId}\n");
 					await context.Channel.SendMessageAsync("User successfully added to user sync file.");
 					return;
 				}
@@ -124,7 +129,7 @@ namespace DiscordIntegration_Bot
 						return;
 					}
 					
-					File.AppendAllText("Sync-Roles.txt", $"{id}:{args[2]}");
+					File.AppendAllText(roleSync, $"{id}:{args[2]}");
 					await context.Channel.SendMessageAsync($"New role sync added successfully.");
 					return;
 				}
@@ -156,7 +161,7 @@ namespace DiscordIntegration_Bot
 						if (sync[0] != args[1])
 							toKeep.Add(usr);
 					}
-					File.WriteAllLines("Sync-Users.txt", toKeep);
+					File.WriteAllLines(userSync, toKeep);
 					await context.Channel.SendMessageAsync("User sync successfully removed.");
 					return;
 				}
@@ -182,7 +187,7 @@ namespace DiscordIntegration_Bot
 						if (sync[0] != args[0])
 							toKeep.Add(role);
 					}
-					File.WriteAllLines("Sync-Roles.txt", toKeep);
+					File.WriteAllLines(roleSync, toKeep);
 					await context.Channel.SendMessageAsync("Role sync successfully removed.");
 					return;
 				}
@@ -207,9 +212,9 @@ namespace DiscordIntegration_Bot
 
 		public async Task ReloadConfig()
 		{
-			string roleSync = "Sync-Roles.txt";
-			string userSync = "Sync-Users.txt";
-			
+			if (!Directory.Exists(_diPath))
+				Directory.CreateDirectory(_diPath);
+
 			if (!File.Exists(roleSync))
 				File.Create(roleSync).Close();
 			if (!File.Exists(userSync))
