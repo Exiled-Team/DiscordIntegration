@@ -180,7 +180,7 @@ namespace DiscordIntegration_Plugin
 		{
 			if (plugin.Freed)
 				ProcessSTT.SendData(
-					$"{ev.Target.nicknameSync.MyNick} - {ev.Target.characterClassManager.UserId} ({ev.Target.characterClassManager.CurClass}) has been freed by {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass})",
+					$"{ev.Target.nicknameSync.MyNick} - {ev.Target.characterClassManager.UserId} ({ev.Target.characterClassManager.CurClass}) {Plugin.translation.hasBeenFreedBy} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass})",
 						HandleQueue.GameLogChannelId);
 		}
 
@@ -188,51 +188,51 @@ namespace DiscordIntegration_Plugin
 		{
 			if (plugin.Cuffed)
 				ProcessSTT.SendData(
-					$"{ev.Target.nicknameSync.MyNick} - {ev.Target.characterClassManager.UserId} ({ev.Target.characterClassManager.CurClass}) has been handcuffed by {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass})",
+					$"{ev.Target.nicknameSync.MyNick} - {ev.Target.characterClassManager.UserId} ({ev.Target.characterClassManager.CurClass}) {Plugin.translation.hasBeenHandcuffedBy} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass})",
 						HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerBanned(PlayerBannedEvent ev)
 		{
 			if (plugin.Banned)
-				ProcessSTT.SendData($"{ev.Details.OriginalName} - {ev.Details.Id} was banned by {ev.Details.Issuer} for {ev.Details.Reason}. {DateTime.Now.AddTicks(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.wasBannedBy} {ev.Details.Issuer} {Plugin.translation._for} {ev.Details.Reason}. {DateTime.Now.AddTicks(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnIntercomSpeak(ref IntercomSpeakEvent ev)
 		{
 			if (plugin.Intercom)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) has started using the intercom.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasStartedUsingTheIntercom}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPickupItem(ref PickupItemEvent ev)
 		{
 			if (plugin.PickupItem)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) has picked up {ev.Item.ItemId}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasPickedUp} {ev.Item.ItemId}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnDropItem(ref DropItemEvent ev)
 		{
 			if (plugin.DropItem)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) has dropped up {ev.Item.id}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasDropped} {ev.Item.id}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnDecon(ref DecontaminationEvent ev)
 		{
 			if (plugin.Decon)
-				ProcessSTT.SendData($"Deconamination has begun.", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{Plugin.translation.hasDropped}.", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnConsoleCommand(ConsoleCommandEvent ev)
 		{
 			if (plugin.ConsoleCommand)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) has run a client-console command: {ev.Command}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasRunClientConsoleCommand}: {ev.Command}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnPocketEnter(PocketDimEnterEvent ev)
 		{
 			if (plugin.PocketEnter)
 				ProcessSTT.SendData(
-					$"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) has entered the pocket dimension.",
+					$"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasEnteredPocketDimension}.",
 					HandleQueue.GameLogChannelId);
 		}
 
@@ -240,19 +240,19 @@ namespace DiscordIntegration_Plugin
 		{
 			if (plugin.PocketEscape)
 				ProcessSTT.SendData(
-					$"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) has escaped the pocket dimension.",
+					$"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasEscapedPocketDimension}.",
 					HandleQueue.GameLogChannelId);		}
 
 		public void On106Teleport(Scp106TeleportEvent ev)
 		{
 			if (plugin.Scp106Tele)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} has traveled through their portal.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasEscapedPocketDimension}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void On079Tesla(ref Scp079TriggerTeslaEvent ev)
 		{
 			if (plugin.Scp079Tesla)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) has triggered a tesla gate.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasTriggeredATeslaGate}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnScp194Upgrade(ref SCP914UpgradeEvent ev)
@@ -266,7 +266,7 @@ namespace DiscordIntegration_Plugin
 				foreach (Pickup item in ev.Items)
 					items += $"{item.ItemId}\n";
 				
-				ProcessSTT.SendData($"SCP-914 has processed the following players: {players} and items: {items}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{Plugin.translation.scp914HasProcessedTheFollowingPlayers}: {players} {Plugin.translation.andItems}: {items}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
@@ -274,8 +274,8 @@ namespace DiscordIntegration_Plugin
 		{
 			if (plugin.DoorInteract)
 				ProcessSTT.SendData(ev.Door.NetworkisOpen
-						? $"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) has closed a door: {ev.Door.DoorName}."
-						: $"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) has opened a door: {ev.Door.DoorName}.",
+						? $"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasClosedADoor}: {ev.Door.DoorName}."
+						: $"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasOpenedADoor}: {ev.Door.DoorName}.",
 					HandleQueue.GameLogChannelId);
 		}
 	}
