@@ -248,6 +248,7 @@ namespace DiscordIntegration_Plugin
 		public string playersOnline = "players online";
 		public string cheaterReportFiled = "Cheater report filed";
 		public string reported = "reported";
+		[JsonProperty("for")]
 		public string _for = "for";
 		public string with = "with";
 		public string damaged = "damaged";
