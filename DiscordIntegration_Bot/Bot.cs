@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -70,7 +71,7 @@ namespace DiscordIntegration_Bot
 				case "ping":
 					await context.Channel.SendMessageAsync($"Pong!");
 					return;
-				case "addsync":
+				case "addusr":
 				{
 					if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
 					{
@@ -101,12 +102,11 @@ namespace DiscordIntegration_Bot
 					await context.Channel.SendMessageAsync("User successfully added to user sync file.");
 					return;
 				}
-				case "rolesync":
+				case "addrole":
 				{
-					SocketGuildUser usr = (SocketGuildUser) user;
-					if (usr.Roles.All(r => !r.Permissions.Administrator))
+					if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
 					{
-						await context.Channel.SendMessageAsync("Code 4: Permission denied.");
+						await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
 						return;
 					}
 
@@ -132,6 +132,58 @@ namespace DiscordIntegration_Bot
 				{
 					await ReloadConfig();
 					await context.Channel.SendMessageAsync("Role sync configs reloaded.");
+					return;
+				}
+				case "deluser":
+				{
+					if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
+					{
+						await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
+						return;
+					}
+
+					if (args.Length != 2)
+					{
+						await context.Channel.SendMessageAsync("Code 3: Improper number of arguments.");
+						return;
+					}
+					
+					string[] readArray = File.ReadAllLines("Sync-Users.txt");
+					List<string> toKeep = new List<string>();
+					foreach (string usr in readArray)
+					{
+						string[] sync = usr.Split(':');
+						if (sync[0] != args[1])
+							toKeep.Add(usr);
+					}
+					File.WriteAllLines("Sync-Users.txt", toKeep);
+					await context.Channel.SendMessageAsync("User sync successfully removed.");
+					return;
+				}
+				case "delrole":
+				{
+					if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
+					{
+						await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
+						return;
+					}
+
+					if (args.Length != 2)
+					{
+						await context.Channel.SendMessageAsync($"Code 3: Improper number of arguments.");
+						return;
+					}
+
+					string[] readArray = File.ReadAllLines("Sync-Roles.txt");
+					List<string> toKeep = new List<string>();
+					foreach (string role in readArray)
+					{
+						string[] sync = role.Split(':');
+						if (sync[0] != args[0])
+							toKeep.Add(role);
+					}
+					File.WriteAllLines("Sync-Roles.txt", toKeep);
+					await context.Channel.SendMessageAsync("Role sync successfully removed.");
 					return;
 				}
 			}
