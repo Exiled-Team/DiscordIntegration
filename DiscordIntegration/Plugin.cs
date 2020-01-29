@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using EXILED;
 using GameCore;
 using MEC;
+using Newtonsoft.Json.Linq;
 
 namespace DiscordIntegration_Plugin
 {
@@ -42,6 +45,8 @@ namespace DiscordIntegration_Plugin
 			Events.SetClassEvent += EventHandlers.OnSetClass;
 			Events.TeamRespawnEvent += EventHandlers.OnRespawn;
 			Events.PlayerJoinEvent += EventHandlers.OnPlayerJoin;
+
+			LoadTranslation();
 
 			new Thread(ProcessSTT.Init).Start();
 			Timing.RunCoroutine(HandleQueue.Handle(), "handle");
@@ -101,6 +106,59 @@ namespace DiscordIntegration_Plugin
 			EggAddress = Config.GetString("discord_ip_address", string.Empty);
 			OnlyFriendlyFire = Config.GetBool("discord_only_ff", true);
 		}
+
+		public static Translation translation = new Translation();
+
+		public void LoadTranslation()
+		{
+			string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			string pluginsPath = Path.Combine(appData, "Plugins");
+			string configPath = Path.Combine(pluginsPath, "DiscordIntegration");
+			string translationFileName = Path.Combine(configPath, "translations.json");
+
+			if (!Directory.Exists(configPath))
+			{
+				Directory.CreateDirectory(configPath);
+			}
+
+			if (!File.Exists(translationFileName))
+			{
+				string defaults = JObject.FromObject(translation).ToString();
+
+				File.WriteAllText(translationFileName, defaults);
+				return;
+			}
+
+			string fileText = File.ReadAllText(translationFileName);
+
+			translation = JObject.Parse(fileText).ToObject<Translation>();
+		}
 		
+	}
+
+	public class Translation
+	{
+		public string usedCommand = "used command";
+		public string noPlayersOnline = "No players online.";
+		public string noStaffOnline = "No staff online.";
+		public string waitingForPlayers = "Waiting for players...";
+		public string roundStarting = "Round starting";
+		public string playersInRound = "players in round";
+		public string roundEnded = "Round ended";
+		public string playersOnline = "players online";
+		public string cheaterReportFiled = "Cheater report filed";
+		public string reported = "reported";
+		public string _for = "for";
+		public string with = "with";
+		public string damaged = "damaged";
+		public string killed = "killed";
+		public string threwAGrenade = "threw a grenade";
+		public string userA = "user a";
+		public string hasBenChangedToA = "has been changed to a";
+		public string chaosInsurgency = "Chaos Insurgency";
+		public string nineTailedFox = "Nine-Tailed Fox";
+		public string hasSpawnedWith = "has spawned with";
+		public string players = "players";
+		public string hasJoinedTheGame = "has joined the game";
 	}
 }
