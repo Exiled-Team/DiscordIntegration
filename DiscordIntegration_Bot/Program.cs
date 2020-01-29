@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace DiscordIntegration_Bot
 		private const string kCfgFile = "IntegrationBotConfig.json";
 		public static Config Config = GetConfig();
 		public static bool fileLocked = false;
+		public static List<SyncedUser> Users = new List<SyncedUser>();
+		public static Dictionary<ulong, string> SyncedGroups = new Dictionary<ulong, string>();
 
 		public static void Main()
 		{
@@ -57,6 +60,8 @@ namespace DiscordIntegration_Bot
 			else if (Config.Debug)
 				Log(new LogMessage(LogSeverity.Debug, "DEBUG", message));
 		}
+		
+		public static void Error(string message) => Log(new LogMessage(LogSeverity.Debug, "ERROR", message));
 
 		public static Config GetConfig()
 		{

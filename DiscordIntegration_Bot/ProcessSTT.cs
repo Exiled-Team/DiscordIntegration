@@ -144,7 +144,20 @@ namespace DiscordIntegration_Bot
 				Program.Log($"Receiving data: {data.Data} Channel: {data.Channel} for {data.Port}", true);
 				if (data.Data.Contains("REQUEST_DATA PLAYER_LIST SILENT"))
 					return;
-				
+				SocketGuild guild = Bot.Client.Guilds.FirstOrDefault();
+
+				if (data.Data.StartsWith("checksync"))
+				{
+					string[] args = data.Data.Split(' ');
+					SyncedUser user = Program.Users.FirstOrDefault(u => u.UserId == args[1]);
+					if (user == null)
+						return;
+					foreach (SocketRole role in guild.GetUser(user.DiscordId).Roles)
+					{
+						if (Program.SyncedGroups.ContainsKey(role.Id))
+							SendData($"setgroup {user.UserId} {Program.SyncedGroups[role.Id]}", Program.Config.Port, "RoleSync");
+					}
+				}
 				if (data.Data == "ping")
 				{
 					if (!bag.ContainsKey(data.Port))
@@ -202,7 +215,6 @@ namespace DiscordIntegration_Bot
 				
 				
 				Console.WriteLine("Getting guild.");
-				SocketGuild guild = Bot.Client.Guilds.FirstOrDefault();
 				Console.WriteLine("Getting channel");
 				if (guild == null)
 				{

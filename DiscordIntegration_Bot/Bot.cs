@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace DiscordIntegration_Bot
 		private async Task InitBot()
 		{
 			Program.Log("Setting up bot..", true);
+			await ReloadConfig();
 			Client.Log += Program.Log;
 			Client.MessageReceived += OnMessageReceived;
 			Program.Log("Logging into bot..", true);
@@ -36,8 +38,6 @@ namespace DiscordIntegration_Bot
 		public async Task OnMessageReceived(SocketMessage message)
 		{
 			CommandContext context = new CommandContext(Client, (IUserMessage)message);
-			if (context.Message.Author.IsBot)
-				return;
 
 			if (message.Content.StartsWith(Program.Config.BotPrefix) ||
 			    message.Content.StartsWith(Client.CurrentUser.Mention))
@@ -70,6 +70,70 @@ namespace DiscordIntegration_Bot
 				case "ping":
 					await context.Channel.SendMessageAsync($"Pong!");
 					return;
+				case "addsync":
+				{
+					if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
+					{
+						await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
+						return;
+					}
+
+					if (args.Length != 3)
+					{
+						await context.Channel.SendMessageAsync("Code 3: Improper number of arguments.");
+						return;
+					}
+
+					string id = args[1].Replace("<", "").Replace("@", "").Replace(">", "").Replace("!", "");
+					if (!ulong.TryParse(id, out ulong userId))
+					{
+						await context.Channel.SendMessageAsync($"Code 2: invalid Discord user defined.");
+						return;
+					}
+
+					if (!ulong.TryParse(args[2], out ulong steamId))
+					{
+						await context.Channel.SendMessageAsync("Code 5: Invalid steamID defined.");
+						return;
+					}
+					
+					File.AppendAllText("Sync-Users.txt", $"{userId}:{steamId}\n");
+					await context.Channel.SendMessageAsync("User successfully added to user sync file.");
+					return;
+				}
+				case "rolesync":
+				{
+					SocketGuildUser usr = (SocketGuildUser) user;
+					if (usr.Roles.All(r => !r.Permissions.Administrator))
+					{
+						await context.Channel.SendMessageAsync("Code 4: Permission denied.");
+						return;
+					}
+
+					if (args.Length != 3)
+					{
+						await context.Channel.SendMessageAsync($"Code 3: Improper number of arguments.");
+						return;
+					}
+
+					string id = args[1].Replace("<", "").Replace("@", "").Replace(">", "").Replace("&", "")
+						.Replace("!", "");
+					if (!ulong.TryParse(id, out ulong roleId) || context.Guild.GetRole(roleId) == null)
+					{
+						await context.Channel.SendMessageAsync("Code 6: Unable to retrieve Discord Role.");
+						return;
+					}
+					
+					File.AppendAllText("Sync-Roles.txt", $"{id}:{args[2]}");
+					await context.Channel.SendMessageAsync($"New role sync added successfully.");
+					return;
+				}
+				case "resync":
+				{
+					await ReloadConfig();
+					await context.Channel.SendMessageAsync("Role sync configs reloaded.");
+					return;
+				}
 			}
 
 			if (Program.Config.AllowedCommands.ContainsKey(args[0].ToLower()))
@@ -80,12 +144,47 @@ namespace DiscordIntegration_Bot
 					if (GetPermlevel(id) > lvl)
 						lvl = GetPermlevel(id);
 				}
-
+				
 				if (lvl >= Program.Config.AllowedCommands[args[0].ToLower()])
 					ProcessSTT.SendData(context.Message.Content, Program.Config.Port, context.Message.Author.Username,
 						context.Channel.Id);
 				else
 					await context.Channel.SendMessageAsync("Permission denied.");
+			}
+		}
+
+		public async Task ReloadConfig()
+		{
+			string roleSync = "Sync-Roles.txt";
+			string userSync = "Sync-Users.txt";
+			
+			if (!File.Exists(roleSync))
+				File.Create(roleSync).Close();
+			if (!File.Exists(userSync))
+				File.Create(userSync).Close();
+
+			foreach (string rs in File.ReadAllLines(roleSync))
+			{
+				string[] sync = rs.Split(':');
+				if (!ulong.TryParse(sync[0], out ulong roleId))
+				{
+					Program.Error($"Invalid DiscordRole defined: {sync[0]}");
+					continue;
+				}
+				
+				Program.SyncedGroups.Add(roleId, sync[1]);
+			}
+
+			foreach (string us in File.ReadAllLines(userSync))
+			{
+				string[] sync = us.Split(':');
+				if (!ulong.TryParse(sync[0], out ulong userId))
+				{
+					Program.Error($"Invalid Discord User ID defined: {sync[0]}");
+					continue;
+				}
+				
+				Program.Users.Add(new SyncedUser{DiscordId = userId, UserId = sync[1]});
 			}
 		}
 
