@@ -61,152 +61,170 @@ namespace DiscordIntegration_Bot
 
 		public async Task HandleCommand(ICommandContext context)
 		{
-			string[] args = context.Message.Content.Split(' ');
-			IGuildUser user = (IGuildUser) context.Message.Author;
-			if (context.Message.Content.StartsWith(context.Guild.EveryoneRole.Mention))
+			try
 			{
-				await context.Channel.SendMessageAsync("You cannot mention everyone in a command.");
-				return;
+				string[] args = context.Message.Content.Split(' ');
+				IGuildUser user = (IGuildUser) context.Message.Author;
+				if (context.Message.Content.StartsWith(context.Guild.EveryoneRole.Mention))
+				{
+					await context.Channel.SendMessageAsync("You cannot mention everyone in a command.");
+					return;
+				}
+
+				args[0] = args[0].Replace(Program.Config.BotPrefix, "");
+
+				switch (args[0].ToLower())
+				{
+					case "ping":
+						await context.Channel.SendMessageAsync($"Pong!");
+						return;
+					case "addusr":
+					{
+						if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
+						{
+							await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
+							return;
+						}
+
+						if (args.Length != 3)
+						{
+							await context.Channel.SendMessageAsync("Code 3: Improper number of arguments.");
+							return;
+						}
+
+						string id = args[1].Replace("<", "").Replace("@", "").Replace(">", "").Replace("!", "");
+						if (!ulong.TryParse(id, out ulong userId))
+						{
+							await context.Channel.SendMessageAsync($"Code 2: invalid Discord user defined.");
+							return;
+						}
+
+						if (!ulong.TryParse(args[2], out ulong steamId))
+						{
+							await context.Channel.SendMessageAsync("Code 5: Invalid steamID defined.");
+							return;
+						}
+
+						File.AppendAllText(userSync, $"{userId}:{steamId}@steam\n");
+						await context.Channel.SendMessageAsync("User successfully added to user sync file.");
+						return;
+					}
+					case "addrole":
+					{
+						if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
+						{
+							await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
+							return;
+						}
+
+						if (args.Length != 3)
+						{
+							await context.Channel.SendMessageAsync($"Code 3: Improper number of arguments.");
+							return;
+						}
+
+						string id = args[1].Replace("<", "").Replace("@", "").Replace(">", "").Replace("&", "")
+							.Replace("!", "");
+						if (!ulong.TryParse(id, out ulong roleId) || context.Guild.GetRole(roleId) == null)
+						{
+							await context.Channel.SendMessageAsync("Code 6: Unable to retrieve Discord Role.");
+							return;
+						}
+
+						File.AppendAllText(roleSync, $"{id}:{args[2]}");
+						await context.Channel.SendMessageAsync($"New role sync added successfully.");
+						return;
+					}
+					case "resync":
+					{
+						await ReloadConfig();
+						await context.Channel.SendMessageAsync("Role sync configs reloaded.");
+						return;
+					}
+					case "delusr":
+					{
+						if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
+						{
+							await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
+							return;
+						}
+
+						if (args.Length != 2)
+						{
+							await context.Channel.SendMessageAsync("Code 3: Improper number of arguments.");
+							return;
+						}
+
+						string[] readArray = File.ReadAllLines(userSync);
+						List<string> toKeep = new List<string>();
+						foreach (string usr in readArray)
+						{
+							string[] sync = usr.Split(':');
+							if (sync[1] != $"{args[1]}@steam")
+								toKeep.Add(usr);
+						}
+
+						File.WriteAllLines(userSync, toKeep);
+						await context.Channel.SendMessageAsync("User sync successfully removed.");
+						return;
+					}
+					case "delrole":
+					{
+						if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
+						{
+							await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
+							return;
+						}
+
+						if (args.Length != 2)
+						{
+							await context.Channel.SendMessageAsync($"Code 3: Improper number of arguments.");
+							return;
+						}
+
+						string id = args[1].Replace("<", "").Replace("@", "").Replace(">", "").Replace("&", "")
+							.Replace("!", "");
+						if (!ulong.TryParse(id, out ulong roleId) || context.Guild.GetRole(roleId) == null)
+						{
+							await context.Channel.SendMessageAsync("Code 6: Unable to retrieve Discord Role.");
+							return;
+						}
+						string[] readArray = File.ReadAllLines(roleSync);
+						List<string> toKeep = new List<string>();
+						foreach (string role in readArray)
+						{
+							string[] sync = role.Split(':');
+							if (sync[0] != id)
+								toKeep.Add(role);
+						}
+
+						File.WriteAllLines(roleSync, toKeep);
+						await context.Channel.SendMessageAsync("Role sync successfully removed.");
+						return;
+					}
+				}
+
+				if (Program.Config.AllowedCommands.ContainsKey(args[0].ToLower()))
+				{
+					PermLevel lvl = PermLevel.PermLevel0;
+					foreach (ulong id in user.RoleIds.Where(s =>
+						s == Program.Config.PermLevel1Id || s == Program.Config.Permlevel2Id ||
+						s == Program.Config.Permlevel3Id || s == Program.Config.Permlevel4Id))
+					{
+						if (GetPermlevel(id) > lvl)
+							lvl = GetPermlevel(id);
+					}
+
+					if (lvl >= Program.Config.AllowedCommands[args[0].ToLower()])
+						ProcessSTT.SendData(context.Message.Content, Program.Config.Port,
+							context.Message.Author.Username, context.Channel.Id);
+					else
+						await context.Channel.SendMessageAsync("Permission denied.");
+				}
 			}
-
-			args[0] = args[0].Replace(Program.Config.BotPrefix, "");
-
-			switch (args[0].ToLower())
+			catch (Exception e)
 			{
-				case "ping":
-					await context.Channel.SendMessageAsync($"Pong!");
-					return;
-				case "addusr":
-				{
-					if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
-					{
-						await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
-						return;
-					}
-
-					if (args.Length != 3)
-					{
-						await context.Channel.SendMessageAsync("Code 3: Improper number of arguments.");
-						return;
-					}
-
-					string id = args[1].Replace("<", "").Replace("@", "").Replace(">", "").Replace("!", "");
-					if (!ulong.TryParse(id, out ulong userId))
-					{
-						await context.Channel.SendMessageAsync($"Code 2: invalid Discord user defined.");
-						return;
-					}
-
-					if (!ulong.TryParse(args[2], out ulong steamId))
-					{
-						await context.Channel.SendMessageAsync("Code 5: Invalid steamID defined.");
-						return;
-					}
-					
-					File.AppendAllText(userSync, $"{userId}:{steamId}\n");
-					await context.Channel.SendMessageAsync("User successfully added to user sync file.");
-					return;
-				}
-				case "addrole":
-				{
-					if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
-					{
-						await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
-						return;
-					}
-
-					if (args.Length != 3)
-					{
-						await context.Channel.SendMessageAsync($"Code 3: Improper number of arguments.");
-						return;
-					}
-
-					string id = args[1].Replace("<", "").Replace("@", "").Replace(">", "").Replace("&", "")
-						.Replace("!", "");
-					if (!ulong.TryParse(id, out ulong roleId) || context.Guild.GetRole(roleId) == null)
-					{
-						await context.Channel.SendMessageAsync("Code 6: Unable to retrieve Discord Role.");
-						return;
-					}
-					
-					File.AppendAllText(roleSync, $"{id}:{args[2]}");
-					await context.Channel.SendMessageAsync($"New role sync added successfully.");
-					return;
-				}
-				case "resync":
-				{
-					await ReloadConfig();
-					await context.Channel.SendMessageAsync("Role sync configs reloaded.");
-					return;
-				}
-				case "deluser":
-				{
-					if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
-					{
-						await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
-						return;
-					}
-
-					if (args.Length != 2)
-					{
-						await context.Channel.SendMessageAsync("Code 3: Improper number of arguments.");
-						return;
-					}
-					
-					string[] readArray = File.ReadAllLines("Sync-Users.txt");
-					List<string> toKeep = new List<string>();
-					foreach (string usr in readArray)
-					{
-						string[] sync = usr.Split(':');
-						if (sync[0] != args[1])
-							toKeep.Add(usr);
-					}
-					File.WriteAllLines(userSync, toKeep);
-					await context.Channel.SendMessageAsync("User sync successfully removed.");
-					return;
-				}
-				case "delrole":
-				{
-					if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))
-					{
-						await context.Channel.SendMessageAsync("Code 4: Permission Denied.");
-						return;
-					}
-
-					if (args.Length != 2)
-					{
-						await context.Channel.SendMessageAsync($"Code 3: Improper number of arguments.");
-						return;
-					}
-
-					string[] readArray = File.ReadAllLines("Sync-Roles.txt");
-					List<string> toKeep = new List<string>();
-					foreach (string role in readArray)
-					{
-						string[] sync = role.Split(':');
-						if (sync[0] != args[0])
-							toKeep.Add(role);
-					}
-					File.WriteAllLines(roleSync, toKeep);
-					await context.Channel.SendMessageAsync("Role sync successfully removed.");
-					return;
-				}
-			}
-
-			if (Program.Config.AllowedCommands.ContainsKey(args[0].ToLower()))
-			{
-				PermLevel lvl = PermLevel.PermLevel0;
-				foreach (ulong id in user.RoleIds.Where(s => s == Program.Config.PermLevel1Id || s == Program.Config.Permlevel2Id || s == Program.Config.Permlevel3Id || s == Program.Config.Permlevel4Id))
-				{
-					if (GetPermlevel(id) > lvl)
-						lvl = GetPermlevel(id);
-				}
-				
-				if (lvl >= Program.Config.AllowedCommands[args[0].ToLower()])
-					ProcessSTT.SendData(context.Message.Content, Program.Config.Port, context.Message.Author.Username,
-						context.Channel.Id);
-				else
-					await context.Channel.SendMessageAsync("Permission denied.");
+				Program.Error($"Command failure: {e}");
 			}
 		}
 
@@ -219,6 +237,9 @@ namespace DiscordIntegration_Bot
 				File.Create(roleSync).Close();
 			if (!File.Exists(userSync))
 				File.Create(userSync).Close();
+			
+			Program.SyncedGroups.Clear();
+			Program.Users.Clear();
 
 			foreach (string rs in File.ReadAllLines(roleSync))
 			{

@@ -40,6 +40,7 @@ namespace DiscordIntegration_Plugin
 		public static bool Egg = false;
 		public static string EggAddress = "";
 		public bool OnlyFriendlyFire = true;
+		public bool RoleSync = true;
 		
 		public override void OnEnable()
 		{
@@ -143,6 +144,7 @@ namespace DiscordIntegration_Plugin
 			Egg = Config.GetBool("discord_egg_mode", false);
 			EggAddress = Config.GetString("discord_ip_address", string.Empty);
 			OnlyFriendlyFire = Config.GetBool("discord_only_ff", true);
+			RoleSync = Config.GetBool("discord_rolesync", true);
 		}
 		
 	}

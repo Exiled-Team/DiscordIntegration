@@ -149,9 +149,14 @@ namespace DiscordIntegration_Bot
 				if (data.Data.StartsWith("checksync"))
 				{
 					string[] args = data.Data.Split(' ');
+					Program.Log($"Checking rolesync for {args[1]}", true);
 					SyncedUser user = Program.Users.FirstOrDefault(u => u.UserId == args[1]);
 					if (user == null)
+					{
+						Program.Log($"Role sync for {args[1]} not found.", true);
 						return;
+					}
+
 					foreach (SocketRole role in guild.GetUser(user.DiscordId).Roles)
 					{
 						if (Program.SyncedGroups.ContainsKey(role.Id))

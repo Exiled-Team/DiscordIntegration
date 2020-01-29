@@ -5,13 +5,15 @@ namespace DiscordIntegration_Plugin
 		private readonly Plugin plugin;
 		public Methods(Plugin plugin) => this.plugin = plugin;
 
-		public void CheckForSyncRole(ReferenceHub player)
+		public static void CheckForSyncRole(ReferenceHub player)
 		{
-			ProcessSTT.SendData($"checkrole {player.characterClassManager.UserId}", 119);
+			Plugin.Info($"Checking rolesync for {player.characterClassManager.UserId}");
+			ProcessSTT.SendData($"checksync {player.characterClassManager.UserId}", 119);
 		}
 
 		public static void SetSyncRole(string group, string steamId)
 		{
+			Plugin.Info($"Received setgroup for {steamId}");
 			UserGroup userGroup = ServerStatic.PermissionsHandler.GetGroup(group);
 			if (userGroup == null)
 			{
@@ -26,6 +28,7 @@ namespace DiscordIntegration_Plugin
 				return;
 			}
 			
+			Plugin.Info($"Assigning role: {userGroup} to {steamId}.");
 			player.serverRoles.SetGroup(userGroup, false);
 		}
 	}

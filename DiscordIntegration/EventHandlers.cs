@@ -5,6 +5,7 @@ using GameCore;
 using Grenades;
 using MEC;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 namespace DiscordIntegration_Plugin
 {
@@ -168,6 +169,8 @@ namespace DiscordIntegration_Plugin
 
 		public void OnPlayerJoin(PlayerJoinEvent ev)
 		{
+			if (plugin.RoleSync)
+				Methods.CheckForSyncRole(ev.Player);
 			if (plugin.PlayerJoin)
 				if (ev.Player.nicknameSync.MyNick != "Dedicated Server")
 					ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} has joined the game.", HandleQueue.GameLogChannelId);

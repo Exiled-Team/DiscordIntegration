@@ -43,7 +43,7 @@ namespace DiscordIntegration_Plugin
 				if (result.Data.StartsWith("setgroup"))
 				{
 					string[] args = result.Data.Split(' ');
-					Methods.SetSyncRole(args[1], args[2]);
+					Methods.SetSyncRole(args[2], args[1]);
 				}
 
 				ChannelId = result.Channel;
