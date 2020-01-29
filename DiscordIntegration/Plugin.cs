@@ -16,18 +16,34 @@ namespace DiscordIntegration_Plugin
 		public bool RaCommands = true;
 		public bool RoundStart = true;
 		public bool RoundEnd = true;
-		public bool WaitingForPlayers = false;
-		public bool CheaterReport = false;
+		public bool WaitingForPlayers = true;
+		public bool CheaterReport = true;
 		public bool PlayerHurt = true;
 		public bool PlayerDeath = true;
 		public bool GrenadeThrown = true;
 		public bool MedicalItem = true;
-		public bool SetClass = false;
+		public bool SetClass = true;
 		public bool Respawn = true;
 		public bool PlayerJoin = true;
+		public bool DoorInteract = true;
+		public bool Scp914Upgrade = true;
+		public bool Scp079Tesla = true;
+		public bool Scp106Tele = true;
+		public bool PocketEnter = true;
+		public bool PocketEscape = true;
+		public bool ConsoleCommand = true;
+		public bool Decon = true;
+		public bool DropItem = true;
+		public bool PickupItem = true;
+		public bool Intercom = true;
+		public bool Banned = true;
+		public bool Cuffed = true;
+		public bool Freed = true;
+		
 		public static bool Egg = false;
 		public static string EggAddress = "";
 		public bool OnlyFriendlyFire = true;
+		public bool RoleSync = true;
 		
 		public override void OnEnable()
 		{
@@ -45,6 +61,21 @@ namespace DiscordIntegration_Plugin
 			Events.SetClassEvent += EventHandlers.OnSetClass;
 			Events.TeamRespawnEvent += EventHandlers.OnRespawn;
 			Events.PlayerJoinEvent += EventHandlers.OnPlayerJoin;
+			
+			Events.DoorInteractEvent += EventHandlers.OnDoorInteract;
+			Events.Scp914UpgradeEvent += EventHandlers.OnScp194Upgrade;
+			Events.Scp079TriggerTeslaEvent += EventHandlers.On079Tesla;
+			Events.Scp106TeleportEvent += EventHandlers.On106Teleport;
+			Events.PocketDimEscapedEvent += EventHandlers.OnPocketEscape;
+			Events.PocketDimEnterEvent += EventHandlers.OnPocketEnter;
+			Events.ConsoleCommandEvent += EventHandlers.OnConsoleCommand;
+			Events.DecontaminationEvent += EventHandlers.OnDecon;
+			Events.DropItemEvent += EventHandlers.OnDropItem;
+			Events.PickupItemEvent += EventHandlers.OnPickupItem;
+			Events.IntercomSpeakEvent += EventHandlers.OnIntercomSpeak;
+			Events.PlayerBannedEvent += EventHandlers.OnPlayerBanned;
+			Events.PlayerHandcuffedEvent += EventHandlers.OnPlayerHandcuffed;
+			Events.PlayerHandcuffFreedEvent += EventHandlers.OnPlayerFreed;
 
 			LoadTranslation();
 
@@ -102,9 +133,23 @@ namespace DiscordIntegration_Plugin
 			SetClass = Config.GetBool("discord_set_class", true);
 			Respawn = Config.GetBool("discord_respawn", true);
 			PlayerJoin = Config.GetBool("discord_player_join", true);
+			DoorInteract = Config.GetBool("discord_doorinteract", false);
+			Scp914Upgrade = Config.GetBool("discord_914upgrade", true);
+			Scp079Tesla = Config.GetBool("discord_079tesla", true);
+			Scp106Tele = Config.GetBool("discord_106teleport", false);
+			PocketEnter = Config.GetBool("discord_penter", true);
+			PocketEscape = Config.GetBool("discord_pescape", true);
+			ConsoleCommand = Config.GetBool("discord_player_console", true);
+			Decon = Config.GetBool("discord_decon", true);
+			DropItem = Config.GetBool("discord_item_drop", true);
+			PickupItem = Config.GetBool("discord_item_pickup", true);
+			Banned = Config.GetBool("discord_banned", true);
+			Cuffed = Config.GetBool("discord_cuffed", true);
+			Freed = Config.GetBool("discord_freed", true);
 			Egg = Config.GetBool("discord_egg_mode", false);
 			EggAddress = Config.GetString("discord_ip_address", string.Empty);
 			OnlyFriendlyFire = Config.GetBool("discord_only_ff", true);
+			RoleSync = Config.GetBool("discord_rolesync", true);
 		}
 
 		public static Translation translation = new Translation();

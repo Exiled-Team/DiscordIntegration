@@ -40,6 +40,12 @@ namespace DiscordIntegration_Plugin
 					return;
 				}
 
+				if (result.Data.StartsWith("setgroup"))
+				{
+					string[] args = result.Data.Split(' ');
+					Methods.SetSyncRole(args[2], args[1]);
+				}
+
 				ChannelId = result.Channel;
 
 				try
