@@ -177,6 +177,7 @@ namespace DiscordIntegration_Plugin
 
 		public static Translation translation = new Translation();
 		private bool refreshTranslationFile = false;
+		private List<string> propertyNames = new List<string>();
 
 		public void LoadTranslation()
 		{
@@ -184,6 +185,7 @@ namespace DiscordIntegration_Plugin
 			string pluginsPath = Path.Combine(appData, "Plugins");
 			string configPath = Path.Combine(pluginsPath, "Integration");
 			string translationFileName = Path.Combine(configPath, "translations.json");
+			string translationBackupFileName = Path.Combine(configPath, "translations_backup.json");
 
 			if (!Directory.Exists(configPath))
 			{
@@ -199,24 +201,58 @@ namespace DiscordIntegration_Plugin
 			}
 
 			string fileText = File.ReadAllText(translationFileName);
+			JObject o;
 
-			JObject o = JObject.Parse(fileText);
+			try
+			{
+				o = JObject.Parse(fileText);
+			}
+			catch (Exception e)
+			{
+				Info("Invalid or corrupted translation file, creating backup and overwriting.");
+				Error(e.Message);
+
+				string json = JObject.FromObject(translation).ToString();
+
+				File.Copy(translationFileName, translationBackupFileName, true);
+
+				File.WriteAllText(translationFileName, json);
+				return;
+			}
+			
 			JsonSerializer j = new JsonSerializer();
-			j.Error += Plugin_Error;
-			translation = o.ToObject<Translation>(j);
+			j.Error += Json_Error;
+
+			try
+			{
+				translation = o.ToObject<Translation>(j);
+			}
+			catch (Exception e)
+			{
+				Info("Invalid or corrupted translation file, creating backup and overwriting.");
+				Error(e.Message);
+				refreshTranslationFile = true;
+			}
 
 			if (refreshTranslationFile)
 			{
 				string json = JObject.FromObject(translation).ToString();
+
+				Info("Invalid or missing translation element detected fixing: " + string.Join(", ", propertyNames) + ".");
+
+				File.Copy(translationFileName, translationBackupFileName, true);
 
 				File.WriteAllText(translationFileName, json);
 				return;
 			}
 		}
 
-		private void Plugin_Error(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs e)
+		private void Json_Error(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs e)
 		{
 			refreshTranslationFile = true;
+
+			propertyNames.Add(e.ErrorContext.Member.ToString());
+
 			e.ErrorContext.Handled = true;
 		}
 	}
@@ -234,6 +270,7 @@ namespace DiscordIntegration_Plugin
 		public string playersOnline = "players online";
 		public string cheaterReportFiled = "Cheater report filed";
 		public string reported = "reported";
+		[JsonProperty("for")]
 		public string _for = "for";
 		public string with = "with";
 		public string damaged = "damaged";
