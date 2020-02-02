@@ -40,6 +40,8 @@ namespace DiscordIntegration_Plugin
 		public bool Banned = true;
 		public bool Cuffed = true;
 		public bool Freed = true;
+		public bool Scp914Activation = true;
+		public bool Scp914KnobChange = true;
 		
 		public static bool Egg = false;
 		public static string EggAddress = "";
@@ -77,6 +79,8 @@ namespace DiscordIntegration_Plugin
 			Events.PlayerBannedEvent += EventHandlers.OnPlayerBanned;
 			Events.PlayerHandcuffedEvent += EventHandlers.OnPlayerHandcuffed;
 			Events.PlayerHandcuffFreedEvent += EventHandlers.OnPlayerFreed;
+			Events.Scp914ActivationEvent += EventHandlers.On914Activation;
+			Events.Scp914KnobChangeEvent += EventHandlers.On914KnobChange;
 
 			LoadTranslation();
 
@@ -99,6 +103,22 @@ namespace DiscordIntegration_Plugin
 			Events.SetClassEvent -= EventHandlers.OnSetClass;
 			Events.TeamRespawnEvent -= EventHandlers.OnRespawn;
 			Events.PlayerJoinEvent -= EventHandlers.OnPlayerJoin;
+			Events.DoorInteractEvent -= EventHandlers.OnDoorInteract;
+			Events.Scp914UpgradeEvent -= EventHandlers.OnScp194Upgrade;
+			Events.Scp079TriggerTeslaEvent -= EventHandlers.On079Tesla;
+			Events.Scp106TeleportEvent -= EventHandlers.On106Teleport;
+			Events.PocketDimEscapedEvent -= EventHandlers.OnPocketEscape;
+			Events.PocketDimEnterEvent -= EventHandlers.OnPocketEnter;
+			Events.ConsoleCommandEvent -= EventHandlers.OnConsoleCommand;
+			Events.DecontaminationEvent -= EventHandlers.OnDecon;
+			Events.DropItemEvent -= EventHandlers.OnDropItem;
+			Events.PickupItemEvent -= EventHandlers.OnPickupItem;
+			Events.IntercomSpeakEvent -= EventHandlers.OnIntercomSpeak;
+			Events.PlayerBannedEvent -= EventHandlers.OnPlayerBanned;
+			Events.PlayerHandcuffedEvent -= EventHandlers.OnPlayerHandcuffed;
+			Events.PlayerHandcuffFreedEvent -= EventHandlers.OnPlayerFreed;
+			Events.Scp914ActivationEvent -= EventHandlers.On914Activation;
+			Events.Scp914KnobChangeEvent -= EventHandlers.On914KnobChange;
 			EventHandlers = null;
 			Timing.KillCoroutines("handle");
 			Timing.KillCoroutines("update");
@@ -147,6 +167,8 @@ namespace DiscordIntegration_Plugin
 			Banned = Config.GetBool("discord_banned", true);
 			Cuffed = Config.GetBool("discord_cuffed", true);
 			Freed = Config.GetBool("discord_freed", true);
+			Scp914Activation = Config.GetBool("discord_914_activation", true);
+			Scp914KnobChange = Config.GetBool("discord_914_knob", true);
 			Egg = Config.GetBool("discord_egg_mode", false);
 			EggAddress = Config.GetString("discord_ip_address", string.Empty);
 			OnlyFriendlyFire = Config.GetBool("discord_only_ff", true);
@@ -240,5 +262,7 @@ namespace DiscordIntegration_Plugin
 		public string andItems = "and items";
 		public string hasClosedADoor = "has closed a door";
 		public string hasOpenedADoor = "has opened a door";
+		public string scp914HasBeenActivated = "has activated SCP-914 on setting";
+		public string scp914knobchange = "has changed the SCP-914 knob to";
 	}
 }
