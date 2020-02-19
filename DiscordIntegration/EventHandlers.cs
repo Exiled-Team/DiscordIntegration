@@ -177,6 +177,13 @@ namespace DiscordIntegration_Plugin
 					ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasJoinedTheGame}.", HandleQueue.GameLogChannelId);
 		}
 
+		public void OnPlayerLeave(PlayerLeaveEvent ev)
+		{
+			if (plugin.PlayerLeave)
+				if (ev.Player.nicknameSync.MyNick != "Dedicated Server")
+					ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasLeftTheGame}.", HandleQueue.GameLogChannelId);
+		}
+
 		public void OnPlayerFreed(ref HandcuffEvent ev)
 		{
 			if (plugin.Freed)
@@ -290,6 +297,12 @@ namespace DiscordIntegration_Plugin
 		{
 			if (plugin.Scp914KnobChange)
 				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.scp914knobchange} {ev.KnobSetting}.", HandleQueue.GameLogChannelId);
+		}
+
+		public void OnPlayerEnterFemur (FemurEnterEvent ev)
+		{
+			if (plugin.EnterFemur)
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasEnteredFemur}.", HandleQueue.GameLogChannelId);
 		}
 	}
 }

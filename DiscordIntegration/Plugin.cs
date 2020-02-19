@@ -27,6 +27,7 @@ namespace DiscordIntegration_Plugin
 		public bool SetClass = true;
 		public bool Respawn = true;
 		public bool PlayerJoin = true;
+		public bool PlayerLeave = true;
 		public bool DoorInteract = true;
 		public bool Scp914Upgrade = true;
 		public bool Scp079Tesla = true;
@@ -43,6 +44,7 @@ namespace DiscordIntegration_Plugin
 		public bool Freed = true;
 		public bool Scp914Activation = true;
 		public bool Scp914KnobChange = true;
+		public bool EnterFemur = true;
 		
 		public static bool Egg = false;
 		public static string EggAddress = "";
@@ -65,7 +67,7 @@ namespace DiscordIntegration_Plugin
 			Events.SetClassEvent += EventHandlers.OnSetClass;
 			Events.TeamRespawnEvent += EventHandlers.OnRespawn;
 			Events.PlayerJoinEvent += EventHandlers.OnPlayerJoin;
-			
+			Events.PlayerLeaveEvent += EventHandlers.OnPlayerLeave;
 			Events.DoorInteractEvent += EventHandlers.OnDoorInteract;
 			Events.Scp914UpgradeEvent += EventHandlers.OnScp194Upgrade;
 			Events.Scp079TriggerTeslaEvent += EventHandlers.On079Tesla;
@@ -82,6 +84,7 @@ namespace DiscordIntegration_Plugin
 			Events.PlayerHandcuffFreedEvent += EventHandlers.OnPlayerFreed;
 			Events.Scp914ActivationEvent += EventHandlers.On914Activation;
 			Events.Scp914KnobChangeEvent += EventHandlers.On914KnobChange;
+			Events.FemurEnterEvent += EventHandlers.OnPlayerEnterFemur;
 
 			LoadTranslation();
 
@@ -104,6 +107,7 @@ namespace DiscordIntegration_Plugin
 			Events.SetClassEvent -= EventHandlers.OnSetClass;
 			Events.TeamRespawnEvent -= EventHandlers.OnRespawn;
 			Events.PlayerJoinEvent -= EventHandlers.OnPlayerJoin;
+			Events.PlayerLeaveEvent -= EventHandlers.OnPlayerLeave;
 			Events.DoorInteractEvent -= EventHandlers.OnDoorInteract;
 			Events.Scp914UpgradeEvent -= EventHandlers.OnScp194Upgrade;
 			Events.Scp079TriggerTeslaEvent -= EventHandlers.On079Tesla;
@@ -120,6 +124,7 @@ namespace DiscordIntegration_Plugin
 			Events.PlayerHandcuffFreedEvent -= EventHandlers.OnPlayerFreed;
 			Events.Scp914ActivationEvent -= EventHandlers.On914Activation;
 			Events.Scp914KnobChangeEvent -= EventHandlers.On914KnobChange;
+			Events.FemurEnterEvent -= EventHandlers.OnPlayerEnterFemur;
 			EventHandlers = null;
 			Timing.KillCoroutines("handle");
 			Timing.KillCoroutines("update");
@@ -155,6 +160,7 @@ namespace DiscordIntegration_Plugin
 			SetClass = Config.GetBool("discord_set_class", true);
 			Respawn = Config.GetBool("discord_respawn", true);
 			PlayerJoin = Config.GetBool("discord_player_join", true);
+			PlayerLeave = Config.GetBool("discord_player_leave", true);
 			DoorInteract = Config.GetBool("discord_doorinteract", false);
 			Scp914Upgrade = Config.GetBool("discord_914upgrade", true);
 			Scp079Tesla = Config.GetBool("discord_079tesla", true);
@@ -170,6 +176,7 @@ namespace DiscordIntegration_Plugin
 			Freed = Config.GetBool("discord_freed", true);
 			Scp914Activation = Config.GetBool("discord_914_activation", true);
 			Scp914KnobChange = Config.GetBool("discord_914_knob", true);
+			EnterFemur = Config.GetBool("discord_enter_femur", true);
 			Egg = Config.GetBool("discord_egg_mode", false);
 			EggAddress = Config.GetString("discord_ip_address", string.Empty);
 			OnlyFriendlyFire = Config.GetBool("discord_only_ff", true);
@@ -284,6 +291,7 @@ namespace DiscordIntegration_Plugin
 		public string hasSpawnedWith = "has spawned with";
 		public string players = "players";
 		public string hasJoinedTheGame = "has joined the game";
+		public string hasLeftTheGame = "has left the game";
 		public string hasBeenFreedBy = "has been freed by";
 		public string hasBeenHandcuffedBy = "has been handcuffed by";
 		public string wasBannedBy = "was banned by";
@@ -302,5 +310,6 @@ namespace DiscordIntegration_Plugin
 		public string hasOpenedADoor = "has opened a door";
 		public string scp914HasBeenActivated = "has activated SCP-914 on setting";
 		public string scp914knobchange = "has changed the SCP-914 knob to";
+		public string hasEnteredFemur = "has entered the femur breaker";
 	}
 }
