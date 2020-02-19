@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EXILED;
-using GameCore;
+using EXILED.Extensions;
 using Grenades;
 using MEC;
 using Scp914;
@@ -23,7 +23,7 @@ namespace DiscordIntegration_Plugin
 			{
 				ev.Allow = false;
 				string message = "";
-				foreach (ReferenceHub hub in Plugin.GetHubs())
+				foreach (ReferenceHub hub in Player.GetHubs())
 					message +=
 						$"{hub.nicknameSync.MyNick} - ({hub.characterClassManager.UserId})\n";
 				if (string.IsNullOrEmpty(message))
@@ -33,7 +33,7 @@ namespace DiscordIntegration_Plugin
 			else if (ev.Command.ToLower() == "stafflist")
 			{
 				ev.Allow = false;
-				Plugin.Info("Staff listen");
+				Log.Info("Staff listen");
 				bool isStaff = false;
 				string names = "";
 				foreach (GameObject o in PlayerManager.players)
@@ -47,7 +47,7 @@ namespace DiscordIntegration_Plugin
 					}
 				}
 
-				Plugin.Info($"Bool: {isStaff} Names: {names}");
+				Log.Info($"Bool: {isStaff} Names: {names}");
 				string response = isStaff ? names : $"{Plugin.translation.noStaffOnline}";
 				ev.Sender.RAMessage($"{PlayerManager.players.Count}/25 {response}");
 			}
@@ -83,7 +83,7 @@ namespace DiscordIntegration_Plugin
 			{
 				try
 				{
-					if (ev.Attacker != null && ev.Attacker.characterClassManager != null && Plugin.GetTeam(ev.Player.characterClassManager.CurClass) == Plugin.GetTeam(ev.Attacker.characterClassManager.CurClass) && ev.Player != ev.Attacker)
+					if (ev.Attacker != null && ev.Attacker.characterClassManager != null && Player.GetTeam(ev.Player.characterClassManager.CurClass) == Player.GetTeam(ev.Attacker.characterClassManager.CurClass) && ev.Player != ev.Attacker)
 						ProcessSTT.SendData(
 							$"**{ev.Attacker.nicknameSync.MyNick} - {ev.Attacker.characterClassManager.UserId} ({ev.Attacker.characterClassManager.CurClass}) {Plugin.translation.damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._for} {ev.Info.Amount} {Plugin.translation.with} {ev.Info.Tool}.**",
 							HandleQueue.GameLogChannelId);
@@ -96,7 +96,7 @@ namespace DiscordIntegration_Plugin
 				}
 				catch (Exception e)
 				{
-					Plugin.Error($"Player Hurt error: {e}");
+					Log.Error($"Player Hurt error: {e}");
 				}
 			}
 		}
@@ -107,7 +107,7 @@ namespace DiscordIntegration_Plugin
 			{
 				try
 				{
-					if (ev.Killer != null && ev.Killer.characterClassManager != null && Plugin.GetTeam(ev.Player.characterClassManager.CurClass) == Plugin.GetTeam(ev.Killer.characterClassManager.CurClass))
+					if (ev.Killer != null && ev.Killer.characterClassManager != null && Player.GetTeam(ev.Player.characterClassManager.CurClass) == Player.GetTeam(ev.Killer.characterClassManager.CurClass))
 						ProcessSTT.SendData(
 							$"**{ev.Killer.nicknameSync.MyNick} - {ev.Killer.characterClassManager.UserId} ({ev.Killer.characterClassManager.CurClass}) {Plugin.translation.killed} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.with} {ev.Info.Tool}.**",
 							HandleQueue.GameLogChannelId);
@@ -120,7 +120,7 @@ namespace DiscordIntegration_Plugin
 				}
 				catch (Exception e)
 				{
-					Plugin.Error($"Player Hurt error: {e}");
+					Log.Error($"Player Hurt error: {e}");
 				}
 			}
 		}

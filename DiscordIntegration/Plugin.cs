@@ -7,6 +7,7 @@ using GameCore;
 using MEC;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Log = EXILED.Log;
 
 namespace DiscordIntegration_Plugin
 {
@@ -209,8 +210,8 @@ namespace DiscordIntegration_Plugin
 			}
 			catch (Exception e)
 			{
-				Info("Invalid or corrupted translation file, creating backup and overwriting.");
-				Error(e.Message);
+				Log.Info("Invalid or corrupted translation file, creating backup and overwriting.");
+				Log.Error(e.Message);
 
 				string json = JObject.FromObject(translation).ToString();
 
@@ -229,8 +230,8 @@ namespace DiscordIntegration_Plugin
 			}
 			catch (Exception e)
 			{
-				Info("Invalid or corrupted translation file, creating backup and overwriting.");
-				Error(e.Message);
+				Log.Info("Invalid or corrupted translation file, creating backup and overwriting.");
+				Log.Error(e.Message);
 				refreshTranslationFile = true;
 			}
 
@@ -238,7 +239,7 @@ namespace DiscordIntegration_Plugin
 			{
 				string json = JObject.FromObject(translation).ToString();
 
-				Info("Invalid or missing translation element detected fixing: " + string.Join(", ", propertyNames) + ".");
+				Log.Info("Invalid or missing translation element detected fixing: " + string.Join(", ", propertyNames) + ".");
 
 				File.Copy(translationFileName, translationBackupFileName, true);
 

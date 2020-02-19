@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using Log = EXILED.Log;
 
 namespace DiscordIntegration_Plugin
 {
@@ -22,12 +23,12 @@ namespace DiscordIntegration_Plugin
 			Thread.Sleep(1000);
 			try
 			{
-				Plugin.Info($"STT: Starting INIT for {ServerConsole.Port}");
+				Log.Info($"STT: Starting INIT for {ServerConsole.Port}");
 				tcpClient?.Close();
 				tcpClient = new TcpClient();
 				while (!tcpClient.Connected)
 				{
-					Plugin.Debug($"STT: While loop start");
+					Log.Debug($"STT: While loop start");
 					Thread.Sleep(2000);
 					try
 					{
@@ -42,7 +43,7 @@ namespace DiscordIntegration_Plugin
 					}
 					catch (Exception e)
 					{
-						Plugin.Error($"STT: {e}");
+						Log.Error($"STT: {e}");
 					}
 				}
 
@@ -66,7 +67,7 @@ namespace DiscordIntegration_Plugin
 			catch (Exception e)
 			{
 				_locked = false;
-				Plugin.Error(e.ToString());
+				Log.Error(e.ToString());
 			}
 		}
 
@@ -88,7 +89,7 @@ namespace DiscordIntegration_Plugin
 					};
 				BinaryFormatter formatter = new BinaryFormatter();
 				formatter.Serialize(tcpClient.GetStream(), serializedData);
-				Plugin.Debug($"Sent {data}");
+				Log.Debug($"Sent {data}");
 			}
 			catch (IOException)
 			{
@@ -97,7 +98,7 @@ namespace DiscordIntegration_Plugin
 			}
 			catch (Exception e)
 			{
-				Plugin.Error(e.ToString());
+				Log.Error(e.ToString());
 			}
 		}
 
@@ -129,7 +130,7 @@ namespace DiscordIntegration_Plugin
 			}
 			catch (Exception e)
 			{
-				Plugin.Error(e.ToString());
+				Log.Error(e.ToString());
 			}
 		}
 	}

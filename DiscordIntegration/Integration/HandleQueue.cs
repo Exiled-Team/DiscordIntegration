@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MEC;
+using Log = EXILED.Log;
 
 namespace DiscordIntegration_Plugin
 {
@@ -16,12 +17,12 @@ namespace DiscordIntegration_Plugin
 			while (ProcessSTT.dataQueue.TryDequeue(out SerializedData.SerializedData result))
 			{
 				string command = result.Data;
-				Plugin.Debug($"STT: Received {result.Data} for {result.Port} at {result.Channel}");
+				Log.Debug($"STT: Received {result.Data} for {result.Port} at {result.Channel}");
 				
 				
 				if (result.Data == "ping")
 				{
-					Plugin.Debug("STT: Heartbeat received.");
+					Log.Debug("STT: Heartbeat received.");
 					ProcessSTT.SendData("ping", 0);
 					return;
 				}
@@ -29,14 +30,14 @@ namespace DiscordIntegration_Plugin
 				if (result.Data == "set gameid")
 				{
 					GameLogChannelId = result.Channel;
-					Plugin.Debug($"STT: GameLogChannelId changed: {result.Channel}");
+					Log.Debug($"STT: GameLogChannelId changed: {result.Channel}");
 					return;
 				}
 
 				if (result.Data == "set cmdid")
 				{
 					CommandLogChannelId = result.Channel;
-					Plugin.Debug($"STT: CommandLogChannelId changed: {result.Channel}");
+					Log.Debug($"STT: CommandLogChannelId changed: {result.Channel}");
 					return;
 				}
 
@@ -55,7 +56,7 @@ namespace DiscordIntegration_Plugin
 				}
 				catch (Exception e)
 				{
-					Plugin.Error(e.ToString());
+					Log.Error(e.ToString());
 				}
 			}
 		}
@@ -71,7 +72,7 @@ namespace DiscordIntegration_Plugin
 				}
 				catch (Exception e)
 				{
-					Plugin.Error($"STT: Error handling queue. {e}");
+					Log.Error($"STT: Error handling queue. {e}");
 				}
 
 				yield return Timing.WaitForSeconds(1f);
