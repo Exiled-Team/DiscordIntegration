@@ -72,7 +72,7 @@ namespace DiscordIntegration_Plugin
 				emote = ":zap: ";
 
 			if (plugin.RoundStart)
-				ProcessSTT.SendData($"{emote}{Plugin.translation.roundStarting}: {Plugin.GetHubs().Count} {Plugin.translation.playersInRound}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{Plugin.translation.roundStarting}: {Plugin.GetHubs().Count - 1} {Plugin.translation.playersInRound}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnRoundEnd()
@@ -185,7 +185,7 @@ namespace DiscordIntegration_Plugin
 
 			if (plugin.SetClass)
 			{
-				if (ev.Player == null)
+				if (ev.Player == null || ev.Player.nicknameSync.MyNick == "Dedicated Server")
 					return;
 				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasBenChangedToA} {ev.Role}.", HandleQueue.GameLogChannelId);
 			}
