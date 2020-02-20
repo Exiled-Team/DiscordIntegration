@@ -77,8 +77,16 @@ namespace DiscordIntegration_Plugin
 
 		public void OnRoundEnd()
 		{
+			int min = RoundSummary.roundTime / 60;
+			int sec = RoundSummary.roundTime % 60;
+
 			if (plugin.RoundEnd)
-				ProcessSTT.SendData($"{emote}{Plugin.translation.roundEnded}: {Plugin.GetHubs().Count} {Plugin.translation.playersOnline}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}***{Plugin.translation.roundEnded}.***\n" +
+					$"```Round Time: {min}:{sec}\n" +
+					$"Escaped D-Class: {RoundSummary.escaped_ds}\n" +
+					$"Escaped Scientists: {RoundSummary.escaped_scientists}\n" +
+					$"Kills by SCPs: {RoundSummary.kills_by_scp}\n```",
+					HandleQueue.GameLogChannelId);
 		}
 
 		public void OnCheaterReport(ref CheaterReportEvent ev)
