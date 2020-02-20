@@ -38,7 +38,7 @@ namespace DiscordIntegration_Plugin
 		public bool Decon = true;
 		public bool DropItem = true;
 		public bool PickupItem = true;
-		public bool Intercom = true;
+		public bool Intercom = false;
 		public bool Banned = true;
 		public bool Cuffed = true;
 		public bool Freed = true;
@@ -172,6 +172,7 @@ namespace DiscordIntegration_Plugin
 			Decon = Config.GetBool("discord_decon", true);
 			DropItem = Config.GetBool("discord_item_drop", true);
 			PickupItem = Config.GetBool("discord_item_pickup", true);
+			Intercom = Config.GetBool("discord_intercom", false);
 			Banned = Config.GetBool("discord_banned", true);
 			Cuffed = Config.GetBool("discord_cuffed", true);
 			Freed = Config.GetBool("discord_freed", true);
