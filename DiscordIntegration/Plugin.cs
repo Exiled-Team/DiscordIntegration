@@ -50,6 +50,7 @@ namespace DiscordIntegration_Plugin
 		public static string EggAddress = "";
 		public bool OnlyFriendlyFire = true;
 		public bool RoleSync = true;
+		public bool EmoteLogs = false;
 		
 		public override void OnEnable()
 		{
@@ -181,6 +182,7 @@ namespace DiscordIntegration_Plugin
 			EggAddress = Config.GetString("discord_ip_address", string.Empty);
 			OnlyFriendlyFire = Config.GetBool("discord_only_ff", true);
 			RoleSync = Config.GetBool("discord_rolesync", true);
+			EmoteLogs = Config.GetBool("discord_emote_logs", false);
 		}
 
 		public static Translation translation = new Translation();

@@ -14,11 +14,15 @@ namespace DiscordIntegration_Plugin
 	{
 		private readonly Plugin plugin;
 		public EventHandlers(Plugin plugin) => this.plugin = plugin;
+		string emote = "";
 		
 		public void OnCommand(ref RACommandEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":keyboard: ";
+
 			if (plugin.RaCommands)
-				ProcessSTT.SendData($"{ev.Sender.Nickname} {Plugin.translation.usedCommand}: {ev.Command}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Sender.Nickname} {Plugin.translation.usedCommand}: {ev.Command}", HandleQueue.CommandLogChannelId);
 			if (ev.Command.ToLower() == "list")
 			{
 				ev.Allow = false;
@@ -55,42 +59,54 @@ namespace DiscordIntegration_Plugin
 
 		public void OnWaitingForPlayers()
 		{
+			if (plugin.EmoteLogs)
+				emote = ":white_check_mark: ";
+
 			if (plugin.WaitingForPlayers)
-				ProcessSTT.SendData($"{Plugin.translation.waitingForPlayers}", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{Plugin.translation.waitingForPlayers}", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnRoundStart()
 		{
+			if (plugin.EmoteLogs)
+				emote = ":zap: ";
+
 			if (plugin.RoundStart)
-				ProcessSTT.SendData($"{Plugin.translation.roundStarting}: {Plugin.GetHubs().Count} {Plugin.translation.playersInRound}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{Plugin.translation.roundStarting}: {Plugin.GetHubs().Count} {Plugin.translation.playersInRound}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnRoundEnd()
 		{
 			if (plugin.RoundEnd)
-				ProcessSTT.SendData($"{Plugin.translation.roundEnded}: {Plugin.GetHubs().Count} {Plugin.translation.playersOnline}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{Plugin.translation.roundEnded}: {Plugin.GetHubs().Count} {Plugin.translation.playersOnline}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnCheaterReport(ref CheaterReportEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":warning: ";
+
 			if (plugin.CheaterReport)
-				ProcessSTT.SendData($"**{Plugin.translation.cheaterReportFiled}: {ev.ReporterId} {Plugin.translation.reported} {ev.ReportedId} {Plugin.translation._for} {ev.Report}.**", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}**{Plugin.translation.cheaterReportFiled}: {ev.ReporterId} {Plugin.translation.reported} {ev.ReportedId} {Plugin.translation._for} {ev.Report}.**", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerHurt(ref PlayerHurtEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":red_circle: ";
+
 			if (plugin.PlayerHurt)
 			{
 				try
 				{
 					if (ev.Attacker != null && ev.Attacker.characterClassManager != null && Player.GetTeam(ev.Player.characterClassManager.CurClass) == Player.GetTeam(ev.Attacker.characterClassManager.CurClass) && ev.Player != ev.Attacker)
 						ProcessSTT.SendData(
-							$"**{ev.Attacker.nicknameSync.MyNick} - {ev.Attacker.characterClassManager.UserId} ({ev.Attacker.characterClassManager.CurClass}) {Plugin.translation.damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._for} {ev.Info.Amount} {Plugin.translation.with} {ev.Info.Tool}.**",
+							$"{emote}**{ev.Attacker.nicknameSync.MyNick} - {ev.Attacker.characterClassManager.UserId} ({ev.Attacker.characterClassManager.CurClass}) {Plugin.translation.damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._for} {ev.Info.Amount} {Plugin.translation.with} {ev.Info.Tool}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!plugin.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
-							$"{ev.Info.Attacker}  {Plugin.translation.damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._for} {ev.Info.Amount} {Plugin.translation.with} {ev.Info.Tool}.",
+							$"{emote}{ev.Info.Attacker}  {Plugin.translation.damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._for} {ev.Info.Amount} {Plugin.translation.with} {ev.Info.Tool}.",
 							HandleQueue.GameLogChannelId);
 					}
 				}
@@ -103,18 +119,21 @@ namespace DiscordIntegration_Plugin
 		
 		public void OnPlayerDeath(ref PlayerDeathEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":skull: ";
+
 			if (plugin.PlayerDeath)
 			{
 				try
 				{
 					if (ev.Killer != null && ev.Killer.characterClassManager != null && Player.GetTeam(ev.Player.characterClassManager.CurClass) == Player.GetTeam(ev.Killer.characterClassManager.CurClass))
 						ProcessSTT.SendData(
-							$"**{ev.Killer.nicknameSync.MyNick} - {ev.Killer.characterClassManager.UserId} ({ev.Killer.characterClassManager.CurClass}) {Plugin.translation.killed} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.with} {ev.Info.Tool}.**",
+							$"{emote}**{ev.Killer.nicknameSync.MyNick} - {ev.Killer.characterClassManager.UserId} ({ev.Killer.characterClassManager.CurClass}) {Plugin.translation.killed} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.with} {ev.Info.Tool}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!plugin.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
-							$"{ev.Info.Attacker} {Plugin.translation.killed} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.with} {ev.Info.Tool}.",
+							$"{emote}{ev.Info.Attacker} {Plugin.translation.killed} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.with} {ev.Info.Tool}.",
 							HandleQueue.GameLogChannelId);
 					}
 				}
@@ -127,36 +146,51 @@ namespace DiscordIntegration_Plugin
 
 		public void OnGrenadeThrown(ref GrenadeThrownEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":bomb: ";
+
 			if (plugin.GrenadeThrown)
 			{
 				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.threwAGrenade}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.threwAGrenade}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
 		public void OnMedicalItem(MedicalItemEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":pill: ";
+
 			if (plugin.MedicalItem)
 			{
 				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.userA} {ev.Item}", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.userA} {ev.Item}", HandleQueue.GameLogChannelId);
 			}
 		}
 
 		public void OnSetClass(SetClassEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":mens: ";
+
 			if (plugin.SetClass)
 			{
 				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasBenChangedToA} {ev.Role}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasBenChangedToA} {ev.Role}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
 		public void OnRespawn(ref TeamRespawnEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				if (ev.IsChaos)
+					emote = ":spy: ";
+				else
+					emote = ":cop: ";
+
 			if (plugin.Respawn)
 			{
 				string msg;
@@ -164,107 +198,152 @@ namespace DiscordIntegration_Plugin
 					msg = $"{Plugin.translation.chaosInsurgency}";
 				else
 					msg = $"{Plugin.translation.nineTailedFox}";
-				ProcessSTT.SendData($"{msg} {Plugin.translation.hasSpawnedWith} {ev.ToRespawn.Count} {Plugin.translation.players}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{msg} {Plugin.translation.hasSpawnedWith} {ev.ToRespawn.Count} {Plugin.translation.players}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
 		public void OnPlayerJoin(PlayerJoinEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":arrow_forward: ";
+
 			if (plugin.RoleSync)
 				Methods.CheckForSyncRole(ev.Player);
 			if (plugin.PlayerJoin)
 				if (ev.Player.nicknameSync.MyNick != "Dedicated Server")
-					ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasJoinedTheGame}.", HandleQueue.GameLogChannelId);
+					ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasJoinedTheGame}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerLeave(PlayerLeaveEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":arrow_backward: ";
+
 			if (plugin.PlayerLeave)
 				if (ev.Player.nicknameSync.MyNick != "Dedicated Server")
-					ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasLeftTheGame}.", HandleQueue.GameLogChannelId);
+					ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasLeftTheGame}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerFreed(ref HandcuffEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":link: ";
+
 			if (plugin.Freed)
 				ProcessSTT.SendData(
-					$"{ev.Target.nicknameSync.MyNick} - {ev.Target.characterClassManager.UserId} ({ev.Target.characterClassManager.CurClass}) {Plugin.translation.hasBeenFreedBy} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass})",
+					$"{emote}{ev.Target.nicknameSync.MyNick} - {ev.Target.characterClassManager.UserId} ({ev.Target.characterClassManager.CurClass}) {Plugin.translation.hasBeenFreedBy} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass})",
 						HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerHandcuffed(ref HandcuffEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":link: ";
+
 			if (plugin.Cuffed)
 				ProcessSTT.SendData(
-					$"{ev.Target.nicknameSync.MyNick} - {ev.Target.characterClassManager.UserId} ({ev.Target.characterClassManager.CurClass}) {Plugin.translation.hasBeenHandcuffedBy} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass})",
+					$"{emote}{ev.Target.nicknameSync.MyNick} - {ev.Target.characterClassManager.UserId} ({ev.Target.characterClassManager.CurClass}) {Plugin.translation.hasBeenHandcuffedBy} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass})",
 						HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerBanned(PlayerBannedEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":no_entry: ";
+
 			if (plugin.Banned)
-				ProcessSTT.SendData($"{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.wasBannedBy} {ev.Details.Issuer} {Plugin.translation._for} {ev.Details.Reason}. {DateTime.Now.AddTicks(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.wasBannedBy} {ev.Details.Issuer} {Plugin.translation._for} {ev.Details.Reason}. {DateTime.Now.AddTicks(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnIntercomSpeak(ref IntercomSpeakEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":loud_sound: ";
+
 			if (plugin.Intercom)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasStartedUsingTheIntercom}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasStartedUsingTheIntercom}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPickupItem(ref PickupItemEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":inbox_tray: ";
+
 			if (plugin.PickupItem)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasPickedUp} {ev.Item.ItemId}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasPickedUp} {ev.Item.ItemId}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnDropItem(ref DropItemEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":outbox_tray: ";
+
 			if (plugin.DropItem)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasDropped} {ev.Item.id}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasDropped} {ev.Item.id}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnDecon(ref DecontaminationEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":biohazard: ";
+
 			if (plugin.Decon)
-				ProcessSTT.SendData($"{Plugin.translation.hasDropped}.", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{emote}{Plugin.translation.hasDropped}.", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnConsoleCommand(ConsoleCommandEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":keyboard: ";
+
 			if (plugin.ConsoleCommand)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasRunClientConsoleCommand}: {ev.Command}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasRunClientConsoleCommand}: {ev.Command}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnPocketEnter(PocketDimEnterEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":door: ";
+
 			if (plugin.PocketEnter)
 				ProcessSTT.SendData(
-					$"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasEnteredPocketDimension}.",
+					$"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasEnteredPocketDimension}.",
 					HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPocketEscape(PocketDimEscapedEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":door: ";
+
 			if (plugin.PocketEscape)
 				ProcessSTT.SendData(
-					$"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasEscapedPocketDimension}.",
+					$"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.CurClass} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasEscapedPocketDimension}.",
 					HandleQueue.GameLogChannelId);		}
 
 		public void On106Teleport(Scp106TeleportEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":eight_pointed_black_star: ";
+
 			if (plugin.Scp106Tele)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasEscapedPocketDimension}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} {Plugin.translation.hasEscapedPocketDimension}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void On079Tesla(ref Scp079TriggerTeslaEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":zap: ";
+
 			if (plugin.Scp079Tesla)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasTriggeredATeslaGate}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasTriggeredATeslaGate}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnScp194Upgrade(ref SCP914UpgradeEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":control_knobs: ";
+
 			if (plugin.Scp914Upgrade)
 			{
 				string players = "";
@@ -274,35 +353,47 @@ namespace DiscordIntegration_Plugin
 				foreach (Pickup item in ev.Items)
 					items += $"{item.ItemId}\n";
 				
-				ProcessSTT.SendData($"{Plugin.translation.scp914HasProcessedTheFollowingPlayers}: {players} {Plugin.translation.andItems}: {items}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{Plugin.translation.scp914HasProcessedTheFollowingPlayers}: {players} {Plugin.translation.andItems}: {items}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
 		public void OnDoorInteract(ref DoorInteractionEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":door: ";
+
 			if (plugin.DoorInteract)
 				ProcessSTT.SendData(ev.Door.NetworkisOpen
-						? $"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasClosedADoor}: {ev.Door.DoorName}."
-						: $"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasOpenedADoor}: {ev.Door.DoorName}.",
+						? $"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasClosedADoor}: {ev.Door.DoorName}."
+						: $"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasOpenedADoor}: {ev.Door.DoorName}.",
 					HandleQueue.GameLogChannelId);
 		}
 
 		public void On914Activation(ref Scp914ActivationEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":control_knobs: ";
+
 			if (plugin.Scp914Activation)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.scp914HasBeenActivated} {Scp914Machine.singleton.knobState}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.scp914HasBeenActivated} {Scp914Machine.singleton.knobState}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void On914KnobChange(ref Scp914KnobChangeEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":control_knobs: ";
+
 			if (plugin.Scp914KnobChange)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.scp914knobchange} {ev.KnobSetting}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.scp914knobchange} {ev.KnobSetting}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerEnterFemur (FemurEnterEvent ev)
 		{
+			if (plugin.EmoteLogs)
+				emote = ":skull: ";
+
 			if (plugin.EnterFemur)
-				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasEnteredFemur}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasEnteredFemur}.", HandleQueue.GameLogChannelId);
 		}
 	}
 }
