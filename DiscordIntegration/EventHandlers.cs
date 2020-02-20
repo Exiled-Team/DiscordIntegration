@@ -259,8 +259,10 @@ namespace DiscordIntegration_Plugin
 			if (plugin.EmoteLogs)
 				emote = ":no_entry: ";
 
+			DateTime dt = new DateTime(ev.Details.Expires).ToLocalTime();
+
 			if (plugin.Banned)
-				ProcessSTT.SendData($"{emote}{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.wasBannedBy} {ev.Details.Issuer} {Plugin.translation._for} {ev.Details.Reason}. {DateTime.Now.AddTicks(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{emote}{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.wasBannedBy} {ev.Details.Issuer} {Plugin.translation._for} {ev.Details.Reason}. Expires: {dt.ToString("MM/dd/yy hh:mm tt")}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnIntercomSpeak(ref IntercomSpeakEvent ev)
