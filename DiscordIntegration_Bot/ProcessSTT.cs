@@ -69,7 +69,7 @@ namespace DiscordIntegration_Bot
 		private static List<TcpListener> listener = new List<TcpListener>();
 		public static void Init(Program program)
 		{
-			TcpListener list = new TcpListener(IPAddress.Any, Program.Config.Port);
+			TcpListener list = new TcpListener(IPAddress.Loopback, Program.Config.Port);
 			Program.Log($"STT started for {Program.Config.Port}");
 			GameChannelId = Program.Config.GameLogChannelId;
 			CmdChannelId = Program.Config.CommandLogChannelId;
@@ -77,6 +77,7 @@ namespace DiscordIntegration_Bot
 			listener.Add(list);
 			Program.Log("STT: Starting listener.");
 			list.Start();
+			Program.Log("STT: Listener started.");
 			ThreadPool.QueueUserWorkItem(ListenForConn, list);
 			new Thread(() => DequeueMessages()).Start();
 		}

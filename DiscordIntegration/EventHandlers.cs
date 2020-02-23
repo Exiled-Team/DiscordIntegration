@@ -4,6 +4,7 @@ using EXILED;
 using GameCore;
 using Grenades;
 using MEC;
+using Scp914;
 using UnityEngine;
 using UnityEngine.PostProcessing;
 
@@ -277,6 +278,18 @@ namespace DiscordIntegration_Plugin
 						? $"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasClosedADoor}: {ev.Door.DoorName}."
 						: $"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.hasOpenedADoor}: {ev.Door.DoorName}.",
 					HandleQueue.GameLogChannelId);
+		}
+
+		public void On914Activation(ref Scp914ActivationEvent ev)
+		{
+			if (plugin.Scp914Activation)
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.scp914HasBeenActivated} {Scp914Machine.singleton.knobState}.", HandleQueue.GameLogChannelId);
+		}
+
+		public void On914KnobChange(ref Scp914KnobChangeEvent ev)
+		{
+			if (plugin.Scp914KnobChange)
+				ProcessSTT.SendData($"{ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.scp914knobchange} {ev.KnobSetting}.", HandleQueue.GameLogChannelId);
 		}
 	}
 }
