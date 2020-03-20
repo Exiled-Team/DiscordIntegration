@@ -89,12 +89,12 @@ namespace DiscordIntegration_Plugin
 				{
 					if (ev.Attacker != null && ev.Attacker.characterClassManager != null && ev.Player.characterClassManager.CurClass.GetTeam() == ev.Attacker.characterClassManager.CurClass.GetTeam() && ev.Player != ev.Attacker)
 						ProcessSTT.SendData(
-							$"**{ev.Attacker.nicknameSync.MyNick} - {ev.Attacker.characterClassManager.UserId} ({ev.Attacker.characterClassManager.CurClass}) {Plugin.translation.Damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.For} {ev.Info.Amount} {Plugin.translation.With} {ev.Info.Tool}.**",
+							$"**{ev.Attacker.nicknameSync.MyNick} - {ev.Attacker.characterClassManager.UserId} ({ev.Attacker.characterClassManager.CurClass}) {Plugin.translation.Damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.For} {ev.Info.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!plugin.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
-							$"{ev.Info.Attacker}  {Plugin.translation.Damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.For} {ev.Info.Amount} {Plugin.translation.With} {ev.Info.Tool}.",
+							$"{ev.Info.Attacker}  {Plugin.translation.Damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.For} {ev.Info.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					}
 				}
@@ -113,12 +113,12 @@ namespace DiscordIntegration_Plugin
 				{
 					if (ev.Killer != null && ev.Killer.characterClassManager != null && ev.Player.characterClassManager.CurClass.GetTeam() == ev.Killer.characterClassManager.CurClass.GetTeam())
 						ProcessSTT.SendData(
-							$"**{ev.Killer.nicknameSync.MyNick} - {ev.Killer.characterClassManager.UserId} ({ev.Killer.characterClassManager.CurClass}) {Plugin.translation.Killed} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.With} {ev.Info.Tool}.**",
+							$"**{ev.Killer.nicknameSync.MyNick} - {ev.Killer.characterClassManager.UserId} ({ev.Killer.characterClassManager.CurClass}) {Plugin.translation.Killed} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!plugin.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
-							$"{ev.Info.Attacker} {Plugin.translation.Killed} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.With} {ev.Info.Tool}.",
+							$"{ev.Info.Attacker} {Plugin.translation.Killed} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					}
 				}
