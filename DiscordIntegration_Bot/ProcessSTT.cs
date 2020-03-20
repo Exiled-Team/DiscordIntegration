@@ -11,6 +11,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Rest;
 using Discord.Webhook;
 using Discord.WebSocket;
 
@@ -69,6 +70,7 @@ namespace DiscordIntegration_Bot
 		private static List<TcpListener> listener = new List<TcpListener>();
 		public static void Init(Program program)
 		{
+			Bot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
 			TcpListener list = new TcpListener(IPAddress.Loopback, Program.Config.Port);
 			Program.Log($"STT started for {Program.Config.Port}");
 			GameChannelId = Program.Config.GameLogChannelId;
@@ -79,7 +81,7 @@ namespace DiscordIntegration_Bot
 			list.Start();
 			Program.Log("STT: Listener started.");
 			ThreadPool.QueueUserWorkItem(ListenForConn, list);
-			new Thread(() => DequeueMessages()).Start();
+			new Thread(DequeueMessages).Start();
 		}
 
 		public static async Task Heartbeat(int port)
@@ -91,6 +93,7 @@ namespace DiscordIntegration_Bot
 				if (heartbeats[port] > 3)
 				{
 					Console.WriteLine($"STT: Removing {port} due to heartbeat timeout.");
+					await Bot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
 					if (bag.TryRemove(port, out TcpClient client))
 						client.Close();
 					heartbeats.TryRemove(port, out int _);
@@ -103,6 +106,7 @@ namespace DiscordIntegration_Bot
 				if (!bag[port].Connected)
 				{
 					Console.WriteLine($"STT: {port} is null, removing.");
+					await Bot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
 					if (bag.TryRemove(port, out TcpClient client)) 
 						client.Close();
 
@@ -201,6 +205,18 @@ namespace DiscordIntegration_Bot
 					{
 						Program.Log(e.ToString());
 					}
+
+					return;
+				}
+
+				if (data.Data.StartsWith("channelstatus"))
+				{
+					Program.Log($"updating channel topic", true);
+					string status = data.Data.Replace("channelstatus", "");
+					SocketTextChannel chan1 = guild.GetTextChannel(GameChannelId);
+					await chan1.ModifyAsync(x => x.Topic = status);
+					SocketTextChannel chan2 = guild.GetTextChannel(CmdChannelId);
+					await chan2.ModifyAsync(x => x.Topic = status);
 
 					return;
 				}
