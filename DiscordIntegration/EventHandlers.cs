@@ -78,7 +78,7 @@ namespace DiscordIntegration_Plugin
 		public void OnCheaterReport(ref CheaterReportEvent ev)
 		{
 			if (plugin.CheaterReport)
-				ProcessSTT.SendData($"**{Plugin.translation.CheaterReportFiled}: {ev.ReporterId} {Plugin.translation.Reported} {ev.ReportedId} {Plugin.translation.For} {ev.Report}.**", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"**{Plugin.translation.CheaterReportFiled}: {ev.ReporterId} {Plugin.translation.Reported} {ev.ReportedId} {Plugin.translation._For} {ev.Report}.**", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerHurt(ref PlayerHurtEvent ev)
@@ -89,12 +89,12 @@ namespace DiscordIntegration_Plugin
 				{
 					if (ev.Attacker != null && ev.Attacker.characterClassManager != null && ev.Player.characterClassManager.CurClass.GetTeam() == ev.Attacker.characterClassManager.CurClass.GetTeam() && ev.Player != ev.Attacker)
 						ProcessSTT.SendData(
-							$"**{ev.Attacker.nicknameSync.MyNick} - {ev.Attacker.characterClassManager.UserId} ({ev.Attacker.characterClassManager.CurClass}) {Plugin.translation.Damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.For} {ev.Info.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.**",
+							$"**{ev.Attacker.nicknameSync.MyNick} - {ev.Attacker.characterClassManager.UserId} ({ev.Attacker.characterClassManager.CurClass}) {Plugin.translation.Damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._For} {ev.Info.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!plugin.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
-							$"{ev.Info.Attacker}  {Plugin.translation.Damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation.For} {ev.Info.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.",
+							$"{ev.Info.Attacker}  {Plugin.translation.Damaged} {ev.Player.nicknameSync.MyNick} - {ev.Player.characterClassManager.UserId} ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._For} {ev.Info.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					}
 				}
@@ -200,7 +200,7 @@ namespace DiscordIntegration_Plugin
 		public void OnPlayerBanned(PlayerBannedEvent ev)
 		{
 			if (plugin.Banned)
-				ProcessSTT.SendData($"{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation.For} {ev.Details.Reason}. {DateTime.Now.AddTicks(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation._For} {ev.Details.Reason}. {DateTime.Now.AddTicks(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnIntercomSpeak(ref IntercomSpeakEvent ev)

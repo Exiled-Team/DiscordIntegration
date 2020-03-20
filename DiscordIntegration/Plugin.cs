@@ -364,7 +364,7 @@ namespace DiscordIntegration_Plugin
 		public string CheaterReportFiled = "Cheater report filed";
 		public string Reported = "reported";
 		[JsonProperty("for")]
-		public string For = "for";
+		public string _For = "for";
 		public string With = "with";
 		public string Damaged = "damaged";
 		public string Killed = "killed";
