@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace DiscordIntegration_Bot
 {

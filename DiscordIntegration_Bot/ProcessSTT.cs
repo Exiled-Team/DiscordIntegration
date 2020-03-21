@@ -71,7 +71,7 @@ namespace DiscordIntegration_Bot
 		public static void Init(Program program)
 		{
 			Bot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
-			TcpListener list = new TcpListener(IPAddress.Loopback, Program.Config.Port);
+			TcpListener list = new TcpListener(Program.Config.EggMode ? IPAddress.Any : IPAddress.Loopback, Program.Config.Port);
 			Program.Log($"STT started for {Program.Config.Port}");
 			GameChannelId = Program.Config.GameLogChannelId;
 			CmdChannelId = Program.Config.CommandLogChannelId;

@@ -4,6 +4,7 @@ using System.Linq;
 using EXILED;
 using EXILED.Extensions;
 using MEC;
+using UnityEngine;
 
 namespace DiscordIntegration_Plugin
 {
@@ -43,22 +44,39 @@ namespace DiscordIntegration_Plugin
 		{
 			for (;;)
 			{
-				int max = GameCore.ConfigFile.ServerConfig.GetInt("max_players", 20);
-				int cur = PlayerManager.players.Count;
-				TimeSpan dur = TimeSpan.FromSeconds(EventPlugin.GetRoundDuration());
-				int aliveCount = 0;
-				int scpCount = 0;
-				foreach (ReferenceHub hub in Player.GetHubs())
-					if (hub.characterClassManager.IsHuman())
-						aliveCount++;
-					else if (hub.characterClassManager.IsAnyScp())
-						scpCount++;
-				string warhead = Map.IsNukeDetonated ? "Warhead has been detonated." :
-					Map.IsNukeInProgress ? "Warhead is counting down to detonation." :
-					"Warhead has not been detonated.";
-				ProcessSTT.SendData($"channelstatus Players online: {cur}/{max}. Round Duration: {dur.TotalMinutes} minutes. Humans Alive: {aliveCount}. Active SCPs: {scpCount}. {warhead} IP: {ServerConsole.Ip}:{ServerConsole.Port} TPS: {ResetTicks() / 10.0f}", 0);
+				try
+				{
+					int max = GameCore.ConfigFile.ServerConfig.GetInt("max_players", 20);
+					int cur = PlayerManager.players.Count;
+					TimeSpan dur = TimeSpan.FromSeconds(EventPlugin.GetRoundDuration());
+					int aliveCount = 0;
+					int scpCount = 0;
+					foreach (ReferenceHub hub in Player.GetHubs())
+						if (hub.characterClassManager.IsHuman())
+							aliveCount++;
+						else if (hub.characterClassManager.IsAnyScp())
+							scpCount++;
+					string warhead = Map.IsNukeDetonated ? "Warhead has been detonated." :
+						Map.IsNukeInProgress ? "Warhead is counting down to detonation." :
+						"Warhead has not been detonated.";
+					ProcessSTT.SendData(
+						$"channelstatus Players online: {cur}/{max}. Round Duration: {Mathf.Floor((float)dur.TotalMinutes)} minutes. Humans Alive: {aliveCount}. Active SCPs: {scpCount}. {warhead} IP: {ServerConsole.Ip}:{ServerConsole.Port} TPS: {ResetTicks() / 10.0f}",
+						119);
+				}
+				catch (Exception e)
+				{
+					//ignored
+				}
 
 				yield return Timing.WaitForSeconds(10f);
+			}
+		}
+
+		public static void UpdateIdleStatus()
+		{
+			for (;;)
+			{
+				
 			}
 		}
 
@@ -75,6 +93,7 @@ namespace DiscordIntegration_Plugin
 			for (;;)
 			{
 				ticks++;
+				yield return Timing.WaitForOneFrame;
 			}
 		}
 	}

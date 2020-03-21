@@ -240,7 +240,8 @@ namespace DiscordIntegration_Plugin
 			Freed = Config.GetBool("discord_freed", true);
 			Scp914Activation = Config.GetBool("discord_914_activation", true);
 			Scp914KnobChange = Config.GetBool("discord_914_knob", true);
-			
+
+			Intercom = Config.GetBool("discord_intercom", true);
 			WarheadAccess = Config.GetBool("discord_warhead_access", true);
 			WarheadCancel = Config.GetBool("discord_warhead_cancel", true);
 			WarheadDetonate = Config.GetBool("discord_warhead_detonate", true);

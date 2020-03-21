@@ -33,13 +33,20 @@ namespace DiscordIntegration_Plugin
 					try
 					{
 						if (Plugin.Egg)
+						{
+							Log.Debug($"Starting connection for: '{Plugin.EggAddress}' on port {ServerConsole.Port + 4130}");
 							tcpClient.Connect(Plugin.EggAddress, ServerConsole.Port + 4130);
+						}
 						else
+						{
+							Log.Debug($"Starting connection for: '127.0.0.1' on port {ServerConsole.Port}");
 							tcpClient.Connect("127.0.0.1", ServerConsole.Port);
+						}
 					}
-					catch (SocketException)
+					catch (SocketException s)
 					{
 						tcpClient.Client.Disconnect(false);
+						Log.Debug($"Socket Exception on connection: {s}");
 					}
 					catch (Exception e)
 					{
@@ -52,14 +59,16 @@ namespace DiscordIntegration_Plugin
 				SendData("ping", 0);
 				_locked = false;
 			}
-			catch (IOException)
+			catch (IOException io)
 			{
+				Log.Debug(io.ToString());
 				_init = new Thread(Init);
 				_locked = false;
 				_init.Start();
 			}
-			catch (SocketException)
+			catch (SocketException s)
 			{
+				Log.Debug(s.ToString());
 				_init = new Thread(Init);
 				_locked = false;
 				_init.Start();
@@ -91,8 +100,9 @@ namespace DiscordIntegration_Plugin
 				formatter.Serialize(tcpClient.GetStream(), serializedData);
 				Log.Debug($"Sent {data}");
 			}
-			catch (IOException)
+			catch (IOException io)
 			{
+				Log.Debug(io.ToString());
 				_init = new Thread(Init);
 				_init.Start();
 			}
@@ -118,13 +128,15 @@ namespace DiscordIntegration_Plugin
 					dataQueue.Enqueue(deserialize);
 				}
 			}
-			catch (SerializationException)
+			catch (SerializationException s)
 			{
+				Log.Debug(s.ToString());
 				_init = new Thread(Init);
 				_init.Start();
 			}
-			catch (IOException)
+			catch (IOException io)
 			{
+				Log.Debug(io.ToString());
 				_init = new Thread(Init);
 				_init.Start();
 			}
