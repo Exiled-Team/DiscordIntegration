@@ -200,7 +200,7 @@ namespace DiscordIntegration_Plugin
 		public void OnPlayerBanned(PlayerBannedEvent ev)
 		{
 			if (plugin.Banned)
-				ProcessSTT.SendData($"{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation._For} {ev.Details.Reason}. {DateTime.Now.AddTicks(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation._For} {ev.Details.Reason}. {DateTime.AddTicks(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnIntercomSpeak(ref IntercomSpeakEvent ev)
