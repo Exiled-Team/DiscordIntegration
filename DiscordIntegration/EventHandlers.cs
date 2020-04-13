@@ -18,6 +18,7 @@ namespace DiscordIntegration_Plugin
 	{
 		private readonly Plugin plugin;
 		public EventHandlers(Plugin plugin) => this.plugin = plugin;
+		private int maxPlayers = ConfigFile.ServerConfig.GetInt("max_players", 20);
 		
 		public void OnCommand(ref RACommandEvent ev)
 		{
@@ -53,7 +54,7 @@ namespace DiscordIntegration_Plugin
 
 				Log.Info($"Bool: {isStaff} Names: {names}");
 				string response = isStaff ? names : $"{Plugin.translation.NoStaffOnline}";
-				ev.Sender.RAMessage($"{PlayerManager.players.Count}/25 {response}");
+				ev.Sender.RAMessage($"{PlayerManager.players.Count}/{maxPlayers} {response}");
 			}
 		}
 
@@ -200,7 +201,7 @@ namespace DiscordIntegration_Plugin
 		public void OnPlayerBanned(PlayerBannedEvent ev)
 		{
 			if (plugin.Banned)
-				ProcessSTT.SendData($"{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation._For} {ev.Details.Reason}. {DateTime.Now.AddTicks(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($"{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation._For} {ev.Details.Reason}. {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnIntercomSpeak(ref IntercomSpeakEvent ev)

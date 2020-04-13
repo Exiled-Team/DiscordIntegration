@@ -34,8 +34,8 @@ namespace DiscordIntegration_Plugin
 					{
 						if (Plugin.Egg)
 						{
-							Log.Debug($"Starting connection for: '{Plugin.EggAddress}' on port {ServerConsole.Port + 4130}");
-							tcpClient.Connect(Plugin.EggAddress, ServerConsole.Port + 4130);
+							Log.Debug($"Starting connection for: '{Plugin.EggAddress}' on port {ServerConsole.Port}");
+							tcpClient.Connect(Plugin.EggAddress, ServerConsole.Port);
 						}
 						else
 						{
