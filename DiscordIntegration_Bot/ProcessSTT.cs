@@ -265,19 +265,25 @@ namespace DiscordIntegration_Bot
 					{
 						if (!_messages.ContainsKey(chan.Id))
 							_messages.Add(chan.Id, string.Empty);
-						_messages[chan.Id] += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data} {Environment.NewLine}";
+
+						if(DateTime.Now.Hour < 10)
+						_messages[chan.Id] += $"[{DateTime.Now:HH:mm:ss}] {data.Data} {Environment.NewLine}";
 					}
 					return;
 				}
 				Console.WriteLine("Sending message.");
-				await chan.SendMessageAsync($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data}");
+				await chan.SendMessageAsync($"[{DateTime.Now:HH:mm:ss}] {data.Data}");
 				
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e);
 			}
+		}
 
+		public static string ParseTime(int time) {
+			if(time < 10) return $"0{time}";
+			return ""+time;
 		}
 
 		private static void DequeueMessages()

@@ -56,11 +56,11 @@ namespace DiscordIntegration_Plugin
 							aliveCount++;
 						else if (hub.characterClassManager.IsAnyScp())
 							scpCount++;
-					string warhead = Map.IsNukeDetonated ? "Warhead has been detonated." :
-						Map.IsNukeInProgress ? "Warhead is counting down to detonation." :
-						"Warhead has not been detonated.";
+					string warhead = Map.IsNukeDetonated ? "Alpha-Warhead detonada." :
+						Map.IsNukeInProgress ? "Alpha-Warhead en cuenta regresiva." :
+						"Alpha-Warhead sin detonar.";
 					ProcessSTT.SendData(
-						$"channelstatus Players online: {cur}/{max}. Round Duration: {Mathf.Floor((float)dur.TotalMinutes)} minutes. Humans Alive: {aliveCount}. Active SCPs: {scpCount}. {warhead} IP: {ServerConsole.Ip}:{ServerConsole.Port} TPS: {ResetTicks() / 10.0f}",
+						$"channelstatus -=- Jugadores: {cur}/{max} -=- Tiempo: {Mathf.Floor((float)dur.TotalMinutes)}ms -=- Humanos vivos: {aliveCount} -=- SCPs libres: {scpCount} -=- {warhead} -=- IP: {ServerConsole.Ip}:{ServerConsole.Port} -=- TPS: {ResetTicks() / 10.0f} -=-",
 						119);
 				}
 				catch (Exception e)

@@ -63,6 +63,7 @@ namespace DiscordIntegration_Bot
 		{
 			try
 			{
+				
 				string[] args = context.Message.Content.Split(' ');
 				IGuildUser user = (IGuildUser) context.Message.Author;
 				if (context.Message.Content.StartsWith(context.Guild.EveryoneRole.Mention))
