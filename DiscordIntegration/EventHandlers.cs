@@ -280,7 +280,7 @@ namespace DiscordIntegration_Plugin
 				}
 				if(players == "") players = "Ninguno.";
 				if(items == "") items = "Ninguno.";
-				ProcessSTT.SendData($"{Plugin.translation.Scp914HasProcessedTheFollowingPlayers}: \nJugadores procesados: \n```{players}\n``` {Plugin.translation.AndItems}: ```{items}\n```", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{Plugin.translation.Scp914HasProcessedTheFollowingPlayers} \nJugadores procesados: \n```md \n{players}\n``` {Plugin.translation.AndItems}: \n```md \n{items}\n```", HandleQueue.GameLogChannelId);
 			}
 		}
 
