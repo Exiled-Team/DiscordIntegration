@@ -95,7 +95,7 @@ namespace DiscordIntegration_Plugin
 
 		public string Name;
 		public BotSender(string name) => Name = name;
-		public override string SenderId => Name;
+		public override string SenderId => "SERVER CONSOLE";
 		public override string Nickname => Name;
 		public override ulong Permissions => ServerStatic.GetPermissionsHandler().FullPerm;
 		public override byte KickPower => byte.MaxValue;
