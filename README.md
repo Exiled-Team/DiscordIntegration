@@ -8,7 +8,7 @@ Installation:
 2. Place the plugin dll inside the EXILED "Plugins" folder like any other plugin.
 3. Place the included "SerializedData.dll" file in "Plugins/dependenciies".
 4. Extract the included bot.zip archive, then edit the "IntegrationBotConfig.json" file.
-        4a. In this file, you will need to enter your preferred Prefix, the token for the Discord bot to use, the ID of the channel you want RA commands to be logged to, and the channel to log everything else to. If you want to allow people to run commands via the bot, you need to add the command to the "AllowedCommands" list, and assign it a required permission level to be used, like so ``"AllowedCommands":{"list":0, "command":1, "anothercommand":3}`` etc.. Note that only the command name needs to be present, not it's arguments. IE: "bc" would allow people to run "bc 10 hello".
+5. In this file, you will need to enter your preferred Prefix, the token for the Discord bot to use, the ID of the channel you want RA commands to be logged to, and the channel to log everything else to. If you want to allow people to run commands via the bot, you need to add the command to the "AllowedCommands" list, and assign it a required permission level to be used, like so ``"AllowedCommands":{"list":0, "command":1, "anothercommand":3}`` etc.. Note that only the command name needs to be present, not it's arguments. IE: "bc" would allow people to run "bc 10 hello".
 
 In the above example, anyone can run the command "list", people with permission level of 1 or higher can run "command", and people with permission level 3 or higher can run "anothercommand".
 
