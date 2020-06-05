@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using EXILED;
-using EXILED.Extensions;
+using Exiled.API.Features;
 using MEC;
 using UnityEngine;
 
@@ -13,10 +11,10 @@ namespace DiscordIntegration_Plugin
 		private readonly Plugin plugin;
 		public Methods(Plugin plugin) => this.plugin = plugin;
 
-		public static void CheckForSyncRole(ReferenceHub player)
+		public static void CheckForSyncRole(Player player)
 		{
-			Log.Info($"Checking rolesync for {player.characterClassManager.UserId}");
-			ProcessSTT.SendData($"checksync {player.characterClassManager.UserId}", 119);
+			Log.Info($"Checking rolesync for {player.UserId}");
+			ProcessSTT.SendData($"checksync {player.UserId}", 119);
 		}
 
 		public static void SetSyncRole(string group, string steamId)
@@ -29,7 +27,7 @@ namespace DiscordIntegration_Plugin
 				return;
 			}
 
-			ReferenceHub player = Player.GetPlayer(steamId);
+			Player player = Player.Get(steamId);
 			if (player == null)
 			{
 				Log.Error($"Error assigning user group to {steamId}, player not found.");
@@ -37,7 +35,7 @@ namespace DiscordIntegration_Plugin
 			}
 			
 			Log.Info($"Assigning role: {userGroup} to {steamId}.");
-			player.serverRoles.SetGroup(userGroup, false);
+			player.SetRank(userGroup.BadgeText, userGroup);
 		}
 
 		public static IEnumerator<float> UpdateServerStatus()
@@ -48,16 +46,16 @@ namespace DiscordIntegration_Plugin
 				{
 					int max = GameCore.ConfigFile.ServerConfig.GetInt("max_players", 20);
 					int cur = PlayerManager.players.Count;
-					TimeSpan dur = TimeSpan.FromSeconds(EventPlugin.GetRoundDuration());
+					TimeSpan dur = TimeSpan.FromSeconds(Round.ElapsedTime.TotalSeconds);
 					int aliveCount = 0;
 					int scpCount = 0;
-					foreach (ReferenceHub hub in Player.GetHubs())
-						if (hub.characterClassManager.IsHuman())
+					foreach (Player player in Player.List)
+						if (player.ReferenceHub.characterClassManager.IsHuman())
 							aliveCount++;
-						else if (hub.characterClassManager.IsAnyScp())
+						else if (player.ReferenceHub.characterClassManager.IsAnyScp())
 							scpCount++;
-					string warhead = Map.IsNukeDetonated ? "Warhead has been detonated." :
-						Map.IsNukeInProgress ? "Warhead is counting down to detonation." :
+					string warhead = Warhead.IsDetonated ? "Warhead has been detonated." :
+						Warhead.IsInProgress ? "Warhead is counting down to detonation." :
 						"Warhead has not been detonated.";
 					ProcessSTT.SendData(
 						$"channelstatus Players online: {cur}/{max}. Round Duration: {Mathf.Floor((float)dur.TotalMinutes)} minutes. Humans Alive: {aliveCount}. Active SCPs: {scpCount}. {warhead} IP: {ServerConsole.Ip}:{ServerConsole.Port} TPS: {ResetTicks() / 10.0f}",

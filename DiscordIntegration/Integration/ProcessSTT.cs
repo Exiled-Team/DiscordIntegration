@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using EXILED;
+using Exiled.API.Features;
 
 namespace DiscordIntegration_Plugin
 {
@@ -32,10 +32,10 @@ namespace DiscordIntegration_Plugin
 					Thread.Sleep(2000);
 					try
 					{
-						if (Plugin.Egg)
+						if (Plugin.Cfg.Egg)
 						{
-							Log.Debug($"Starting connection for: '{Plugin.EggAddress}' on port {ServerConsole.Port}");
-							tcpClient.Connect(Plugin.EggAddress, ServerConsole.Port);
+							Log.Debug($"Starting connection for: '{Plugin.Cfg.EggAddress}' on port {ServerConsole.Port}");
+							tcpClient.Connect(Plugin.Cfg.EggAddress, ServerConsole.Port);
 						}
 						else
 						{
@@ -91,7 +91,7 @@ namespace DiscordIntegration_Plugin
 				{
 					Data = data, Port = ServerConsole.Port, Channel = channel
 				};
-				if (Plugin.Egg)
+				if (Plugin.Cfg.Egg)
 					serializedData = new SerializedData.SerializedData
 					{
 						Data = data, Port = ServerConsole.Port + 4130, Channel = channel
