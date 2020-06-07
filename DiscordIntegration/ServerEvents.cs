@@ -1,6 +1,6 @@
+using System.Linq;
 using Exiled.API.Features;
-using Exiled.Events.Handlers.EventArgs;
-using UnityEngine;
+using Exiled.Events.EventArgs;
 
 namespace DiscordIntegration_Plugin
 {
@@ -15,17 +15,19 @@ namespace DiscordIntegration_Plugin
                 ProcessSTT.SendData($"{ev.Sender.Nickname} {Plugin.translation.UsedCommand}: {ev.Name}", HandleQueue.CommandLogChannelId);
             if (ev.Name.ToLower() == "list")
             {
+                Log.Info("Getting List");
                 ev.IsAllowed = false;
                 string message = "";
                 foreach (Player player in Player.List)
-                    message +=
-                        $"{player.Nickname} - ({player.UserId})\n";
+                    if (!player.IsHost)
+                        message += $"{player.Nickname} - ({player.UserId})\n";
                 if (string.IsNullOrEmpty(message))
                     message = $"{Plugin.translation.NoPlayersOnline}";
-                ev.Sender.RemoteAdminMessage(message);
+                ev.CommandSender.RaReply($"{message}", true, true, string.Empty);
             }
             else if (ev.Name.ToLower() == "stafflist")
             {
+                Log.Info("Getting StaffList");
                 ev.IsAllowed = false;
                 Log.Info("Staff list");
                 bool isStaff = false;
@@ -41,7 +43,7 @@ namespace DiscordIntegration_Plugin
 
                 Log.Info($"Bool: {isStaff} Names: {names}");
                 string response = isStaff ? names : $"{Plugin.translation.NoStaffOnline}";
-                ev.Sender.RemoteAdminMessage($"{PlayerManager.players.Count}/{plugin.MaxPlayers} {response}");
+                ev.CommandSender.RaReply($"{PlayerManager.players.Count}/{plugin.MaxPlayers} {response}", true, true, string.Empty);
             }
         }
         
@@ -54,13 +56,13 @@ namespace DiscordIntegration_Plugin
         public void OnRoundStart()
         {
             if (Plugin.Cfg.RoundStart)
-                ProcessSTT.SendData($"{Plugin.translation.RoundStarting}: {Player.List.Count} {Plugin.translation.PlayersInRound}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($"{Plugin.translation.RoundStarting}: {Player.List.Count()} {Plugin.translation.PlayersInRound}.", HandleQueue.GameLogChannelId);
         }
 
         public void OnRoundEnd(RoundEndedEventArgs ev)
         {
             if (Plugin.Cfg.RoundEnd)
-                ProcessSTT.SendData($"{Plugin.translation.RoundEnded}: {Player.List.Count} {Plugin.translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($"{Plugin.translation.RoundEnded}: {Player.List.Count()} {Plugin.translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
         }
 
         public void OnCheaterReport(ReportingCheaterEventArgs ev)

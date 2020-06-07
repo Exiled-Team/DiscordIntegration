@@ -1,7 +1,7 @@
 using System;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
-using Exiled.Events.Handlers.EventArgs;
+using Exiled.Events.EventArgs;
 using Scp914;
 
 namespace DiscordIntegration_Plugin
@@ -29,13 +29,13 @@ namespace DiscordIntegration_Plugin
 				ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.GenUnlocked}.", HandleQueue.GameLogChannelId);
 		}
 
-		public void On106Contain(ContainingScp106EventArgs ev)
+		public void On106Contain(ContainingEventArgs ev)
 		{
 			if (Plugin.Cfg.Scp106Contain)
 				ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.WasContained}.", HandleQueue.GameLogChannelId);
 		}
 
-		public void On106CreatePortal(CreatingScp106PortalEventArgs ev)
+		public void On106CreatePortal(CreatingPortalEventArgs ev)
 		{
 			if (Plugin.Cfg.Scp106Portal)
 				ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.CreatedPortal}.", HandleQueue.GameLogChannelId);
@@ -48,13 +48,13 @@ namespace DiscordIntegration_Plugin
 					ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.ItemChanged}: {ev.OldItem.id} -> {ev.NewItem.id}.", HandleQueue.GameLogChannelId);
 		}
 
-		public void On079GainExp(GainingScp079ExperienceEventArgs ev)
+		public void On079GainExp(GainingExperienceEventArgs ev)
 		{
 			if (Plugin.Cfg.Scp079Exp)
 				ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.GainedExp}: {ev.Amount}, {ev.GainType}.", HandleQueue.GameLogChannelId);
 		}
 
-		public void On079GainLvl(GainingScp079LevelEventArgs ev)
+		public void On079GainLvl(GainingLevelEventArgs ev)
 		{
 			if (Plugin.Cfg.Scp079Lvl)
 				ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.GainedLevel} {ev.OldLevel} -> {ev.NewLevel}.", HandleQueue.GameLogChannelId);
@@ -117,13 +117,13 @@ namespace DiscordIntegration_Plugin
 					HandleQueue.GameLogChannelId);
 		}
 
-		public void On914Activation(ActivatingScp914EventArgs ev)
+		public void On914Activation(ActivatingEventArgs ev)
 		{
 			if (Plugin.Cfg.Scp914Activation)
 				ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.Scp914HasBeenActivated} {Scp914Machine.singleton.knobState}.", HandleQueue.GameLogChannelId);
 		}
 
-		public void On914KnobChange(ChangingScp914KnobSettingEventArgs ev)
+		public void On914KnobChange(ChangingKnobSettingEventArgs ev)
 		{
 			if (Plugin.Cfg.Scp914KnobChange)
 				ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.Scp914Knobchange} {ev.KnobSetting}.", HandleQueue.GameLogChannelId);
@@ -144,13 +144,13 @@ namespace DiscordIntegration_Plugin
 					$"{ev.Player.Nickname} - {ev.Player.Role} ({ev.Player.Role}) {Plugin.translation.HasEscapedPocketDimension}.",
 					HandleQueue.GameLogChannelId);		}
 
-		public void On106Teleport(TeleportingScp106EventArgs ev)
+		public void On106Teleport(TeleportingEventArgs ev)
 		{
 			if (Plugin.Cfg.Scp106Tele)
 				ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.HasEscapedPocketDimension}.", HandleQueue.GameLogChannelId);
 		}
 
-		public void On079Tesla(TriggeringScp079TeslaEventArgs ev)
+		public void On079Tesla(InteractingTeslaEventArgs ev)
 		{
 			if (Plugin.Cfg.Scp079Tesla)
 				ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.HasTriggeredATeslaGate}.", HandleQueue.GameLogChannelId);

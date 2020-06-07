@@ -28,25 +28,25 @@ namespace DiscordIntegration_Plugin
 				tcpClient = new TcpClient();
 				while (!tcpClient.Connected)
 				{
-					Log.Debug($"STT: While loop start");
+					Log.Debug($"STT: While loop start", Plugin.Cfg.Debug);
 					Thread.Sleep(2000);
 					try
 					{
 						if (Plugin.Cfg.Egg)
 						{
-							Log.Debug($"Starting connection for: '{Plugin.Cfg.EggAddress}' on port {ServerConsole.Port}");
+							Log.Debug($"Starting connection for: '{Plugin.Cfg.EggAddress}' on port {ServerConsole.Port}", Plugin.Cfg.Debug);
 							tcpClient.Connect(Plugin.Cfg.EggAddress, ServerConsole.Port);
 						}
 						else
 						{
-							Log.Debug($"Starting connection for: '127.0.0.1' on port {ServerConsole.Port}");
+							Log.Debug($"Starting connection for: '127.0.0.1' on port {ServerConsole.Port}", Plugin.Cfg.Debug);
 							tcpClient.Connect("127.0.0.1", ServerConsole.Port);
 						}
 					}
 					catch (SocketException s)
 					{
 						tcpClient.Client.Disconnect(false);
-						Log.Debug($"Socket Exception on connection: {s}");
+						Log.Debug($"Socket Exception on connection: {s}", Plugin.Cfg.Debug);
 					}
 					catch (Exception e)
 					{
@@ -61,14 +61,14 @@ namespace DiscordIntegration_Plugin
 			}
 			catch (IOException io)
 			{
-				Log.Debug(io.ToString());
+				Log.Debug(io.ToString(), Plugin.Cfg.Debug);
 				_init = new Thread(Init);
 				_locked = false;
 				_init.Start();
 			}
 			catch (SocketException s)
 			{
-				Log.Debug(s.ToString());
+				Log.Debug(s.ToString(), Plugin.Cfg.Debug);
 				_init = new Thread(Init);
 				_locked = false;
 				_init.Start();
@@ -98,11 +98,11 @@ namespace DiscordIntegration_Plugin
 					};
 				BinaryFormatter formatter = new BinaryFormatter();
 				formatter.Serialize(tcpClient.GetStream(), serializedData);
-				Log.Debug($"Sent {data}");
+				Log.Debug($"Sent {data}", Plugin.Cfg.Debug);
 			}
 			catch (IOException io)
 			{
-				Log.Debug(io.ToString());
+				Log.Debug(io.ToString(), Plugin.Cfg.Debug);
 				_init = new Thread(Init);
 				_init.Start();
 			}
@@ -130,13 +130,13 @@ namespace DiscordIntegration_Plugin
 			}
 			catch (SerializationException s)
 			{
-				Log.Debug(s.ToString());
+				Log.Debug(s.ToString(), Plugin.Cfg.Debug);
 				_init = new Thread(Init);
 				_init.Start();
 			}
 			catch (IOException io)
 			{
-				Log.Debug(io.ToString());
+				Log.Debug(io.ToString(), Plugin.Cfg.Debug);
 				_init = new Thread(Init);
 				_init.Start();
 			}

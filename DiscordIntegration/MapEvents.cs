@@ -1,5 +1,5 @@
 using Exiled.API.Features;
-using Exiled.Events.Handlers.EventArgs;
+using Exiled.Events.EventArgs;
 
 namespace DiscordIntegration_Plugin
 {
@@ -27,19 +27,19 @@ namespace DiscordIntegration_Plugin
                 ProcessSTT.SendData($"{Plugin.translation.HasDropped}.", HandleQueue.CommandLogChannelId);
         }
         
-        public void OnWarheadStart(StartingWarheadEventArgs ev)
+        public void OnWarheadStart(StartingEventArgs ev)
         {
             if (Plugin.Cfg.WarheadStart)
                 ProcessSTT.SendData($"{Plugin.translation.WarheadStarted} {Warhead.Controller.NetworktimeToDetonation}.", HandleQueue.GameLogChannelId);
         }
         
-        public void OnWarheadCancelled(StoppingWarheadEventArgs ev)
+        public void OnWarheadCancelled(StoppingEventArgs ev)
         {
             if (Plugin.Cfg.WarheadCancel)
                 ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.CancelledWarhead}.", HandleQueue.GameLogChannelId);
         }
         
-        public void OnScp194Upgrade(UpgradingScp914ItemsEventArgs ev)
+        public void OnScp194Upgrade(UpgradingItemsEventArgs ev)
         {
             if (Plugin.Cfg.Scp914Upgrade)
             {

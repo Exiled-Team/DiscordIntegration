@@ -61,8 +61,11 @@ namespace DiscordIntegration_Plugin
 			EggAddress = PluginManager.YamlConfig.GetString("discord_ip_address", string.Empty);
 			OnlyFriendlyFire = PluginManager.YamlConfig.GetBool("discord_only_ff", true);
 			RoleSync = PluginManager.YamlConfig.GetBool("discord_rolesync", true);
+			Debug = PluginManager.YamlConfig.GetBool("discord_debug", false);
         }
-        
+
+
+        public bool Debug;
         public bool RaCommands = true;
         public bool RoundStart = true;
         public bool RoundEnd = true;

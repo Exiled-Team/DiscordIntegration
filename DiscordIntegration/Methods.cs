@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Exiled.API.Features;
 using MEC;
 using UnityEngine;
@@ -45,7 +46,7 @@ namespace DiscordIntegration_Plugin
 				try
 				{
 					int max = GameCore.ConfigFile.ServerConfig.GetInt("max_players", 20);
-					int cur = PlayerManager.players.Count;
+					int cur = Player.List.Count();
 					TimeSpan dur = TimeSpan.FromSeconds(Round.ElapsedTime.TotalSeconds);
 					int aliveCount = 0;
 					int scpCount = 0;
