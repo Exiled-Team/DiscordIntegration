@@ -16,7 +16,7 @@ namespace DiscordIntegration_Plugin
 	public class Plugin : EXILED.Plugin
 	{
 		public EventHandlers EventHandlers;
-
+		
 		public bool RaCommands = true;
 		public bool RoundStart = true;
 		public bool RoundEnd = true;

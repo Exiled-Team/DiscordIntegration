@@ -74,14 +74,19 @@ namespace DiscordIntegration_Plugin {
 		public void OnPlayerHurt( ref PlayerHurtEvent ev ) {
 			if( plugin.PlayerHurt ) {
 				try {
-					if( ev.Attacker != null && ev.Attacker.characterClassManager != null && ev.Player.characterClassManager.CurClass.GetSide() == ev.Attacker.characterClassManager.CurClass.GetSide() && ev.Player != ev.Attacker )
-						ProcessSTT.SendData(
-							$"**`{ev.Attacker.nicknameSync.MyNick}` ({ev.Attacker.characterClassManager.CurClass}) {Plugin.translation.Damaged} `{ev.Player.nicknameSync.MyNick}` - ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._For} {(int) ev.Info.Amount}hp {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.**",
-							HandleQueue.GameLogChannelId);
-					else if( !plugin.OnlyFriendlyFire ) {
-						ProcessSTT.SendData(
-							$"`{ev.Info.Attacker}`  {Plugin.translation.Damaged} `{ev.Player.nicknameSync.MyNick}` ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._For} {(int) ev.Info.Amount}hp {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.",
-							HandleQueue.GameLogChannelId);
+					if( ev.Attacker != null && ev.Attacker.characterClassManager != null && ev.Player != ev.Attacker ) {
+						if( ev.Player.characterClassManager.CurClass.GetSide() == ev.Attacker.characterClassManager.CurClass.GetSide() )
+							ProcessSTT.SendData(
+								$"**`{ev.Attacker.nicknameSync.MyNick}` ({ev.Attacker.characterClassManager.CurClass}) {Plugin.translation.Damaged} `{ev.Player.nicknameSync.MyNick}` - ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._For} {(int) ev.Info.Amount}hp {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.**",
+								HandleQueue.GameLogChannelId);
+						else if( ev.Player.characterClassManager.CurClass.GetSide() != ev.Attacker.characterClassManager.CurClass.GetSide() && ev.Player.IsHandCuffed() ) ProcessSTT.SendData(
+								$"**`{ev.Attacker.nicknameSync.MyNick}` ({ev.Attacker.characterClassManager.CurClass}) {Plugin.translation.Damaged} `{ev.Player.nicknameSync.MyNick}` - ({ev.Player.characterClassManager.CurClass} [__ARESTADO__]) {Plugin.translation._For} {(int) ev.Info.Amount}hp {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.**",
+								HandleQueue.GameLogChannelId);
+						else if( !plugin.OnlyFriendlyFire ) {
+							ProcessSTT.SendData(
+								$"`{ev.Info.Attacker}`  {Plugin.translation.Damaged} `{ev.Player.nicknameSync.MyNick}` ({ev.Player.characterClassManager.CurClass}) {Plugin.translation._For} {(int) ev.Info.Amount}hp {Plugin.translation.With} {DamageTypes.FromIndex(ev.Info.Tool).name}.",
+								HandleQueue.GameLogChannelId);
+						}
 					}
 				} catch( Exception e ) {
 					Log.Error($"Player Hurt error: {e}");
