@@ -10,38 +10,38 @@ namespace DiscordIntegration_Plugin
         
         public void OnWarheadDetonation()
         {
-            if (Plugin.Cfg.WarheadDetonate)
+            if (Plugin.Singleton.Config.WarheadDetonate)
                 ProcessSTT.SendData($"{Plugin.translation.WarheadDetonated}.", HandleQueue.GameLogChannelId);
         }
 
 
         public void OnGenFinish(GeneratorActivatedEventArgs ev)
         {
-            if (Plugin.Cfg.GenFinish)
+            if (Plugin.Singleton.Config.GenFinish)
                 ProcessSTT.SendData($"{Plugin.translation.GenFinished}", HandleQueue.GameLogChannelId);
         }
         
         public void OnDecon(DecontaminatingEventArgs ev)
         {
-            if (Plugin.Cfg.Decon)
+            if (Plugin.Singleton.Config.Decon)
                 ProcessSTT.SendData($"{Plugin.translation.HasDropped}.", HandleQueue.CommandLogChannelId);
         }
         
         public void OnWarheadStart(StartingEventArgs ev)
         {
-            if (Plugin.Cfg.WarheadStart)
+            if (Plugin.Singleton.Config.WarheadStart)
                 ProcessSTT.SendData($"{Plugin.translation.WarheadStarted} {Warhead.Controller.NetworktimeToDetonation}.", HandleQueue.GameLogChannelId);
         }
         
         public void OnWarheadCancelled(StoppingEventArgs ev)
         {
-            if (Plugin.Cfg.WarheadCancel)
+            if (Plugin.Singleton.Config.WarheadCancel)
                 ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.CancelledWarhead}.", HandleQueue.GameLogChannelId);
         }
         
         public void OnScp194Upgrade(UpgradingItemsEventArgs ev)
         {
-            if (Plugin.Cfg.Scp914Upgrade)
+            if (Plugin.Singleton.Config.Scp914Upgrade)
             {
                 string players = "";
                 foreach (Player player in ev.Players) 

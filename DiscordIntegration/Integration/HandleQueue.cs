@@ -16,12 +16,12 @@ namespace DiscordIntegration_Plugin
 			while (ProcessSTT.dataQueue.TryDequeue(out SerializedData.SerializedData result))
 			{
 				string command = result.Data;
-				Log.Debug($"STT: Received {result.Data} for {result.Port} at {result.Channel}", Plugin.Cfg.Debug);
+				Log.Debug($"STT: Received {result.Data} for {result.Port} at {result.Channel}", Plugin.Singleton.Config.Debug);
 				
 				
 				if (result.Data == "ping")
 				{
-					Log.Debug("STT: Heartbeat received.", Plugin.Cfg.Debug);
+					Log.Debug("STT: Heartbeat received.", Plugin.Singleton.Config.Debug);
 					ProcessSTT.SendData("ping", 0);
 					return;
 				}
@@ -29,14 +29,14 @@ namespace DiscordIntegration_Plugin
 				if (result.Data == "set gameid")
 				{
 					GameLogChannelId = result.Channel;
-					Log.Debug($"STT: GameLogChannelId changed: {result.Channel}", Plugin.Cfg.Debug);
+					Log.Debug($"STT: GameLogChannelId changed: {result.Channel}", Plugin.Singleton.Config.Debug);
 					return;
 				}
 
 				if (result.Data == "set cmdid")
 				{
 					CommandLogChannelId = result.Channel;
-					Log.Debug($"STT: CommandLogChannelId changed: {result.Channel}", Plugin.Cfg.Debug);
+					Log.Debug($"STT: CommandLogChannelId changed: {result.Channel}", Plugin.Singleton.Config.Debug);
 					return;
 				}
 

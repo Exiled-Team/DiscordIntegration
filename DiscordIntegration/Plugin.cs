@@ -12,20 +12,17 @@ using Handlers = Exiled.Events.Handlers;
 
 namespace DiscordIntegration_Plugin
 {
-	public class Plugin : Exiled.API.Features.Plugin
+	public class Plugin : Exiled.API.Features.Plugin<Config>
 	{
 		public MapEvents MapEvents;
 		public ServerEvents ServerEvents;
 		public PlayerEvents PlayerEvents;
-		
-		public static Config Cfg;
+		public static Plugin Singleton;
 		public int MaxPlayers = ConfigFile.ServerConfig.GetInt("max_players", 20);
 
 		public override void OnEnabled()
 		{
-			Cfg = (Config) Config;
-			Cfg.Reload();
-			
+			Singleton = this;
 			Timing.RunCoroutine(Methods.TickCounter(), Segment.Update, "ticks");
 			MapEvents = new MapEvents(this);
 			ServerEvents = new ServerEvents(this);
@@ -168,8 +165,6 @@ namespace DiscordIntegration_Plugin
 		{
 			
 		}
-
-		public override IConfig Config { get; } = new Config();
 
 		public static Translation translation = new Translation();
 		private bool refreshTranslationFile = false;
