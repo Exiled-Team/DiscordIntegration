@@ -1,6 +1,7 @@
 using System.Linq;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using Respawning;
 
 namespace DiscordIntegration_Plugin
 {
@@ -81,7 +82,7 @@ namespace DiscordIntegration_Plugin
         {
             if (Plugin.Singleton.Config.Respawn)
             {
-                string msg = ev.IsChaos ? $"{Plugin.translation.ChaosInsurgency}" : $"{Plugin.translation.NineTailedFox}";
+                string msg = ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? $"{Plugin.translation.ChaosInsurgency}" : $"{Plugin.translation.NineTailedFox}";
                 ProcessSTT.SendData($"{msg} {Plugin.translation.HasSpawnedWith} {ev.Players.Count} {Plugin.translation.Players}.", HandleQueue.GameLogChannelId);
             }
         }
