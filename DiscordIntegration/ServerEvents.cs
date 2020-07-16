@@ -51,19 +51,19 @@ namespace DiscordIntegration_Plugin
         public void OnWaitingForPlayers()
         {
             if (Plugin.Singleton.Config.WaitingForPlayers)
-                ProcessSTT.SendData($"{Plugin.translation.WaitingForPlayers}", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":hourglass:{Plugin.translation.WaitingForPlayers}", HandleQueue.GameLogChannelId);
         }
 
         public void OnRoundStart()
         {
             if (Plugin.Singleton.Config.RoundStart)
-                ProcessSTT.SendData($"{Plugin.translation.RoundStarting}: {Player.List.Count()} {Plugin.translation.PlayersInRound}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":arrow_forward:{Plugin.translation.RoundStarting}: {Player.List.Count()} {Plugin.translation.PlayersInRound}.", HandleQueue.GameLogChannelId);
         }
 
         public void OnRoundEnd(RoundEndedEventArgs ev)
         {
             if (Plugin.Singleton.Config.RoundEnd)
-                ProcessSTT.SendData($"{Plugin.translation.RoundEnded}: {Player.List.Count()} {Plugin.translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":stop_button:{Plugin.translation.RoundEnded}: {Player.List.Count()} {Plugin.translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
         }
 
         public void OnCheaterReport(ReportingCheaterEventArgs ev)
