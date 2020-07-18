@@ -63,7 +63,7 @@ namespace DiscordIntegration_Plugin
 		public void OnPlayerLeave(LeftEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.PlayerLeave)
-				ProcessSTT.SendData($":arrow_left:{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.LeftServer}", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":arrow_left: **{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.LeftServer}.**", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerReload(ReloadingWeaponEventArgs ev)
@@ -153,7 +153,7 @@ namespace DiscordIntegration_Plugin
 		public void On079Tesla(InteractingTeslaEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp079Tesla)
-				ProcessSTT.SendData($":zap:{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.HasTriggeredATeslaGate}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":zap: {ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.HasTriggeredATeslaGate}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerHurt(HurtingEventArgs ev)
@@ -188,7 +188,7 @@ namespace DiscordIntegration_Plugin
 				{
 					if (ev.Killer != null && ev.Target.Role.GetTeam() == ev.Killer.Role.GetTeam())
 						ProcessSTT.SendData(
-							$":skull_crossbones:**{ev.Killer.Nickname} - {ev.Killer.UserId} ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformations.Tool).name}.**",
+							$":skull_crossbones: **{ev.Killer.Nickname} - {ev.Killer.UserId} ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformations.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
 					{
@@ -210,7 +210,7 @@ namespace DiscordIntegration_Plugin
 			{
 				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($":bomb:{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.ThrewAGrenade}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":bomb: {ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.ThrewAGrenade}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
@@ -220,7 +220,7 @@ namespace DiscordIntegration_Plugin
 			{
 				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($":medical_symbol:{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.UsedA} {ev.Item}", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":medical_symbol: {ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.UsedA} {ev.Item}", HandleQueue.GameLogChannelId);
 			}
 		}
 
@@ -240,14 +240,14 @@ namespace DiscordIntegration_Plugin
 				Methods.CheckForSyncRole(ev.Player);
 			if (Plugin.Singleton.Config.PlayerJoin)
 				if (ev.Player.Nickname != "Dedicated Server")
-					ProcessSTT.SendData($":arrow_right:{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.HasJoinedTheGame}.", HandleQueue.GameLogChannelId);
+					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} ||({ev.Player.IPAddress})|| {Plugin.translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerFreed(RemovingHandcuffsEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Freed)
 				ProcessSTT.SendData(
-					$":unlock:{ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.translation.HasBeenFreedBy} {ev.Cuffer.Nickname} - {ev.Cuffer.UserId} ({ev.Cuffer.Role})",
+					$":unlock: {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.translation.HasBeenFreedBy} {ev.Cuffer.Nickname} - {ev.Cuffer.UserId} ({ev.Cuffer.Role})",
 						HandleQueue.GameLogChannelId);
 		}
 
@@ -255,20 +255,20 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.Cuffed)
 				ProcessSTT.SendData(
-					$":lock:{ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.translation.HasBeenHandcuffedBy} {ev.Cuffer.Nickname} - {ev.Cuffer.UserId} ({ev.Cuffer.Role})",
+					$":lock: {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.translation.HasBeenHandcuffedBy} {ev.Cuffer.Nickname} - {ev.Cuffer.UserId} ({ev.Cuffer.Role})",
 						HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerBanned(BannedEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Banned)
-				ProcessSTT.SendData($":no_entry:{ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation._For} {ev.Details.Reason}. {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+				ProcessSTT.SendData($":no_entry: {ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation._For} {ev.Details.Reason}. {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnIntercomSpeak(IntercomSpeakingEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Intercom)
-				ProcessSTT.SendData($":sound_loud:{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.HasStartedUsingTheIntercom}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":loud_sound: {ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.HasStartedUsingTheIntercom}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPickupItem(PickingUpItemEventArgs ev)
@@ -289,7 +289,7 @@ namespace DiscordIntegration_Plugin
 			{
 				if (Plugin.Singleton.Config.SetGroup)
 					ProcessSTT.SendData(
-						$"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.GroupSet}: {ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor}).",
+						$"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.GroupSet}: **{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})**.",
 						HandleQueue.GameLogChannelId);
 			}
 			catch (Exception e)

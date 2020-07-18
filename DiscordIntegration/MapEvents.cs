@@ -11,7 +11,7 @@ namespace DiscordIntegration_Plugin
         public void OnWarheadDetonation()
         {
             if (Plugin.Singleton.Config.WarheadDetonate)
-                ProcessSTT.SendData($"{Plugin.translation.WarheadDetonated}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":radioactive: **{Plugin.translation.WarheadDetonated}.**", HandleQueue.GameLogChannelId);
         }
 
 
@@ -24,19 +24,19 @@ namespace DiscordIntegration_Plugin
         public void OnDecon(DecontaminatingEventArgs ev)
         {
             if (Plugin.Singleton.Config.Decon)
-                ProcessSTT.SendData($"{Plugin.translation.HasDropped}.", HandleQueue.CommandLogChannelId);
+                ProcessSTT.SendData($":biohazard: **{Plugin.translation.DecontaminationHasBegun}.**", HandleQueue.GameLogChannelId);
         }
         
         public void OnWarheadStart(StartingEventArgs ev)
         {
             if (Plugin.Singleton.Config.WarheadStart)
-                ProcessSTT.SendData($"{Plugin.translation.WarheadStarted} {Warhead.Controller.NetworktimeToDetonation}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":biohazard: **{Plugin.translation.WarheadStarted} {Warhead.Controller.NetworktimeToDetonation} seconds.**", HandleQueue.GameLogChannelId);
         }
         
         public void OnWarheadCancelled(StoppingEventArgs ev)
         {
             if (Plugin.Singleton.Config.WarheadCancel)
-                ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.CancelledWarhead}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($"***{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.CancelledWarhead}.***", HandleQueue.GameLogChannelId);
         }
         
         public void OnScp194Upgrade(UpgradingItemsEventArgs ev)
