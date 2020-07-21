@@ -12,8 +12,9 @@ namespace DiscordIntegration_Plugin
         
         public void OnCommand(SendingRemoteAdminCommandEventArgs ev)
         {
+            string Args = string.Join(" ", ev.Arguments);
             if (Plugin.Singleton.Config.RaCommands)
-                ProcessSTT.SendData($":keyboard: {ev.Sender.Nickname}({ev.Sender.UserId}) {Plugin.translation.UsedCommand}: {ev.Name}", HandleQueue.CommandLogChannelId);
+                ProcessSTT.SendData($":keyboard: {ev.Sender.Nickname}({ev.Sender.UserId}) {Plugin.translation.UsedCommand}: {ev.Name} {Args}", HandleQueue.CommandLogChannelId);
             if (ev.Name.ToLower() == "list")
             {
                 Log.Info("Getting List");
@@ -82,7 +83,7 @@ namespace DiscordIntegration_Plugin
         {
             if (Plugin.Singleton.Config.Respawn)
             {
-                string msg = ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? $"{Plugin.translation.ChaosInsurgency}" : $"{Plugin.translation.NineTailedFox}";
+                string msg = ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? $":spy: {Plugin.translation.ChaosInsurgency}" : $":cop: {Plugin.translation.NineTailedFox}";
                 ProcessSTT.SendData($"{msg} {Plugin.translation.HasSpawnedWith} {ev.Players.Count} {Plugin.translation.Players}.", HandleQueue.GameLogChannelId);
             }
         }
