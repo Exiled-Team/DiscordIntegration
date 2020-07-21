@@ -75,8 +75,9 @@ namespace DiscordIntegration_Plugin
         
         public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
+            string Argies = string.Join(" ", ev.Arguments);
             if (Plugin.Singleton.Config.ConsoleCommand)
-                ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.HasRunClientConsoleCommand}: {ev.Name}", HandleQueue.CommandLogChannelId);
+                ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.HasRunClientConsoleCommand}: {ev.Name} {Argies}", HandleQueue.CommandLogChannelId);
         }
         
         public void OnRespawn(RespawningTeamEventArgs ev)

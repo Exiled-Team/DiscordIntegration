@@ -30,7 +30,7 @@ namespace DiscordIntegration_Plugin
         public void OnWarheadStart(StartingEventArgs ev)
         {
             if (Plugin.Singleton.Config.WarheadStart)
-                ProcessSTT.SendData($":biohazard: **{Plugin.translation.WarheadStarted} {Warhead.Controller.NetworktimeToDetonation} seconds.**", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":radioactive: **{Plugin.translation.WarheadStarted} {Warhead.Controller.NetworktimeToDetonation} seconds.**", HandleQueue.GameLogChannelId);
         }
         
         public void OnWarheadCancelled(StoppingEventArgs ev)
