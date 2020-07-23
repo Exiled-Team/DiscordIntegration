@@ -12,8 +12,9 @@ namespace DiscordIntegration_Plugin
         
         public void OnCommand(SendingRemoteAdminCommandEventArgs ev)
         {
+            string Args = string.Join(" ", ev.Arguments);
             if (Plugin.Singleton.Config.RaCommands)
-                ProcessSTT.SendData($"{ev.Sender.Nickname} {Plugin.translation.UsedCommand}: {ev.Name}", HandleQueue.CommandLogChannelId);
+                ProcessSTT.SendData($":keyboard: {ev.Sender.Nickname}({ev.Sender.UserId}) {Plugin.translation.UsedCommand}: {ev.Name} {Args}", HandleQueue.CommandLogChannelId);
             if (ev.Name.ToLower() == "list")
             {
                 Log.Info("Getting List");
@@ -51,19 +52,19 @@ namespace DiscordIntegration_Plugin
         public void OnWaitingForPlayers()
         {
             if (Plugin.Singleton.Config.WaitingForPlayers)
-                ProcessSTT.SendData($":hourglass:{Plugin.translation.WaitingForPlayers}", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":hourglass: {Plugin.translation.WaitingForPlayers}", HandleQueue.GameLogChannelId);
         }
 
         public void OnRoundStart()
         {
             if (Plugin.Singleton.Config.RoundStart)
-                ProcessSTT.SendData($":arrow_forward:{Plugin.translation.RoundStarting}: {Player.List.Count()} {Plugin.translation.PlayersInRound}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":arrow_forward: {Plugin.translation.RoundStarting}: {Player.List.Count()} {Plugin.translation.PlayersInRound}.", HandleQueue.GameLogChannelId);
         }
 
         public void OnRoundEnd(RoundEndedEventArgs ev)
         {
             if (Plugin.Singleton.Config.RoundEnd)
-                ProcessSTT.SendData($":stop_button:{Plugin.translation.RoundEnded}: {Player.List.Count()} {Plugin.translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":stop_button: {Plugin.translation.RoundEnded}: {Player.List.Count()} {Plugin.translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
         }
 
         public void OnCheaterReport(ReportingCheaterEventArgs ev)
@@ -74,15 +75,16 @@ namespace DiscordIntegration_Plugin
         
         public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
+            string Argies = string.Join(" ", ev.Arguments);
             if (Plugin.Singleton.Config.ConsoleCommand)
-                ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.HasRunClientConsoleCommand}: {ev.Name}", HandleQueue.CommandLogChannelId);
+                ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.HasRunClientConsoleCommand}: {ev.Name} {Argies}", HandleQueue.CommandLogChannelId);
         }
         
         public void OnRespawn(RespawningTeamEventArgs ev)
         {
             if (Plugin.Singleton.Config.Respawn)
             {
-                string msg = ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? $"{Plugin.translation.ChaosInsurgency}" : $"{Plugin.translation.NineTailedFox}";
+                string msg = ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? $":spy: {Plugin.translation.ChaosInsurgency}" : $":cop: {Plugin.translation.NineTailedFox}";
                 ProcessSTT.SendData($"{msg} {Plugin.translation.HasSpawnedWith} {ev.Players.Count} {Plugin.translation.Players}.", HandleQueue.GameLogChannelId);
             }
         }
