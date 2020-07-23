@@ -240,7 +240,7 @@ namespace DiscordIntegration_Plugin
 				Methods.CheckForSyncRole(ev.Player);
 			if (Plugin.Singleton.Config.PlayerJoin)
 				if (ev.Player.Nickname != "Dedicated Server")
-					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} ||({ev.Player.IPAddress})|| {Plugin.translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);
+					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerFreed(RemovingHandcuffsEventArgs ev)
