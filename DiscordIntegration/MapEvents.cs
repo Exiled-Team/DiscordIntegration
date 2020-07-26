@@ -18,7 +18,7 @@ namespace DiscordIntegration_Plugin
         public void OnGenFinish(GeneratorActivatedEventArgs ev)
         {
             if (Plugin.Singleton.Config.GenFinish)
-                ProcessSTT.SendData($"{Plugin.translation.GenFinished}", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":warning: {Plugin.translation.GenFinished}", HandleQueue.GameLogChannelId);
         }
         
         public void OnDecon(DecontaminatingEventArgs ev)
@@ -45,12 +45,12 @@ namespace DiscordIntegration_Plugin
             {
                 string players = "";
                 foreach (Player player in ev.Players) 
-                    players += $"{player.Nickname} - {player.UserId} ({player.Role})\n";
+                    players += $"--- {player.Nickname} - {player.Role}\n";
                 string items = "";
                 foreach (Pickup item in ev.Items)
-                    items += $"{item.ItemId}\n";
+                    items += $"+ {item.ItemId}\n";
 				
-                ProcessSTT.SendData($"```{Plugin.translation.Scp914HasProcessedTheFollowingPlayers}: {players} {Plugin.translation.AndItems}: {items}. ```", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($"```diff\n- Resultados del SCP-914\n{players}- Objetos procesados:\n{items}```", HandleQueue.GameLogChannelId);
             }
         }
     }

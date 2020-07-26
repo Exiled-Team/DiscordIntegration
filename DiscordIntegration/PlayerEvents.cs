@@ -188,7 +188,7 @@ namespace DiscordIntegration_Plugin
 				{
 					if (ev.Killer != null && ev.Target.Role.GetTeam() == ev.Killer.Role.GetTeam())
 						ProcessSTT.SendData(
-							$":o: **{ev.Killer.Nickname} - {ev.Killer.UserId} ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
+							$":o: **{ev.Killer.Nickname} - ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
 					{
