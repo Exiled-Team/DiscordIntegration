@@ -1,0 +1,4 @@
+﻿[*.{cs,vb}]
+
+# IDE0044: Agregar modificador de solo lectura
+dotnet_style_readonly_field = true:none

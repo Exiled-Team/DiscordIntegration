@@ -61,7 +61,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Player.TriggeringTesla += PlayerEvents.OnTriggerTesla;
             Handlers.Player.ThrowingGrenade += PlayerEvents.OnGrenadeThrown;
             Handlers.Player.Hurting += PlayerEvents.OnPlayerHurt;
-            Handlers.Player.Died += PlayerEvents.OnPlayerDeath;
+			Handlers.Player.Dying += PlayerEvents.OnPlayerDeath;
             Handlers.Player.Banned += PlayerEvents.OnPlayerBanned;
             Handlers.Player.InteractingDoor += PlayerEvents.OnDoorInteract;
             Handlers.Player.InteractingElevator += PlayerEvents.OnElevatorInteraction;
@@ -123,7 +123,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Player.TriggeringTesla -= PlayerEvents.OnTriggerTesla;
             Handlers.Player.ThrowingGrenade -= PlayerEvents.OnGrenadeThrown;
             Handlers.Player.Hurting -= PlayerEvents.OnPlayerHurt;
-            Handlers.Player.Died -= PlayerEvents.OnPlayerDeath;
+			Handlers.Player.Dying -= PlayerEvents.OnPlayerDeath;
             Handlers.Player.Banned -= PlayerEvents.OnPlayerBanned;
             Handlers.Player.InteractingDoor -= PlayerEvents.OnDoorInteract;
             Handlers.Player.InteractingElevator -= PlayerEvents.OnElevatorInteraction;
