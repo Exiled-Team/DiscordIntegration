@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -19,8 +18,6 @@ namespace DiscordIntegration_Bot
 		public static bool fileLocked = false;
 		public static List<SyncedUser> Users = new List<SyncedUser>();
 		public static Dictionary<ulong, string> SyncedGroups = new Dictionary<ulong, string>();
-		public static List<string> LogFiles = new List<string>();
-		public static DateTime FileCreated;
 
 		public static void Main()
 		{
@@ -34,21 +31,9 @@ namespace DiscordIntegration_Bot
 			Log($"Creating log file: {path}", true);
 			if (!Directory.Exists($"{Directory.GetCurrentDirectory()}/logs"))
 				Directory.CreateDirectory($"{Directory.GetCurrentDirectory()}/logs");
-			foreach (string file in Directory.GetFiles($"{Directory.GetCurrentDirectory()}/logs"))
-				LogFiles.Add(file);
 			if (!File.Exists(path))
 				File.Create(path).Close();
-
-			while (LogFiles.Count > 5)
-			{
-				string file = LogFiles[0];
-				File.Delete(file);
-				LogFiles.Remove(file);
-			}
-			
 			LogFile = path;
-			LogFiles.Add(path);
-			FileCreated = DateTime.UtcNow;
 			Log("Initializing bot", true);
 			_bot = new Bot(this);
 		}
@@ -59,13 +44,6 @@ namespace DiscordIntegration_Bot
 			while (fileLocked)
 				Thread.Sleep(1000);
 
-			if ((FileCreated - DateTime.UtcNow).TotalHours > 2)
-			{
-				LogFile = $"{Directory.GetCurrentDirectory()}/logs/{DateTime.UtcNow.Ticks}.txt";
-				FileCreated = DateTime.UtcNow;
-				LogFiles.Add(LogFile);
-			}
-			
 			if (LogFile != null)
 			{
 				fileLocked = true;
@@ -73,13 +51,6 @@ namespace DiscordIntegration_Bot
 			}
 
 			fileLocked = false;
-			while (LogFiles.Count > 5)
-			{
-				string file = LogFiles[0];
-				File.Delete(file);
-				LogFiles.Remove(file);
-			}
-			
 			return Task.CompletedTask;
 		}
 
@@ -91,7 +62,7 @@ namespace DiscordIntegration_Bot
 				Log(new LogMessage(LogSeverity.Debug, "DEBUG", message));
 		}
 		
-		public static void Error(string message) => Log(new LogMessage(LogSeverity.Error, "ERROR", message));
+		public static void Error(string message) => Log(new LogMessage(LogSeverity.Debug, "ERROR", message));
 
 		public static Config GetConfig()
 		{

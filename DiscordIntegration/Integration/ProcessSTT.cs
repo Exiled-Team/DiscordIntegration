@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using EXILED;
+using Exiled.API.Features;
 
 namespace DiscordIntegration_Plugin
 {
@@ -28,25 +28,25 @@ namespace DiscordIntegration_Plugin
 				tcpClient = new TcpClient();
 				while (!tcpClient.Connected)
 				{
-					Log.Debug($"STT: While loop start");
+					Log.Debug($"STT: While loop start", Plugin.Singleton.Config.Debug);
 					Thread.Sleep(2000);
 					try
 					{
-						if (Plugin.Egg)
+						if (Plugin.Singleton.Config.Egg)
 						{
-							Log.Debug($"Starting connection for: '{Plugin.EggAddress}' on port {ServerConsole.Port}");
-							tcpClient.Connect(Plugin.EggAddress, ServerConsole.Port);
+							Log.Debug($"Starting connection for: '{Plugin.Singleton.Config.EggAddress}' on port {ServerConsole.Port}", Plugin.Singleton.Config.Debug);
+							tcpClient.Connect(Plugin.Singleton.Config.EggAddress, ServerConsole.Port);
 						}
 						else
 						{
-							Log.Debug($"Starting connection for: '127.0.0.1' on port {ServerConsole.Port}");
+							Log.Debug($"Starting connection for: '127.0.0.1' on port {ServerConsole.Port}", Plugin.Singleton.Config.Debug);
 							tcpClient.Connect("127.0.0.1", ServerConsole.Port);
 						}
 					}
 					catch (SocketException s)
 					{
 						tcpClient.Client.Disconnect(false);
-						Log.Debug($"Socket Exception on connection: {s}");
+						Log.Debug($"Socket Exception on connection: {s}", Plugin.Singleton.Config.Debug);
 					}
 					catch (Exception e)
 					{
@@ -61,14 +61,14 @@ namespace DiscordIntegration_Plugin
 			}
 			catch (IOException io)
 			{
-				Log.Debug(io.ToString());
+				Log.Debug(io.ToString(), Plugin.Singleton.Config.Debug);
 				_init = new Thread(Init);
 				_locked = false;
 				_init.Start();
 			}
 			catch (SocketException s)
 			{
-				Log.Debug(s.ToString());
+				Log.Debug(s.ToString(), Plugin.Singleton.Config.Debug);
 				_init = new Thread(Init);
 				_locked = false;
 				_init.Start();
@@ -91,18 +91,18 @@ namespace DiscordIntegration_Plugin
 				{
 					Data = data, Port = ServerConsole.Port, Channel = channel
 				};
-				if (Plugin.Egg)
+				if (Plugin.Singleton.Config.Egg)
 					serializedData = new SerializedData.SerializedData
 					{
 						Data = data, Port = ServerConsole.Port + 4130, Channel = channel
 					};
 				BinaryFormatter formatter = new BinaryFormatter();
 				formatter.Serialize(tcpClient.GetStream(), serializedData);
-				Log.Debug($"Sent {data}");
+				Log.Debug($"Sent {data}", Plugin.Singleton.Config.Debug);
 			}
 			catch (IOException io)
 			{
-				Log.Debug(io.ToString());
+				Log.Debug(io.ToString(), Plugin.Singleton.Config.Debug);
 				_init = new Thread(Init);
 				_init.Start();
 			}
@@ -130,13 +130,13 @@ namespace DiscordIntegration_Plugin
 			}
 			catch (SerializationException s)
 			{
-				Log.Debug(s.ToString());
+				Log.Debug(s.ToString(), Plugin.Singleton.Config.Debug);
 				_init = new Thread(Init);
 				_init.Start();
 			}
 			catch (IOException io)
 			{
-				Log.Debug(io.ToString());
+				Log.Debug(io.ToString(), Plugin.Singleton.Config.Debug);
 				_init = new Thread(Init);
 				_init.Start();
 			}

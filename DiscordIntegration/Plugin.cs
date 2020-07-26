@@ -1,135 +1,86 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Permissions;
 using System.Threading;
-using EXILED;
-using EXILED.Extensions;
+using Exiled.API.Interfaces;
 using GameCore;
 using MEC;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Log = EXILED.Log;
+using Log = Exiled.API.Features.Log;
+using Handlers = Exiled.Events.Handlers;
 
 namespace DiscordIntegration_Plugin
 {
-	public class Plugin : EXILED.Plugin
+	public class Plugin : Exiled.API.Features.Plugin<Config>
 	{
-		public EventHandlers EventHandlers;
-		
-		public bool RaCommands = true;
-		public bool RoundStart = true;
-		public bool RoundEnd = true;
-		public bool WaitingForPlayers = true;
-		public bool CheaterReport = true;
-		public bool PlayerHurt = true;
-		public bool PlayerDeath = true;
-		public bool GrenadeThrown = true;
-		public bool MedicalItem = true;
-		public bool SetClass = true;
-		public bool Respawn = true;
-		public bool PlayerJoin = true;
-		public bool DoorInteract = true;
-		public bool Scp914Upgrade = true;
-		public bool Scp079Tesla = true;
-		public bool Scp106Tele = true;
-		public bool PocketEnter = true;
-		public bool PocketEscape = true;
-		public bool ConsoleCommand = true;
-		public bool Decon = true;
-		public bool DropItem = true;
-		public bool PickupItem = true;
-		public bool Intercom = true;
-		public bool Banned = true;
-		public bool Cuffed = true;
-		public bool Freed = true;
-		public bool Scp914Activation = true;
-		public bool Scp914KnobChange = true;
-		public bool WarheadCancel;
-		public bool WarheadDetonate;
-		public bool WarheadStart;
-		public bool WarheadAccess;
-		public bool Elevator;
-		public bool Locker;
-		public bool TriggerTesla;
-		public bool GenClose;
-		public bool GenOpen;
-		public bool GenInsert;
-		public bool GenEject;
-		public bool GenFinish;
-		public bool GenUnlock;
-		public bool Scp106Contain;
-		public bool Scp106Portal;
-		public bool ItemChanged;
-		public bool Scp079Exp;
-		public bool Scp079Lvl;
-		public bool PlayerLeave;
-		public bool PlayerReload;
-		public bool SetGroup;
-		
-		public static bool Egg = false;
-		public static string EggAddress = "";
-		public bool OnlyFriendlyFire = true;
-		public bool RoleSync = true;
-		
-		public override void OnEnable()
-		{
-			RefreshConfig();
-			Timing.RunCoroutine(Methods.TickCounter(), Segment.Update, "ticks");
-			EventHandlers = new EventHandlers(this);
-			Events.RemoteAdminCommandEvent += EventHandlers.OnCommand;
-			Events.RoundStartEvent += EventHandlers.OnRoundStart;
-			Events.RoundEndEvent += EventHandlers.OnRoundEnd;
-			Events.WaitingForPlayersEvent += EventHandlers.OnWaitingForPlayers;
-			Events.CheaterReportEvent += EventHandlers.OnCheaterReport;
-			Events.PlayerHurtEvent += EventHandlers.OnPlayerHurt;
-			Events.PlayerDeathEvent += EventHandlers.OnPlayerDeath;
-			Events.GrenadeThrownEvent += EventHandlers.OnGrenadeThrown;
-			Events.UseMedicalItemEvent += EventHandlers.OnMedicalItem;
-			Events.SetClassEvent += EventHandlers.OnSetClass;
-			Events.TeamRespawnEvent += EventHandlers.OnRespawn;
-			Events.PlayerJoinEvent += EventHandlers.OnPlayerJoin;
-			
-			Events.DoorInteractEvent += EventHandlers.OnDoorInteract;
-			Events.Scp914UpgradeEvent += EventHandlers.OnScp194Upgrade;
-			Events.Scp079TriggerTeslaEvent += EventHandlers.On079Tesla;
-			Events.Scp106TeleportEvent += EventHandlers.On106Teleport;
-			Events.PocketDimEscapedEvent += EventHandlers.OnPocketEscape;
-			Events.PocketDimEnterEvent += EventHandlers.OnPocketEnter;
-			Events.ConsoleCommandEvent += EventHandlers.OnConsoleCommand;
-			Events.DecontaminationEvent += EventHandlers.OnDecon;
-			Events.DropItemEvent += EventHandlers.OnDropItem;
-			Events.PickupItemEvent += EventHandlers.OnPickupItem;
-			Events.IntercomSpeakEvent += EventHandlers.OnIntercomSpeak;
-			Events.PlayerBannedEvent += EventHandlers.OnPlayerBanned;
-			Events.PlayerHandcuffedEvent += EventHandlers.OnPlayerHandcuffed;
-			Events.PlayerHandcuffFreedEvent += EventHandlers.OnPlayerFreed;
-			Events.Scp914ActivationEvent += EventHandlers.On914Activation;
-			Events.Scp914KnobChangeEvent += EventHandlers.On914KnobChange;
-			
-			Events.WarheadCancelledEvent += EventHandlers.OnWarheadCancelled;
-			Events.WarheadDetonationEvent += EventHandlers.OnWarheadDetonation;
-			Events.WarheadStartEvent += EventHandlers.OnWarheadStart;
-			Events.WarheadKeycardAccessEvent += EventHandlers.OnWarheadAccess;
-			Events.ElevatorInteractEvent += EventHandlers.OnElevatorInteraction;
-			Events.LockerInteractEvent += EventHandlers.OnLockerInteraction;
-			Events.TriggerTeslaEvent += EventHandlers.OnTriggerTesla;
-			Events.GeneratorClosedEvent += EventHandlers.OnGenClosed;
-			Events.GeneratorEjectedEvent += EventHandlers.OnGenEject;
-			Events.GeneratorFinishedEvent += EventHandlers.OnGenFinish;
-			Events.GeneratorInsertedEvent += EventHandlers.OnGenInsert;
-			Events.GeneratorOpenedEvent += EventHandlers.OnGenOpen;
-			Events.GeneratorUnlockEvent += EventHandlers.OnGenUnlock;
-			Events.Scp106ContainEvent += EventHandlers.On106Contain;
-			Events.Scp106CreatedPortalEvent += EventHandlers.On106CreatePortal;
-			Events.ItemChangedEvent += EventHandlers.OnItemChanged;
-			Events.Scp079ExpGainEvent += EventHandlers.On079GainExp;
-			Events.Scp079LvlGainEvent += EventHandlers.On079GainLvl;
-			Events.PlayerLeaveEvent += EventHandlers.OnPlayerLeave;
-			Events.PlayerReloadEvent += EventHandlers.OnPlayerReload;
-			Events.SetGroupEvent += EventHandlers.OnSetGroup;
+		public MapEvents MapEvents;
+		public ServerEvents ServerEvents;
+		public PlayerEvents PlayerEvents;
+		public static Plugin Singleton;
+		public int MaxPlayers = ConfigFile.ServerConfig.GetInt("max_players", 20);
 
-			LoadTranslation();
+		public override void OnEnabled()
+		{
+			Singleton = this;
+			Timing.RunCoroutine(Methods.TickCounter(), Segment.Update, "ticks");
+			MapEvents = new MapEvents(this);
+			ServerEvents = new ServerEvents(this);
+			PlayerEvents = new PlayerEvents(this);
+			
+			Handlers.Map.Decontaminating += MapEvents.OnDecon;
+            Handlers.Map.GeneratorActivated += MapEvents.OnGenFinish;
+            Handlers.Warhead.Starting += MapEvents.OnWarheadStart;
+            Handlers.Warhead.Stopping += MapEvents.OnWarheadCancelled;
+            Handlers.Warhead.Detonated += MapEvents.OnWarheadDetonation;
+            Handlers.Scp914.UpgradingItems += MapEvents.OnScp194Upgrade;
+
+            Handlers.Server.SendingRemoteAdminCommand += ServerEvents.OnCommand;
+            Handlers.Server.WaitingForPlayers += ServerEvents.OnWaitingForPlayers;
+            Handlers.Server.SendingConsoleCommand += ServerEvents.OnConsoleCommand;
+            Handlers.Server.RoundStarted += ServerEvents.OnRoundStart;
+            Handlers.Server.RoundEnded += ServerEvents.OnRoundEnd;
+            Handlers.Server.RespawningTeam += ServerEvents.OnRespawn;
+            Handlers.Server.ReportingCheater += ServerEvents.OnCheaterReport;
+
+            Handlers.Scp914.ChangingKnobSetting += PlayerEvents.On914KnobChange;
+            Handlers.Player.UsingMedicalItem += PlayerEvents.OnMedicalItem;
+            Handlers.Scp079.InteractingTesla += PlayerEvents.On079Tesla;
+            Handlers.Player.PickingUpItem += PlayerEvents.OnPickupItem;
+            Handlers.Player.InsertingGeneratorTablet += PlayerEvents.OnGenInsert;
+            Handlers.Player.EjectingGeneratorTablet += PlayerEvents.OnGenEject;
+            Handlers.Player.UnlockingGenerator += PlayerEvents.OnGenUnlock;
+            Handlers.Player.OpeningGenerator += PlayerEvents.OnGenOpen;
+            Handlers.Player.ClosingGenerator += PlayerEvents.OnGenClosed;
+            Handlers.Scp079.GainingLevel += PlayerEvents.On079GainLvl;
+            Handlers.Scp079.GainingExperience += PlayerEvents.On079GainExp;
+            Handlers.Player.EscapingPocketDimension += PlayerEvents.OnPocketEscape;
+            Handlers.Player.EnteringPocketDimension += PlayerEvents.OnPocketEnter;
+            Handlers.Scp106.CreatingPortal += PlayerEvents.On106CreatePortal;
+            Handlers.Player.ActivatingWarheadPanel += PlayerEvents.OnWarheadAccess;
+            Handlers.Player.TriggeringTesla += PlayerEvents.OnTriggerTesla;
+            Handlers.Player.ThrowingGrenade += PlayerEvents.OnGrenadeThrown;
+            Handlers.Player.Hurting += PlayerEvents.OnPlayerHurt;
+            Handlers.Player.Died += PlayerEvents.OnPlayerDeath;
+            Handlers.Player.Banned += PlayerEvents.OnPlayerBanned;
+            Handlers.Player.InteractingDoor += PlayerEvents.OnDoorInteract;
+            Handlers.Player.InteractingElevator += PlayerEvents.OnElevatorInteraction;
+            Handlers.Player.InteractingLocker += PlayerEvents.OnLockerInteraction;
+            Handlers.Player.IntercomSpeaking += PlayerEvents.OnIntercomSpeak;
+            Handlers.Player.Handcuffing += PlayerEvents.OnPlayerHandcuffed;
+            Handlers.Player.RemovingHandcuffs += PlayerEvents.OnPlayerFreed;
+            Handlers.Scp106.Teleporting += PlayerEvents.On106Teleport;
+            Handlers.Player.ReloadingWeapon += PlayerEvents.OnPlayerReload;
+            Handlers.Player.ItemDropped += PlayerEvents.OnDropItem;
+            Handlers.Player.Joined += PlayerEvents.OnPlayerJoin;
+            Handlers.Player.Left += PlayerEvents.OnPlayerLeave;
+            Handlers.Player.ChangingRole += PlayerEvents.OnSetClass;
+            Handlers.Player.ChangingGroup += PlayerEvents.OnSetGroup;
+            Handlers.Player.ChangingItem += PlayerEvents.OnItemChanged;
+            Handlers.Scp914.Activating += PlayerEvents.On914Activation;
+            Handlers.Scp106.Containing += PlayerEvents.On106Contain;
+
+            LoadTranslation();
 
 			new Thread(ProcessSTT.Init).Start();
 			Timing.RunCoroutine(HandleQueue.Handle(), "handle");
@@ -137,58 +88,64 @@ namespace DiscordIntegration_Plugin
 			Timing.RunCoroutine(Methods.UpdateServerStatus(), "updatechan");
 		}
 
-		public override void OnDisable()
+		public override void OnDisabled()
 		{
-			Events.RemoteAdminCommandEvent -= EventHandlers.OnCommand;
-			Events.RoundStartEvent -= EventHandlers.OnRoundStart;
-			Events.RoundEndEvent -= EventHandlers.OnRoundEnd;
-			Events.WaitingForPlayersEvent -= EventHandlers.OnWaitingForPlayers;
-			Events.CheaterReportEvent -= EventHandlers.OnCheaterReport;
-			Events.PlayerHurtEvent -= EventHandlers.OnPlayerHurt;
-			Events.PlayerDeathEvent -= EventHandlers.OnPlayerDeath;
-			Events.GrenadeThrownEvent -= EventHandlers.OnGrenadeThrown;
-			Events.UseMedicalItemEvent -= EventHandlers.OnMedicalItem;
-			Events.SetClassEvent -= EventHandlers.OnSetClass;
-			Events.TeamRespawnEvent -= EventHandlers.OnRespawn;
-			Events.PlayerJoinEvent -= EventHandlers.OnPlayerJoin;
-			Events.DoorInteractEvent -= EventHandlers.OnDoorInteract;
-			Events.Scp914UpgradeEvent -= EventHandlers.OnScp194Upgrade;
-			Events.Scp079TriggerTeslaEvent -= EventHandlers.On079Tesla;
-			Events.Scp106TeleportEvent -= EventHandlers.On106Teleport;
-			Events.PocketDimEscapedEvent -= EventHandlers.OnPocketEscape;
-			Events.PocketDimEnterEvent -= EventHandlers.OnPocketEnter;
-			Events.ConsoleCommandEvent -= EventHandlers.OnConsoleCommand;
-			Events.DecontaminationEvent -= EventHandlers.OnDecon;
-			Events.DropItemEvent -= EventHandlers.OnDropItem;
-			Events.PickupItemEvent -= EventHandlers.OnPickupItem;
-			Events.IntercomSpeakEvent -= EventHandlers.OnIntercomSpeak;
-			Events.PlayerBannedEvent -= EventHandlers.OnPlayerBanned;
-			Events.PlayerHandcuffedEvent -= EventHandlers.OnPlayerHandcuffed;
-			Events.PlayerHandcuffFreedEvent -= EventHandlers.OnPlayerFreed;
-			Events.Scp914ActivationEvent -= EventHandlers.On914Activation;
-			Events.Scp914KnobChangeEvent -= EventHandlers.On914KnobChange;
-			Events.WarheadCancelledEvent -= EventHandlers.OnWarheadCancelled;
-			Events.WarheadDetonationEvent -= EventHandlers.OnWarheadDetonation;
-			Events.WarheadStartEvent -= EventHandlers.OnWarheadStart;
-			Events.WarheadKeycardAccessEvent -= EventHandlers.OnWarheadAccess;
-			Events.ElevatorInteractEvent -= EventHandlers.OnElevatorInteraction;
-			Events.LockerInteractEvent -= EventHandlers.OnLockerInteraction;
-			Events.TriggerTeslaEvent -= EventHandlers.OnTriggerTesla;
-			Events.GeneratorClosedEvent -= EventHandlers.OnGenClosed;
-			Events.GeneratorEjectedEvent -= EventHandlers.OnGenEject;
-			Events.GeneratorFinishedEvent -= EventHandlers.OnGenFinish;
-			Events.GeneratorInsertedEvent -= EventHandlers.OnGenInsert;
-			Events.GeneratorOpenedEvent -= EventHandlers.OnGenOpen;
-			Events.GeneratorUnlockEvent -= EventHandlers.OnGenUnlock;
-			Events.Scp106ContainEvent -= EventHandlers.On106Contain;
-			Events.Scp106CreatedPortalEvent -= EventHandlers.On106CreatePortal;
-			Events.ItemChangedEvent -= EventHandlers.OnItemChanged;
-			Events.Scp079ExpGainEvent -= EventHandlers.On079GainExp;
-			Events.Scp079LvlGainEvent -= EventHandlers.On079GainLvl;
-			Events.PlayerLeaveEvent -= EventHandlers.OnPlayerLeave;
-			Events.PlayerReloadEvent -= EventHandlers.OnPlayerReload;
-			Events.SetGroupEvent -= EventHandlers.OnSetGroup;
-			EventHandlers = null;
+			Handlers.Map.Decontaminating -= MapEvents.OnDecon;
+            Handlers.Map.GeneratorActivated -= MapEvents.OnGenFinish;
+            Handlers.Warhead.Starting -= MapEvents.OnWarheadStart;
+            Handlers.Warhead.Stopping -= MapEvents.OnWarheadCancelled;
+            Handlers.Warhead.Detonated -= MapEvents.OnWarheadDetonation;
+            Handlers.Scp914.UpgradingItems -= MapEvents.OnScp194Upgrade;
+
+            Handlers.Server.SendingRemoteAdminCommand -= ServerEvents.OnCommand;
+            Handlers.Server.WaitingForPlayers -= ServerEvents.OnWaitingForPlayers;
+            Handlers.Server.SendingConsoleCommand -= ServerEvents.OnConsoleCommand;
+            Handlers.Server.RoundStarted -= ServerEvents.OnRoundStart;
+            Handlers.Server.RoundEnded -= ServerEvents.OnRoundEnd;
+            Handlers.Server.RespawningTeam -= ServerEvents.OnRespawn;
+            Handlers.Server.ReportingCheater -= ServerEvents.OnCheaterReport;
+
+            Handlers.Scp914.ChangingKnobSetting -= PlayerEvents.On914KnobChange;
+            Handlers.Player.UsingMedicalItem -= PlayerEvents.OnMedicalItem;
+            Handlers.Scp079.InteractingTesla -= PlayerEvents.On079Tesla;
+            Handlers.Player.PickingUpItem -= PlayerEvents.OnPickupItem;
+            Handlers.Player.InsertingGeneratorTablet -= PlayerEvents.OnGenInsert;
+            Handlers.Player.EjectingGeneratorTablet -= PlayerEvents.OnGenEject;
+            Handlers.Player.UnlockingGenerator -= PlayerEvents.OnGenUnlock;
+            Handlers.Player.OpeningGenerator -= PlayerEvents.OnGenOpen;
+            Handlers.Player.ClosingGenerator -= PlayerEvents.OnGenClosed;
+            Handlers.Scp079.GainingLevel -= PlayerEvents.On079GainLvl;
+            Handlers.Scp079.GainingExperience -= PlayerEvents.On079GainExp;
+            Handlers.Player.EscapingPocketDimension -= PlayerEvents.OnPocketEscape;
+            Handlers.Player.EnteringPocketDimension -= PlayerEvents.OnPocketEnter;
+            Handlers.Scp106.CreatingPortal -= PlayerEvents.On106CreatePortal;
+            Handlers.Player.ActivatingWarheadPanel -= PlayerEvents.OnWarheadAccess;
+            Handlers.Player.TriggeringTesla -= PlayerEvents.OnTriggerTesla;
+            Handlers.Player.ThrowingGrenade -= PlayerEvents.OnGrenadeThrown;
+            Handlers.Player.Hurting -= PlayerEvents.OnPlayerHurt;
+            Handlers.Player.Died -= PlayerEvents.OnPlayerDeath;
+            Handlers.Player.Banned -= PlayerEvents.OnPlayerBanned;
+            Handlers.Player.InteractingDoor -= PlayerEvents.OnDoorInteract;
+            Handlers.Player.InteractingElevator -= PlayerEvents.OnElevatorInteraction;
+            Handlers.Player.InteractingLocker -= PlayerEvents.OnLockerInteraction;
+            Handlers.Player.IntercomSpeaking -= PlayerEvents.OnIntercomSpeak;
+            Handlers.Player.Handcuffing -= PlayerEvents.OnPlayerHandcuffed;
+            Handlers.Player.RemovingHandcuffs -= PlayerEvents.OnPlayerFreed;
+            Handlers.Scp106.Teleporting -= PlayerEvents.On106Teleport;
+            Handlers.Player.ReloadingWeapon -= PlayerEvents.OnPlayerReload;
+            Handlers.Player.ItemDropped -= PlayerEvents.OnDropItem;
+            Handlers.Player.Joined -= PlayerEvents.OnPlayerJoin;
+            Handlers.Player.Left -= PlayerEvents.OnPlayerLeave;
+            Handlers.Player.ChangingRole -= PlayerEvents.OnSetClass;
+            Handlers.Player.ChangingGroup -= PlayerEvents.OnSetGroup;
+            Handlers.Player.ChangingItem -= PlayerEvents.OnItemChanged;
+            Handlers.Scp914.Activating -= PlayerEvents.On914Activation;
+            Handlers.Scp106.Containing -= PlayerEvents.On106Contain;
+
+            PlayerEvents = null;
+            MapEvents = null;
+            ServerEvents = null;
+            
 			Timing.KillCoroutines("handle");
 			Timing.KillCoroutines("update");
 			Timing.KillCoroutines("updatechan");
@@ -204,69 +161,9 @@ namespace DiscordIntegration_Plugin
 			}
 		}
 
-		public override void OnReload()
+		public override void OnReloaded()
 		{
 			
-		}
-
-		public override string getName { get; } = "Discord Integration";
-
-		public void RefreshConfig()
-		{
-			RaCommands = Config.GetBool("discord_ra_commands", true);
-			RoundStart = Config.GetBool("discord_round_start", true);
-			RoundEnd = Config.GetBool("discord_round_end", true);
-			WaitingForPlayers = Config.GetBool("discord_waiting_for_players", true);
-			CheaterReport = Config.GetBool("discord_cheater_report", true);
-			PlayerHurt = Config.GetBool("discord_player_hurt", true);
-			PlayerDeath = Config.GetBool("discord_player_death", true);
-			GrenadeThrown = Config.GetBool("discord_grenade_thrown", true);
-			MedicalItem = Config.GetBool("discord_medical_item", true);
-			SetClass = Config.GetBool("discord_set_class", true);
-			Respawn = Config.GetBool("discord_respawn", true);
-			PlayerJoin = Config.GetBool("discord_player_join", true);
-			DoorInteract = Config.GetBool("discord_doorinteract", false);
-			Scp914Upgrade = Config.GetBool("discord_914upgrade", true);
-			Scp079Tesla = Config.GetBool("discord_079tesla", true);
-			Scp106Tele = Config.GetBool("discord_106teleport", false);
-			PocketEnter = Config.GetBool("discord_penter", true);
-			PocketEscape = Config.GetBool("discord_pescape", true);
-			ConsoleCommand = Config.GetBool("discord_player_console", true);
-			Decon = Config.GetBool("discord_decon", true);
-			DropItem = Config.GetBool("discord_item_drop", true);
-			PickupItem = Config.GetBool("discord_item_pickup", true);
-			Banned = Config.GetBool("discord_banned", true);
-			Cuffed = Config.GetBool("discord_cuffed", true);
-			Freed = Config.GetBool("discord_freed", true);
-			Scp914Activation = Config.GetBool("discord_914_activation", true);
-			Scp914KnobChange = Config.GetBool("discord_914_knob", true);
-
-			Intercom = Config.GetBool("discord_intercom", true);
-			WarheadAccess = Config.GetBool("discord_warhead_access", true);
-			WarheadCancel = Config.GetBool("discord_warhead_cancel", true);
-			WarheadDetonate = Config.GetBool("discord_warhead_detonate", true);
-			WarheadStart = Config.GetBool("discord_warhead_start", true);
-			Elevator = Config.GetBool("discord_interact_elevator");
-			Locker = Config.GetBool("discord_interact_locker");
-			TriggerTesla = Config.GetBool("discord_interaction_tesla");
-			GenClose = Config.GetBool("discord_generator_closed", true);
-			GenOpen = Config.GetBool("discord_generator_open", true);
-			GenEject = Config.GetBool("discord_generator_eject", true);
-			GenInsert = Config.GetBool("discord_generator_insert", true);
-			GenFinish = Config.GetBool("discord_generator_finish", true);
-			GenUnlock = Config.GetBool("discord_generator_unlock", true);
-			Scp106Contain = Config.GetBool("discord_106_contain", true);
-			Scp106Portal = Config.GetBool("discord_106_createportal", true);
-			Scp079Exp = Config.GetBool("discord_079_expgain", true);
-			Scp079Lvl = Config.GetBool("discord_079_lvlgain", true);
-			PlayerLeave = Config.GetBool("discord_player_leave", true);
-			PlayerReload = Config.GetBool("discord_player_reload");
-			SetGroup = Config.GetBool("discord_setgroup", true);
-
-			Egg = Config.GetBool("discord_egg_mode", false);
-			EggAddress = Config.GetString("discord_ip_address", string.Empty);
-			OnlyFriendlyFire = Config.GetBool("discord_only_ff", true);
-			RoleSync = Config.GetBool("discord_rolesync", true);
 		}
 
 		public static Translation translation = new Translation();

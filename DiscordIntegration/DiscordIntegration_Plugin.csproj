@@ -35,51 +35,50 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Desktop\2017\Servidores\SCP\_ExiledIgnire\Plugins\dependencies\0Harmony.dll</HintPath>
+      <HintPath>..\..\References\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\EXILED\bin\Release\Assembly-CSharp-Publicized.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Desktop\2017\Servidores\SCP\_ExiledIgnire\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\..\References\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp_public">
-      <HintPath>..\..\..\..\..\Desktop\2017\Servidores\SCP\_ExiledIgnire\Assembly-CSharp_public.dll</HintPath>
+    <Reference Include="Exiled.API, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\EXILED\bin\Release\Exiled.API.dll</HintPath>
     </Reference>
-    <Reference Include="EXILED, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Desktop\2017\Servidores\SCP\_ExiledIgnire\EXILED\EXILED.dll</HintPath>
+    <Reference Include="Exiled.Events, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\EXILED\bin\Release\Exiled.Events.dll</HintPath>
     </Reference>
-    <Reference Include="EXILED_Events, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Desktop\2017\Servidores\SCP\_ExiledIgnire\Plugins\EXILED_Events.dll</HintPath>
-    </Reference>
-    <Reference Include="EXILED_Idler">
-      <HintPath>..\..\..\..\..\Desktop\2017\Servidores\SCP\_ExiledIgnire\Plugins\EXILED_Idler.dll</HintPath>
-    </Reference>
-    <Reference Include="EXILED_Permissions">
-      <HintPath>..\..\..\..\..\Desktop\2017\Servidores\SCP\_ExiledIgnire\Plugins\EXILED_Permissions.dll</HintPath>
+    <Reference Include="Exiled.Loader, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\EXILED\bin\Release\Exiled.Loader.dll</HintPath>
     </Reference>
     <Reference Include="Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Desktop\2017\Servidores\SCP\SCPSL_Data\Managed\Mirror.dll</HintPath>
+      <HintPath>..\..\References\Mirror.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>..\..\..\..\..\AppData\Roaming\Plugins\dependencies\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Desktop\2017\Servidores\SCP\SCPSL_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\References\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Desktop\2017\Servidores\SCP\SCPSL_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\References\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventHandlers.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Integration\HandleQueue.cs" />
     <Compile Include="Integration\ProcessSTT.cs" />
+    <Compile Include="MapEvents.cs" />
     <Compile Include="Methods.cs" />
+    <Compile Include="PlayerEvents.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerEvents.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SerializedData\SerializedData.csproj">
@@ -88,7 +87,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Patches\" />
+    <Folder Include="Patches" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

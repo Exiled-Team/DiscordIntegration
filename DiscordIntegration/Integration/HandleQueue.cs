@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using EXILED;
+using Exiled.API.Features;
 using MEC;
 
 namespace DiscordIntegration_Plugin
@@ -17,12 +16,12 @@ namespace DiscordIntegration_Plugin
 			while (ProcessSTT.dataQueue.TryDequeue(out SerializedData.SerializedData result))
 			{
 				string command = result.Data;
-				Log.Debug($"STT: Received {result.Data} for {result.Port} at {result.Channel}");
+				Log.Debug($"STT: Received {result.Data} for {result.Port} at {result.Channel}", Plugin.Singleton.Config.Debug);
 				
 				
 				if (result.Data == "ping")
 				{
-					Log.Debug("STT: Heartbeat received.");
+					Log.Debug("STT: Heartbeat received.", Plugin.Singleton.Config.Debug);
 					ProcessSTT.SendData("ping", 0);
 					return;
 				}
@@ -30,14 +29,14 @@ namespace DiscordIntegration_Plugin
 				if (result.Data == "set gameid")
 				{
 					GameLogChannelId = result.Channel;
-					Log.Debug($"STT: GameLogChannelId changed: {result.Channel}");
+					Log.Debug($"STT: GameLogChannelId changed: {result.Channel}", Plugin.Singleton.Config.Debug);
 					return;
 				}
 
 				if (result.Data == "set cmdid")
 				{
 					CommandLogChannelId = result.Channel;
-					Log.Debug($"STT: CommandLogChannelId changed: {result.Channel}");
+					Log.Debug($"STT: CommandLogChannelId changed: {result.Channel}", Plugin.Singleton.Config.Debug);
 					return;
 				}
 
@@ -95,7 +94,7 @@ namespace DiscordIntegration_Plugin
 
 		public string Name;
 		public BotSender(string name) => Name = name;
-		public override string SenderId => Name;
+		public override string SenderId => "SERVER CONSOLE";
 		public override string Nickname => Name;
 		public override ulong Permissions => ServerStatic.GetPermissionsHandler().FullPerm;
 		public override byte KickPower => byte.MaxValue;
