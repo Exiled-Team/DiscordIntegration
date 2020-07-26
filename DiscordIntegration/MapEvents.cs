@@ -36,7 +36,7 @@ namespace DiscordIntegration_Plugin
         public void OnWarheadCancelled(StoppingEventArgs ev)
         {
             if (Plugin.Singleton.Config.WarheadCancel)
-                ProcessSTT.SendData($"***{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.CancelledWarhead}.***", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($"**{ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.CancelledWarhead}.**", HandleQueue.GameLogChannelId);
         }
         
         public void OnScp194Upgrade(UpgradingItemsEventArgs ev)
@@ -50,7 +50,7 @@ namespace DiscordIntegration_Plugin
                 foreach (Pickup item in ev.Items)
                     items += $"{item.ItemId}\n";
 				
-                ProcessSTT.SendData($"{Plugin.translation.Scp914HasProcessedTheFollowingPlayers}: {players} {Plugin.translation.AndItems}: {items}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($"```{Plugin.translation.Scp914HasProcessedTheFollowingPlayers}: {players} {Plugin.translation.AndItems}: {items}. ```", HandleQueue.GameLogChannelId);
             }
         }
     }
