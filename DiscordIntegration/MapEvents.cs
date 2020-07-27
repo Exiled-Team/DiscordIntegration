@@ -39,18 +39,18 @@ namespace DiscordIntegration_Plugin
                 ProcessSTT.SendData($"***{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.CancelledWarhead}.***", HandleQueue.GameLogChannelId);
         }
         
-        public void OnScp194Upgrade(UpgradingItemsEventArgs ev)
+       public void OnScp194Upgrade(UpgradingItemsEventArgs ev)
         {
             if (Plugin.Singleton.Config.Scp914Upgrade)
             {
                 string players = "";
                 foreach (Player player in ev.Players) 
-                    players += $"{player.Nickname} - {player.UserId} ({player.Role})\n";
+                    players += $"--- {player.Nickname} - {player.UserId} - {player.Role}\n";
                 string items = "";
                 foreach (Pickup item in ev.Items)
-                    items += $"{item.ItemId}\n";
+                    items += $"+ {item.ItemId}\n";
 				
-                ProcessSTT.SendData($"{Plugin.translation.Scp914HasProcessedTheFollowingPlayers}: {players} {Plugin.translation.AndItems}: {items}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($"```diff\n- {Plugin.translation.Scp914HasProcessedTheFollowingPlayers} -\n{players}- {Plugin.translation.AndItems}:\n{items}```", HandleQueue.GameLogChannelId);
             }
         }
     }

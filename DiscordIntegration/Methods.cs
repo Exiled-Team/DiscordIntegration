@@ -21,7 +21,7 @@ namespace DiscordIntegration_Plugin
 		public static void SetSyncRole(string group, string steamId)
 		{
 			Log.Info($"Received setgroup for {steamId}");
-			UserGroup userGroup = ServerStatic.PermissionsHandler.GetGroup(group);
+			UserGroup userGroup = ServerStatic.GetPermissionsHandler().GetGroup(group);
 			if (userGroup == null)
 			{
 				Log.Error($"Attempted to assign invalid user group {group} to {steamId}");

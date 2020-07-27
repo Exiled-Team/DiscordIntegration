@@ -1,12 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30104.148
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordIntegration_Plugin", "DiscordIntegration\DiscordIntegration_Plugin.csproj", "{56A08520-835E-4D09-BB5C-6EF47E2313FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializedData", "SerializedData\SerializedData.csproj", "{AD758434-672C-4BBE-8D17-8A19FC91845F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordIntegration_Bot", "DiscordIntegration_Bot\DiscordIntegration_Bot.csproj", "{B6C5E945-4B3F-42A8-A559-06644AD5D64A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordIntegration_Bot-Win7", "DiscordIntegration_Bot-Win7\DiscordIntegration_Bot-Win7.csproj", "{69B839DC-86D2-426D-94BD-AADF24852272}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,9 +27,11 @@ Global
 		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{69B839DC-86D2-426D-94BD-AADF24852272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{69B839DC-86D2-426D-94BD-AADF24852272}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{69B839DC-86D2-426D-94BD-AADF24852272}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{69B839DC-86D2-426D-94BD-AADF24852272}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {63AA3935-5B11-4773-98F0-9B95C40E9AB6}
 	EndGlobalSection
 EndGlobal
