@@ -50,7 +50,7 @@ namespace DiscordIntegration_Plugin
                 foreach (Pickup item in ev.Items)
                     items += $"+ {item.ItemId}\n";
 				
-                ProcessSTT.SendData($"```diff\n- Resultados del SCP-914\n{players}- Objetos procesados:\n{items}```", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($"```diff\n- Resultados del SCP-914 -\n{players}- Objetos procesados:\n{items}```", HandleQueue.GameLogChannelId);
             }
         }
     }
