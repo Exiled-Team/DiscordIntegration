@@ -32,13 +32,13 @@ namespace DiscordIntegration_Plugin
 		public void On106Contain(ContainingEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp106Contain)
-				ProcessSTT.SendData($"{ev.Player.Nickname} {Plugin.translation.WasContained}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":chains:  {ev.Player.Nickname} {Plugin.translation.WasContained}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void On106CreatePortal(CreatingPortalEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp106Portal)
-				ProcessSTT.SendData($"{ev.Player.Nickname} {Plugin.translation.CreatedPortal}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":nazar_amulet:  {ev.Player.Nickname} {Plugin.translation.CreatedPortal}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnItemChanged(ChangingItemEventArgs ev)
@@ -51,13 +51,13 @@ namespace DiscordIntegration_Plugin
 		public void On079GainExp(GainingExperienceEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp079Exp)
-				ProcessSTT.SendData($":Stonks: {ev.Player.Nickname} {Plugin.translation.GainedExp}: {ev.Amount}, {ev.GainType}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":small_red_triangle: {ev.Player.Nickname} {Plugin.translation.GainedExp}: {ev.Amount}, {ev.GainType}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void On079GainLvl(GainingLevelEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp079Lvl)
-				ProcessSTT.SendData($":Stonks: {ev.Player.Nickname} {Plugin.translation.GainedLevel} {ev.OldLevel} -> {ev.NewLevel}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"<:stonks:733310275415048222> {ev.Player.Nickname} {Plugin.translation.GainedLevel} {ev.OldLevel} -> {ev.NewLevel}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerLeave(LeftEventArgs ev)
@@ -155,7 +155,7 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.PocketEnter)
 				ProcessSTT.SendData(
-					$"{ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasEnteredPocketDimension}.",
+					$":eight_pointed_black_star: {ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasEnteredPocketDimension}.",
 					HandleQueue.GameLogChannelId);
 		}
 
@@ -169,7 +169,7 @@ namespace DiscordIntegration_Plugin
 		public void On106Teleport(TeleportingEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp106Tele)
-				ProcessSTT.SendData($"{ev.Player.Nickname} {Plugin.translation.HasEscapedPocketDimension}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":dagger: {ev.Player.Nickname} {Plugin.translation.HasEscapedPocketDimension}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void On079Tesla(InteractingTeslaEventArgs ev)
@@ -186,12 +186,12 @@ namespace DiscordIntegration_Plugin
 				{
 					if (ev.Attacker != null && ev.Target.Side == ev.Attacker.Side && ev.Target != ev.Attacker)
 						ProcessSTT.SendData(
-							$":crossed_swords: **{ev.Attacker.Nickname} ({ev.Attacker.Role}) {Plugin.translation.Damaged} {ev.Target.Nickname} ({ev.Target.Role}) {Plugin.translation._For} {ev.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.**",
+							$":crossed_swords: **{ev.Attacker.Nickname} - {ev.Attacker.Id} - ({ev.Attacker.Role}) {Plugin.translation.Damaged} {ev.Target.Nickname} - {ev.Target.Id} - ({ev.Target.Role}) {Plugin.translation._For} {(int)ev.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
-								$"{ev.HitInformations.Attacker}  {Plugin.translation.Damaged} {ev.Target.Nickname} ({ev.Target.Role}) {Plugin.translation._For} {ev.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
+								$"{ev.HitInformations.Attacker}  {Plugin.translation.Damaged} {ev.Target.Nickname} - {ev.Target.Id} - ({ev.Target.Role}) {Plugin.translation._For} {(int)ev.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
 								HandleQueue.GameLogChannelId);
 					}
 				}
@@ -210,12 +210,12 @@ namespace DiscordIntegration_Plugin
 				{
 					if (ev.Killer != null && ev.Target.Side == ev.Killer.Side)
 						ProcessSTT.SendData(
-							$":x: **{ev.Killer.Nickname} - ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
+							$":x: **{ev.Killer.Nickname} - {ev.Killer.Id} - ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - {ev.Target.Id} ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
-							$":skull_crossbones: **{ev.Killer.Nickname} - ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
+							$":skull_crossbones: **{ev.Killer.Nickname} - {ev.Killer.Id} - ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - {ev.Target.Id} - ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					}
 				}
