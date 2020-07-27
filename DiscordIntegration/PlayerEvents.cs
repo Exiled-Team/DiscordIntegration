@@ -51,13 +51,13 @@ namespace DiscordIntegration_Plugin
 		public void On079GainExp(GainingExperienceEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp079Exp)
-				ProcessSTT.SendData($"{ev.Player.Nickname} {Plugin.translation.GainedExp}: {ev.Amount}, {ev.GainType}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":Stonks: {ev.Player.Nickname} {Plugin.translation.GainedExp}: {ev.Amount}, {ev.GainType}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void On079GainLvl(GainingLevelEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp079Lvl)
-				ProcessSTT.SendData($"{ev.Player.Nickname} {Plugin.translation.GainedLevel} {ev.OldLevel} -> {ev.NewLevel}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":Stonks: {ev.Player.Nickname} {Plugin.translation.GainedLevel} {ev.OldLevel} -> {ev.NewLevel}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerLeave(LeftEventArgs ev)
@@ -93,7 +93,7 @@ namespace DiscordIntegration_Plugin
 		public void OnTriggerTesla(TriggeringTeslaEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.TriggerTesla)
-				ProcessSTT.SendData($"{ev.Player.Nickname} {Plugin.translation.TriggeredTesla}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":Zap: {ev.Player.Nickname} {Plugin.translation.TriggeredTesla}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnGenClosed(ClosingGeneratorEventArgs ev)
@@ -120,13 +120,35 @@ namespace DiscordIntegration_Plugin
 		public void On914Activation(ActivatingEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp914Activation)
-				ProcessSTT.SendData($"{ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.Scp914HasBeenActivated} {Scp914Machine.singleton.knobState}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":gear: {ev.Player.Nickname} - {ev.Player.Role} {Plugin.translation.Scp914HasBeenActivated} {Scp914Machine.singleton.knobState}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void On914KnobChange(ChangingKnobSettingEventArgs ev)
 		{
+			string A = "";
+			switch (ev.KnobSetting)
+			{
+				case Scp914Knob.Rough:
+					A = ":clock1030:";
+					break;
+				case Scp914Knob.Coarse:
+					A = ":clock1130:";
+					break;
+				case Scp914Knob.OneToOne:
+					A = ":clock1230:";
+					break;
+				case Scp914Knob.Fine:
+					A = ":clock1:";
+					break;
+				case Scp914Knob.VeryFine:
+					A = ":clock130:";
+					break;
+				default:
+					A = "se bugeo xd";
+					break;
+			}
 			if (Plugin.Singleton.Config.Scp914KnobChange)
-				ProcessSTT.SendData($"{ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.Scp914Knobchange} {ev.KnobSetting}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{A} {ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.Scp914Knobchange} {ev.KnobSetting}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPocketEnter(EnteringPocketDimensionEventArgs ev)
@@ -141,7 +163,7 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.PocketEscape)
 				ProcessSTT.SendData(
-					$"{ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasEscapedPocketDimension}.",
+					$":door::man_running: {ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasEscapedPocketDimension}.",
 					HandleQueue.GameLogChannelId);		}
 
 		public void On106Teleport(TeleportingEventArgs ev)
@@ -162,7 +184,7 @@ namespace DiscordIntegration_Plugin
 			{
 				try
 				{
-					if (ev.Attacker != null && ev.Target.Role.GetTeam() == ev.Attacker.Role.GetTeam() && ev.Target != ev.Attacker)
+					if (ev.Attacker != null && ev.Target.Side == ev.Attacker.Side && ev.Target != ev.Attacker)
 						ProcessSTT.SendData(
 							$":crossed_swords: **{ev.Attacker.Nickname} ({ev.Attacker.Role}) {Plugin.translation.Damaged} {ev.Target.Nickname} ({ev.Target.Role}) {Plugin.translation._For} {ev.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
@@ -186,9 +208,9 @@ namespace DiscordIntegration_Plugin
 			{
 				try
 				{
-					if (ev.Killer != null && ev.Target.Role.GetTeam() == ev.Killer.Role.GetTeam())
+					if (ev.Killer != null && ev.Target.Side == ev.Killer.Side)
 						ProcessSTT.SendData(
-							$":o: **{ev.Killer.Nickname} - ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
+							$":x: **{ev.Killer.Nickname} - ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
 					{
@@ -210,7 +232,23 @@ namespace DiscordIntegration_Plugin
 			{
 				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($":bomb: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.ThrewAGrenade}.", HandleQueue.GameLogChannelId);
+				string t = "", emoji = "";
+				switch (ev.Id)
+				{
+					case 0:
+						t = "Granada de Fragmentación";
+						emoji = ":boom:";
+						break;
+					case 1:
+						t = "Granada Cegadora";
+						emoji = ":flashlight:";
+						break;
+					case 2:
+						t = "Bola (SCP-018)";
+						emoji = ":red_circle:";
+						break;
+				}
+				ProcessSTT.SendData($"{emoji} {ev.Player.Nickname} - ({ev.Player.Role}) lanzó una {t}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
@@ -230,7 +268,7 @@ namespace DiscordIntegration_Plugin
 			{
 				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($"{ev.Player.Nickname} - {Plugin.translation.HasBenChangedToA} {ev.NewRole}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":arrows_counterclockwise: {ev.Player.Nickname} - {Plugin.translation.HasBenChangedToA} {ev.NewRole}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
@@ -268,19 +306,19 @@ namespace DiscordIntegration_Plugin
 		public void OnIntercomSpeak(IntercomSpeakingEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Intercom)
-				ProcessSTT.SendData($":loud_sound: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasStartedUsingTheIntercom}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":loudspeaker: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasStartedUsingTheIntercom}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPickupItem(PickingUpItemEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.PickupItem)
-				ProcessSTT.SendData($"{ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasPickedUp} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":outbox_tray: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasPickedUp} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnDropItem(ItemDroppedEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.DropItem)
-				ProcessSTT.SendData($"{ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasDropped} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":inbox_tray: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasDropped} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnSetGroup(ChangingGroupEventArgs ev)
@@ -289,7 +327,7 @@ namespace DiscordIntegration_Plugin
 			{
 				if (Plugin.Singleton.Config.SetGroup)
 					ProcessSTT.SendData(
-						$"{ev.Player.Nickname} - {Plugin.translation.GroupSet}: **{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})**.",
+						$":heart: {ev.Player.Nickname} - {Plugin.translation.GroupSet}: **{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})**.",
 						HandleQueue.GameLogChannelId);
 			}
 			catch (Exception e)
