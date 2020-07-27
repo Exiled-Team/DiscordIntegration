@@ -93,7 +93,7 @@ namespace DiscordIntegration_Plugin
 		public void OnTriggerTesla(TriggeringTeslaEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.TriggerTesla)
-				ProcessSTT.SendData($":Zap: {ev.Player.Nickname} {Plugin.translation.TriggeredTesla}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":zap: {ev.Player.Nickname} {Plugin.translation.TriggeredTesla}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnGenClosed(ClosingGeneratorEventArgs ev)
