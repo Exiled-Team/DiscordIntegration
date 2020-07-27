@@ -188,7 +188,7 @@ namespace DiscordIntegration_Plugin
 				{
 					if (ev.Killer != null && ev.Target.Role.GetTeam() == ev.Killer.Role.GetTeam())
 						ProcessSTT.SendData(
-							$":o: **{ev.Killer.Nickname} - {ev.Killer.UserId} ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
+							$":skull_crossbones: **{ev.Killer.Nickname} - {ev.Killer.UserId} ({ev.Killer.Role}) __team-killed__ {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
 					{
@@ -238,8 +238,10 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.RoleSync)
 				Methods.CheckForSyncRole(ev.Player);
-			if (Plugin.Singleton.Config.PlayerJoin)
-				if (ev.Player.Nickname != "Dedicated Server")
+			if (Plugin.Singleton.Config.PlayerJoin && ev.Player.Nickname != "Dedicated Server")
+				if (!ev.Player.ReferenceHub.serverRoles.DoNotTrack)
+					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} ||({ev.Player.IPAddress})|| {Plugin.translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);
+				else if (!ev.Player.ReferenceHub.serverRoles.DoNotTrack)
 					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);
 		}
 
