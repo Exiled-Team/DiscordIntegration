@@ -241,7 +241,7 @@ namespace DiscordIntegration_Plugin
 			if (Plugin.Singleton.Config.PlayerJoin && ev.Player.Nickname != "Dedicated Server")
 				if (!ev.Player.ReferenceHub.serverRoles.DoNotTrack)
 					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} ||({ev.Player.IPAddress})|| {Plugin.translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);
-				else if (!ev.Player.ReferenceHub.serverRoles.DoNotTrack)
+				else if (ev.Player.ReferenceHub.serverRoles.DoNotTrack)
 					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);
 		}
 
