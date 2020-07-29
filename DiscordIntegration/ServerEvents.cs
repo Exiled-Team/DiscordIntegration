@@ -17,7 +17,7 @@ namespace DiscordIntegration_Plugin
                 ProcessSTT.SendData($":keyboard: {ev.Sender.Nickname}({ev.Sender.UserId}) {Plugin.translation.UsedCommand}: {ev.Name} {Args}", HandleQueue.CommandLogChannelId);
             if (ev.Name.ToLower() == "list")
             {
-                Log.Info("Getting List");
+                Log.Info("Fetching players...");
                 ev.IsAllowed = false;
                 string message = "";
                 foreach (Player player in Player.List)
@@ -29,9 +29,9 @@ namespace DiscordIntegration_Plugin
             }
             else if (ev.Name.ToLower() == "stafflist")
             {
-                Log.Info("Getting StaffList");
+                Log.Info("Getting Staff...");
                 ev.IsAllowed = false;
-                Log.Info("Staff list");
+                Log.Info("Staff:");
                 bool isStaff = false;
                 string names = "";
                 foreach (Player player in Player.List)

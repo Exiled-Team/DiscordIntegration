@@ -133,7 +133,7 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.PocketEnter)
 				ProcessSTT.SendData(
-					$"{ev.Player.Nickname} - {ev.Player.Role} ({ev.Player.Role}) {Plugin.translation.HasEnteredPocketDimension}.",
+					$":door: {ev.Player.Nickname} - {ev.Player.Role} ({ev.Player.Role}) {Plugin.translation.HasEnteredPocketDimension}.",
 					HandleQueue.GameLogChannelId);
 		}
 
@@ -141,7 +141,7 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.PocketEscape)
 				ProcessSTT.SendData(
-					$"{ev.Player.Nickname} - {ev.Player.Role} ({ev.Player.Role}) {Plugin.translation.HasEscapedPocketDimension}.",
+					$":high_brightness: {ev.Player.Nickname} - {ev.Player.Role} ({ev.Player.Role}) {Plugin.translation.HasEscapedPocketDimension}.",
 					HandleQueue.GameLogChannelId);		}
 
 		public void On106Teleport(TeleportingEventArgs ev)
@@ -230,7 +230,7 @@ namespace DiscordIntegration_Plugin
 			{
 				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.HasBenChangedToA} {ev.NewRole}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":mens: {ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.HasBenChangedToA} {ev.NewRole}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
@@ -238,8 +238,10 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.RoleSync)
 				Methods.CheckForSyncRole(ev.Player);
-			if (Plugin.Singleton.Config.PlayerJoin)
-				if (ev.Player.Nickname != "Dedicated Server")
+			if (Plugin.Singleton.Config.PlayerJoin && ev.Player.Nickname != "Dedicated Server")
+				if (!ev.Player.ReferenceHub.serverRoles.DoNotTrack)
+					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} ||({ev.Player.IPAddress})|| {Plugin.translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);
+				else if (!ev.Player.ReferenceHub.serverRoles.DoNotTrack)
 					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);
 		}
 
