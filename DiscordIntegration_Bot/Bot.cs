@@ -43,6 +43,7 @@ namespace DiscordIntegration_Bot
 
 		public async Task OnMessageReceived(SocketMessage message)
 		{
+            if (message is SocketSystemMessage sysMsg) return;
 			CommandContext context = new CommandContext(Client, (IUserMessage)message);
 
 			if (message.Content.StartsWith(Program.Config.BotPrefix) ||
