@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Exiled.API.Interfaces;
+using Exiled.API.Features;
 using GameCore;
 using MEC;
 using Newtonsoft.Json;
@@ -44,7 +45,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Server.ReportingCheater += ServerEvents.OnCheaterReport;
 
             Handlers.Scp914.ChangingKnobSetting += PlayerEvents.On914KnobChange;
-            Handlers.Player.UsingMedicalItem += PlayerEvents.OnMedicalItem;
+            Handlers.Player.MedicalItemUsed += PlayerEvents.OnMedicalItem;
             Handlers.Scp079.InteractingTesla += PlayerEvents.On079Tesla;
             Handlers.Player.PickingUpItem += PlayerEvents.OnPickupItem;
             Handlers.Player.InsertingGeneratorTablet += PlayerEvents.OnGenInsert;
@@ -75,7 +76,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Player.Joined += PlayerEvents.OnPlayerJoin;
             Handlers.Player.Left += PlayerEvents.OnPlayerLeave;
             Handlers.Player.ChangingRole += PlayerEvents.OnSetClass;
-            Handlers.Player.ChangingGroup += PlayerEvents.OnSetGroup;
+            //Handlers.Player.ChangingGroup += PlayerEvents.OnSetGroup;
             Handlers.Player.ChangingItem += PlayerEvents.OnItemChanged;
             Handlers.Scp914.Activating += PlayerEvents.On914Activation;
             Handlers.Scp106.Containing += PlayerEvents.On106Contain;
@@ -106,7 +107,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Server.ReportingCheater -= ServerEvents.OnCheaterReport;
 
             Handlers.Scp914.ChangingKnobSetting -= PlayerEvents.On914KnobChange;
-            Handlers.Player.UsingMedicalItem -= PlayerEvents.OnMedicalItem;
+            Handlers.Player.MedicalItemUsed -= PlayerEvents.OnMedicalItem;
             Handlers.Scp079.InteractingTesla -= PlayerEvents.On079Tesla;
             Handlers.Player.PickingUpItem -= PlayerEvents.OnPickupItem;
             Handlers.Player.InsertingGeneratorTablet -= PlayerEvents.OnGenInsert;
@@ -137,7 +138,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Player.Joined -= PlayerEvents.OnPlayerJoin;
             Handlers.Player.Left -= PlayerEvents.OnPlayerLeave;
             Handlers.Player.ChangingRole -= PlayerEvents.OnSetClass;
-            Handlers.Player.ChangingGroup -= PlayerEvents.OnSetGroup;
+            //Handlers.Player.ChangingGroup -= PlayerEvents.OnSetGroup;
             Handlers.Player.ChangingItem -= PlayerEvents.OnItemChanged;
             Handlers.Scp914.Activating -= PlayerEvents.On914Activation;
             Handlers.Scp106.Containing -= PlayerEvents.On106Contain;

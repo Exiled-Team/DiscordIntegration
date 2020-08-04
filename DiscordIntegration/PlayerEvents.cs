@@ -252,7 +252,7 @@ namespace DiscordIntegration_Plugin
 			}
 		}
 
-		public void OnMedicalItem(UsingMedicalItemEventArgs ev)
+		public void OnMedicalItem(UsedMedicalItemEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.MedicalItem)
 			{
@@ -321,7 +321,7 @@ namespace DiscordIntegration_Plugin
 				ProcessSTT.SendData($":inbox_tray: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasDropped} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
 		}
 
-		public void OnSetGroup(ChangingGroupEventArgs ev)
+		/*public void OnSetGroup(ChangingGroupEventArgs ev)
 		{
 			try
 			{
@@ -334,6 +334,6 @@ namespace DiscordIntegration_Plugin
 			{
 				Log.Error(e.ToString());
 			}
-		}
+		}*/
     }
 }
