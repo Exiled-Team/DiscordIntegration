@@ -20,7 +20,7 @@ namespace DiscordIntegration_Plugin
 			if (_locked)
 				return;
 			_locked = true;
-			Thread.Sleep(1000);
+			Thread.Sleep(5000);
 			try
 			{
 				Log.Info($"STT: Starting INIT for {ServerConsole.Port}");

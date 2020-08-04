@@ -14,7 +14,7 @@ namespace DiscordIntegration_Plugin
         {
             string Args = string.Join(" ", ev.Arguments);
             if (Plugin.Singleton.Config.RaCommands)
-                ProcessSTT.SendData($":keyboard: {ev.Sender.Nickname}({ev.Sender.UserId}) {Plugin.translation.UsedCommand}: {ev.Name} {Args}", HandleQueue.CommandLogChannelId);
+                ProcessSTT.SendData($":keyboard: {ev.Sender.Nickname}({ev.Sender.UserId}) {Plugin.Translation.UsedCommand}: {ev.Name} {Args}", HandleQueue.CommandLogChannelId);
             if (ev.Name.ToLower() == "list")
             {
                 Log.Info("Fetching players...");
@@ -24,7 +24,7 @@ namespace DiscordIntegration_Plugin
                     if (!player.IsHost)
                         message += $"{player.Nickname} - ({player.UserId})\n";
                 if (string.IsNullOrEmpty(message))
-                    message = $"{Plugin.translation.NoPlayersOnline}";
+                    message = $"{Plugin.Translation.NoPlayersOnline}";
                 ev.CommandSender.RaReply($"{message}", true, true, string.Empty);
             }
             else if (ev.Name.ToLower() == "stafflist")
@@ -44,7 +44,7 @@ namespace DiscordIntegration_Plugin
                 }
 
                 Log.Info($"Bool: {isStaff} Names: {names}");
-                string response = isStaff ? names : $"{Plugin.translation.NoStaffOnline}";
+                string response = isStaff ? names : $"{Plugin.Translation.NoStaffOnline}";
                 ev.CommandSender.RaReply($"{PlayerManager.players.Count}/{plugin.MaxPlayers} {response}", true, true, string.Empty);
             }
         }
@@ -52,40 +52,40 @@ namespace DiscordIntegration_Plugin
         public void OnWaitingForPlayers()
         {
             if (Plugin.Singleton.Config.WaitingForPlayers)
-                ProcessSTT.SendData($":hourglass: {Plugin.translation.WaitingForPlayers}", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":hourglass: {Plugin.Translation.WaitingForPlayers}", HandleQueue.GameLogChannelId);
         }
 
         public void OnRoundStart()
         {
             if (Plugin.Singleton.Config.RoundStart)
-                ProcessSTT.SendData($":arrow_forward: {Plugin.translation.RoundStarting}: {Player.List.Count()} {Plugin.translation.PlayersInRound}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":arrow_forward: {Plugin.Translation.RoundStarting}: {Player.List.Count()} {Plugin.Translation.PlayersInRound}.", HandleQueue.GameLogChannelId);
         }
 
         public void OnRoundEnd(RoundEndedEventArgs ev)
         {
             if (Plugin.Singleton.Config.RoundEnd)
-                ProcessSTT.SendData($":stop_button: {Plugin.translation.RoundEnded}: {Player.List.Count()} {Plugin.translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":stop_button: {Plugin.Translation.RoundEnded}: {Player.List.Count()} {Plugin.Translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
         }
 
         public void OnCheaterReport(ReportingCheaterEventArgs ev)
         {
             if (Plugin.Singleton.Config.CheaterReport)
-                ProcessSTT.SendData($"**{Plugin.translation.CheaterReportFiled}: {ev.Reporter.UserId} {Plugin.translation.Reported} {ev.Reported.UserId} {Plugin.translation._For} {ev.Reason}.**", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($"**{Plugin.Translation.CheaterReportFiled}: {ev.Reporter.UserId} {Plugin.Translation.Reported} {ev.Reported.UserId} {Plugin.Translation._For} {ev.Reason}.**", HandleQueue.GameLogChannelId);
         }
         
         public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
             string Argies = string.Join(" ", ev.Arguments);
             if (Plugin.Singleton.Config.ConsoleCommand)
-                ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.translation.HasRunClientConsoleCommand}: {ev.Name} {Argies}", HandleQueue.CommandLogChannelId);
+                ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.Translation.HasRunClientConsoleCommand}: {ev.Name} {Argies}", HandleQueue.CommandLogChannelId);
         }
         
         public void OnRespawn(RespawningTeamEventArgs ev)
         {
             if (Plugin.Singleton.Config.Respawn)
             {
-                string msg = ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? $":spy: {Plugin.translation.ChaosInsurgency}" : $":cop: {Plugin.translation.NineTailedFox}";
-                ProcessSTT.SendData($"{msg} {Plugin.translation.HasSpawnedWith} {ev.Players.Count} {Plugin.translation.Players}.", HandleQueue.GameLogChannelId);
+                string msg = ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? $":spy: {Plugin.Translation.ChaosInsurgency}" : $":cop: {Plugin.Translation.NineTailedFox}";
+                ProcessSTT.SendData($"{msg} {Plugin.Translation.HasSpawnedWith} {ev.Players.Count} {Plugin.Translation.Players}.", HandleQueue.GameLogChannelId);
             }
         }
     }

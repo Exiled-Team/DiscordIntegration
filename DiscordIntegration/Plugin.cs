@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Exiled.API.Features;
 using Exiled.API.Interfaces;
 using GameCore;
 using MEC;
@@ -19,6 +20,9 @@ namespace DiscordIntegration_Plugin
 		public PlayerEvents PlayerEvents;
 		public static Plugin Singleton;
 		public int MaxPlayers = ConfigFile.ServerConfig.GetInt("max_players", 20);
+		public override string Author { get; } = "Galaxy119, Jeppe & DGVagabond";
+		public override Version Version { get; } = new Version(2, 0, 1);
+		public override Version RequiredExiledVersion { get; } = new Version(2, 0, 10);
 
 		public override void OnEnabled()
 		{
@@ -44,7 +48,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Server.ReportingCheater += ServerEvents.OnCheaterReport;
 
             Handlers.Scp914.ChangingKnobSetting += PlayerEvents.On914KnobChange;
-            Handlers.Player.UsingMedicalItem += PlayerEvents.OnMedicalItem;
+            Handlers.Player.MedicalItemUsed += PlayerEvents.OnMedicalItem;
             Handlers.Scp079.InteractingTesla += PlayerEvents.On079Tesla;
             Handlers.Player.PickingUpItem += PlayerEvents.OnPickupItem;
             Handlers.Player.InsertingGeneratorTablet += PlayerEvents.OnGenInsert;
@@ -61,7 +65,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Player.TriggeringTesla += PlayerEvents.OnTriggerTesla;
             Handlers.Player.ThrowingGrenade += PlayerEvents.OnGrenadeThrown;
             Handlers.Player.Hurting += PlayerEvents.OnPlayerHurt;
-            Handlers.Player.Died += PlayerEvents.OnPlayerDeath;
+            Handlers.Player.Dying += PlayerEvents.OnPlayerDeath;
             Handlers.Player.Banned += PlayerEvents.OnPlayerBanned;
             Handlers.Player.InteractingDoor += PlayerEvents.OnDoorInteract;
             Handlers.Player.InteractingElevator += PlayerEvents.OnElevatorInteraction;
@@ -123,7 +127,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Player.TriggeringTesla -= PlayerEvents.OnTriggerTesla;
             Handlers.Player.ThrowingGrenade -= PlayerEvents.OnGrenadeThrown;
             Handlers.Player.Hurting -= PlayerEvents.OnPlayerHurt;
-            Handlers.Player.Died -= PlayerEvents.OnPlayerDeath;
+            Handlers.Player.Dying -= PlayerEvents.OnPlayerDeath;
             Handlers.Player.Banned -= PlayerEvents.OnPlayerBanned;
             Handlers.Player.InteractingDoor -= PlayerEvents.OnDoorInteract;
             Handlers.Player.InteractingElevator -= PlayerEvents.OnElevatorInteraction;
@@ -166,15 +170,13 @@ namespace DiscordIntegration_Plugin
 			
 		}
 
-		public static Translation translation = new Translation();
+		public static Translation Translation = new Translation();
 		private bool refreshTranslationFile = false;
 		private List<string> propertyNames = new List<string>();
 
 		public void LoadTranslation()
 		{
-			string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			string pluginsPath = Path.Combine(appData, "Plugins");
-			string configPath = Path.Combine(pluginsPath, "Integration");
+			string configPath = Path.Combine(Paths.Configs, "DiscordIntegration");
 			string translationFileName = Path.Combine(configPath, "translations.json");
 			string translationBackupFileName = Path.Combine(configPath, "translations_backup.json");
 
@@ -185,7 +187,7 @@ namespace DiscordIntegration_Plugin
 
 			if (!File.Exists(translationFileName))
 			{
-				string defaults = JObject.FromObject(translation).ToString();
+				string defaults = JObject.FromObject(Translation).ToString();
 
 				File.WriteAllText(translationFileName, defaults);
 				return;
@@ -203,7 +205,7 @@ namespace DiscordIntegration_Plugin
 				Log.Info("Invalid or corrupted translation file, creating backup and overwriting.");
 				Log.Error(e.Message);
 
-				string json = JObject.FromObject(translation).ToString();
+				string json = JObject.FromObject(Translation).ToString();
 
 				File.Copy(translationFileName, translationBackupFileName, true);
 
@@ -216,7 +218,7 @@ namespace DiscordIntegration_Plugin
 
 			try
 			{
-				translation = o.ToObject<Translation>(j);
+				Translation = o.ToObject<Translation>(j);
 			}
 			catch (Exception e)
 			{
@@ -227,7 +229,7 @@ namespace DiscordIntegration_Plugin
 
 			if (refreshTranslationFile)
 			{
-				string json = JObject.FromObject(translation).ToString();
+				string json = JObject.FromObject(Translation).ToString();
 
 				Log.Info("Invalid or missing translation element detected fixing: " + string.Join(", ", propertyNames) + ".");
 
