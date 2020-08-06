@@ -239,7 +239,7 @@ namespace DiscordIntegration_Plugin
 			if (Plugin.Singleton.Config.RoleSync)
 				Methods.CheckForSyncRole(ev.Player);
 			if (Plugin.Singleton.Config.PlayerJoin && ev.Player.Nickname != "Dedicated Server")
-				if (!ev.Player.ReferenceHub.serverRoles.DoNotTrack)
+				if (!ev.Player.ReferenceHub.serverRoles.DoNotTrack && plugin.Config.ShowIpAddresses)
 					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} ||({ev.Player.IPAddress})|| {Plugin.Translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);
 				else if (!ev.Player.ReferenceHub.serverRoles.DoNotTrack)
 					ProcessSTT.SendData($":arrow_right: **{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.Translation.HasJoinedTheGame}.**", HandleQueue.GameLogChannelId);

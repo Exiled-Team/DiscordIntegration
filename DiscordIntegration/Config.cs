@@ -55,6 +55,7 @@ namespace DiscordIntegration_Plugin
         public bool PlayerLeave { get; set; } = true;
         public bool PlayerReload { get; set; } = false;
         public bool SetGroup { get; set; } = true;
+        public bool ShowIpAddresses { get; set; } = true;
 
 
         [Description("Wether or not it should use the EggAddress IP for connecting to the Discord Bot. Note that while this option exists, it's use it not supported, or recommended.")]
