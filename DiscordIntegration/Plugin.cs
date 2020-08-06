@@ -21,7 +21,7 @@ namespace DiscordIntegration_Plugin
 		public static Plugin Singleton;
 		public int MaxPlayers = ConfigFile.ServerConfig.GetInt("max_players", 20);
 		public override string Author { get; } = "Galaxy119, Jeppe & DGVagabond";
-		public override Version Version { get; } = new Version(2, 0, 1);
+		public override Version Version { get; } = new Version(2, 0, 2);
 		public override Version RequiredExiledVersion { get; } = new Version(2, 0, 10);
 
 		public override void OnEnabled()
