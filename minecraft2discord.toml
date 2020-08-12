@@ -1,0 +1,187 @@
+
+# Configuration file for Minecraft2Discord
+#   - Curseforge : https://www.curseforge.com/minecraft/mc-mods/minecraft2discord
+#   - Github : https://github.com/Denis3D/Minecraft2Discord
+#   - Wiki : https://github.com/Denis3D/Minecraft2Discord/wiki
+#   - Discord : https://discord.gg/rzzd76c
+# Any message can be disabled by putting an empty value ("")
+# Discord markdown is supported
+# Variable can be used to make the message dynamic
+# There are in the form ${name_of_the_variable}
+# Global variables are usable everywhere :
+#   - global_online_players, global_max_players, global_unique_player, global_motd, global_mc_version, global_server_hostname, global_server_port, global_date, global_uptime
+# The following groups of variables are usable only when mentioned above the field
+#   - Player : player_name, player_uuid, player_health
+#   - Death : death_message, death_unformatted_message, death_attacker_name, death_attacker_health, death_key
+#   - Advancement : advancement_title, advancement_description
+#   - Message : message
+# You can found tutorials on the wiki
+[Discord]
+	# Token of the discord bot
+	token = "NzQwNzA2NzA0NjM0OTM3Mzk0.Xys64A.ZI2m9a7sK1opEeuEuJQhDOL5wZs"
+
+	# Discord Channels Ids
+	[Discord.Channels]
+		# All players messages
+		#Range: 0 ~ 9223372036854775807
+		chat = 740706565161746525
+		# All system messages (e.g. Death, Advancement, Join/Leave, Server Start/Stop)
+		#Range: 0 ~ 9223372036854775807
+		info = 742773559847551007
+
+# Messages settings
+[Messages]
+
+	# Join & leave settings
+	[Messages.JoinLeave]
+		# Leave Message
+		# Variables : Player
+		leave = "${player_name} se fue."
+		# Join Message
+		# Variables : Player
+		join = "${player_name} entro al servidor."
+		# Enable join & leave messages
+		enabled = true
+
+	# Start & stop settings
+	[Messages.StartStop]
+		# Stop Message
+		stop = "Se detuvo el servidor.<:PepeShinjiLuegoDeUnaRanked0a13:739683254835216436>"
+		# Start Message
+		start = "Inicio el servidor.<:PepePatoh:739681149063790734>"
+		# Enable start & stop messages
+		enabled = true
+		# Crash Message
+		# May not work for every crash
+		crash = "El server murio.<:PepeShinjiLuegoDeUnaRanked0a13:739683254835216436>"
+
+	# Death settings
+	[Messages.Death]
+		# Death Message
+		# Variables : Player, Death
+		message = "${player_name} se murio por {death_message}"
+		# Enable deaths messages
+		enabled = true
+
+	# Advancement settings
+	[Messages.Advancement]
+		# List of advancements that will not be sent. "modid" will remove every advancement from a mod (e.g. "minecraft") and "modid:path/to/advancement" will remove every advancement under this path (e.g. "minecraft:nether")
+		hiddenAdvancementsList = []
+		# Advancement Message
+		# Variables : Player, Advancement
+		message = "${player_name} ha hecho un logro ${advancement_title}. ${advancement_description}."
+		# Enable advancements messages
+		enabled = true
+
+# Status Settings
+[Status]
+
+	# Channel Name settings : Edit the name of a channel regularly
+	[Status.ChannelName]
+		# Message set when server stop
+		# Disabled when updatePeriod is less than 10 minutes (600s)
+		offlineMessage = "Server is offline"
+		# Text or Voice channel where the name is updated regularly
+		#Range: 0 ~ 9223372036854775807
+		channel = 0
+		# Period between two topic updates in seconds
+		# Due to discord limitation, minimum is 5 minutes (300s)
+		#Range: 310 ~ 9223372036854775807
+		updatePeriod = 610
+		# Text set as name of the channel
+		# If it is a text channel, space and special character will be replaced by '-'
+		message = "Players : ${global_online_players} / ${global_max_players}"
+		# Enable channel name update
+		enabled = false
+
+	# Presence settings
+	[Status.Presence]
+		# Period between two presence updates in seconds
+		#Range: 10 ~ 9223372036854775807
+		updatePeriod = 60
+		# Text set as presence for the bot
+		message = "$Minecraft con {global_online_players} / ${global_max_players} jugadores"
+		# Enable presence for the bot (e.g. : Playing Minecraft)
+		enabled = true
+
+	# Topic settings : Edit the topic of a channel regularly
+	[Status.Topic]
+		# Message set when server stop
+		# Disabled when updatePeriod is less than 10 minutes (600s)
+		offlineMessage = "Server is offline"
+		# Text channel where the topic is updated regularly
+		#Range: 0 ~ 9223372036854775807
+		channel = 0
+		# Period between two topic updates in seconds
+		# Due to discord limitation, minimum is 5 minutes (310s)
+		#Range: 310 ~ 9223372036854775807
+		updatePeriod = 610
+		# Text set as topic of the channel
+		message = "${global_online_players} / ${global_max_players} players"
+		# Enable topic update
+		enabled = false
+
+# Commands settings
+[Commands]
+
+	# Discord command settings
+	[Commands.DiscordCommand]
+		#Invite link for your discord server
+		link = "Invite link not set."
+		# Enable the discord command that displays an invitation link
+		enabled = false
+
+	# Commands integration settings
+	[Commands.CommandsIntegration]
+		# List of the roles that can use every command on discord (without quotes, separated by commas)
+		commandAllowedRolesIds = [739226387147128852]
+		# Prefix to execute Minecraft command on discord
+		prefix = "!"
+		# List of the members who can use every command on discord (without quotes, separated by commas)
+		commandAllowedUsersIds = []
+		# Message sent when someone executes a command on discord without enough permissions
+		errorMessage = "No tienes permisos para usar esto o el comando no existe"
+		#List of commands that everyone can use on discord
+		allowedCommandForEveryone = ["help"]
+
+# Webhooks settings
+[Webhooks]
+	# API url for webhook profile picture
+	# Variables : Player
+	avatarAPI = "https://mc-heads.net/head/${player_name}"
+	# Format for the name of the webhook
+	# Variables : Player
+	nameFormat = "${player_name}"
+	# Enable the use of webhooks (customized profile picture and name)
+	enabled = true
+	# Format used when webhooks are disabled
+	# Variables : Player, Message
+	disabledFormat = "**${player_name}** : ${message}"
+
+	# Server Account
+	[Webhooks.Server]
+		# Url to the avatar used to send message as the server
+		# Empty means bot avatar
+		avatarURL = "https://computercraftedu.com/img/computercraft.png"
+		# Name used to send message as the server
+		# Empty means bot name
+		name = ""
+
+# Some miscellaneous settings
+[Miscellaneous]
+	# Enable the use of nicknames. If false, account name will be used
+	nicknameEnabled = true
+	# Enable @everyone, @here and role mention
+	mentionsEnabled = false
+	# Should bots messages be sent to Minecraft chat
+	botMessageRelayEnabled = false
+
+# Variables settings
+[Variables]
+	# Change the format for the ${global_date} variable
+	# See available options on https://github.com/Denis3d/Minecraft2Discord/wiki/Date-&-Time-Formatting
+	dateFormat = "yyyy-MM-dd HH:mm:ss"
+	# Change the format for the ${global_uptime} variable
+	# See available options "Date and Time Patterns" on https://github.com/Denis3d/Minecraft2Discord/wiki/Date-&-Time-Formatting
+	uptimeFormat = "HH:mm"
+

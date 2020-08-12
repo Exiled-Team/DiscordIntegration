@@ -184,14 +184,21 @@ namespace DiscordIntegration_Plugin
 			{
 				try
 				{
+				
 					if (ev.Attacker != null && ev.Target.Side == ev.Attacker.Side && ev.Target != ev.Attacker)
 						ProcessSTT.SendData(
-							$":crossed_swords: **{ev.Attacker.Nickname} - {ev.Attacker.Id} - ({ev.Attacker.Role}) {Plugin.translation.Damaged} {ev.Target.Nickname} - {ev.Target.Id} - ({ev.Target.Role}) {Plugin.translation._For} {(int)ev.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.**",
+							$":crossed_swords: **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
-								$"{ev.HitInformations.Attacker}  {Plugin.translation.Damaged} {ev.Target.Nickname} - {ev.Target.Id} - ({ev.Target.Role}) {Plugin.translation._For} {(int)ev.Amount} {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
+								$"{ev.HitInformations.Attacker}  {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
+								HandleQueue.GameLogChannelId);
+					}
+					else if (ev.Target.IsCuffed && !ev.Attacker.Side.Equals(0))
+					{
+						ProcessSTT.SendData(
+								$"<a:siren_blue:729921541625741344> **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP que esta arrestado, lo daño con {DamageTypes.FromIndex(ev.Tool).name}.",
 								HandleQueue.GameLogChannelId);
 					}
 				}
@@ -210,12 +217,18 @@ namespace DiscordIntegration_Plugin
 				{
 					if (ev.Killer != null && ev.Target.Side == ev.Killer.Side)
 						ProcessSTT.SendData(
-							$":x: **{ev.Killer.Nickname} - {ev.Killer.Id} - ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - {ev.Target.Id} ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
+							$":x: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
 					{
 						ProcessSTT.SendData(
-							$":skull_crossbones: **{ev.Killer.Nickname} - {ev.Killer.Id} - ({ev.Killer.Role}) {Plugin.translation.Killed} {ev.Target.Nickname} - {ev.Target.Id} - ({ev.Target.Role}) {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
+							$":skull_crossbones: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
+							HandleQueue.GameLogChannelId);
+					}
+					else if (ev.Target.IsCuffed && ev.Target.IsDead)
+					{
+						ProcessSTT.SendData(
+							$"<a:reeee:709898816131825694> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					}
 				}
@@ -321,19 +334,19 @@ namespace DiscordIntegration_Plugin
 				ProcessSTT.SendData($":inbox_tray: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasDropped} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
 		}
 
-		/*public void OnSetGroup(ChangingGroupEventArgs ev)
+		public void OnSetGroup(ChangingGroupEventArgs ev)
 		{
 			try
 			{
 				if (Plugin.Singleton.Config.SetGroup)
 					ProcessSTT.SendData(
-						$":heart: {ev.Player.Nickname} - {Plugin.translation.GroupSet}: **{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})**.",
+						$"<a:CerberusDance:742610186413277184> {ev.Player.Nickname} - {Plugin.translation.GroupSet}: **{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})**.<a:CerberusDance:742610186413277184>",
 						HandleQueue.GameLogChannelId);
 			}
 			catch (Exception e)
 			{
 				Log.Error(e.ToString());
 			}
-		}*/
+		}
     }
 }
