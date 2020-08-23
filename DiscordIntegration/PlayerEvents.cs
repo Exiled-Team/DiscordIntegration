@@ -1,8 +1,11 @@
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using Scp914;
+using UnityEngine;
 
 namespace DiscordIntegration_Plugin
 {
@@ -195,7 +198,7 @@ namespace DiscordIntegration_Plugin
 								$"{ev.HitInformations.Attacker}  {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
 								HandleQueue.GameLogChannelId);
 					}
-					else if (ev.Target.IsCuffed && !ev.Attacker.Side.Equals(0))
+					else if (ev.Target.IsCuffed && ev.Attacker.Side != Side.Scp)
 					{
 						ProcessSTT.SendData(
 								$"<a:siren_blue:729921541625741344> **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP que esta arrestado, lo daño con {DamageTypes.FromIndex(ev.Tool).name}.",
@@ -225,7 +228,7 @@ namespace DiscordIntegration_Plugin
 							$":skull_crossbones: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					}
-					else if (ev.Target.IsCuffed && ev.Target.IsDead)
+					else if (ev.Target.IsCuffed && ev.Target.IsDead && ev.Killer.Side != Side.Scp)
 					{
 						ProcessSTT.SendData(
 							$"<a:reeee:709898816131825694> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
@@ -312,8 +315,10 @@ namespace DiscordIntegration_Plugin
 
 		public void OnPlayerBanned(BannedEventArgs ev)
 		{
-			if (Plugin.Singleton.Config.Banned)
-				ProcessSTT.SendData($":no_entry: {ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation._For} {ev.Details.Reason}. {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+		if (Plugin.Singleton.Config.Banned)
+				
+		   ProcessSTT.SendData($":no_entry: {ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation._For} {ev.Details.Reason}. {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+			Log.Info("Estoy aca");
 		}
 
 		public void OnIntercomSpeak(IntercomSpeakingEventArgs ev)
@@ -334,11 +339,11 @@ namespace DiscordIntegration_Plugin
 				ProcessSTT.SendData($":inbox_tray: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasDropped} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
 		}
 
-		public void OnSetGroup(ChangingGroupEventArgs ev)
+		/*public void OnSetGroup(ChangingGroupEventArgs ev)
 		{
 			try
 			{
-				if (Plugin.Singleton.Config.SetGroup)
+				if (Plugin.Singleton.Config.SetGroup && ev.NewGroup != null && ev.Player.Nickname != "Dedicated Server" && ev.NewGroup.BadgeText != null && ev.NewGroup.BadgeColor != null && ev.Player != null)
 					ProcessSTT.SendData(
 						$"<a:CerberusDance:742610186413277184> {ev.Player.Nickname} - {Plugin.translation.GroupSet}: **{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})**.<a:CerberusDance:742610186413277184>",
 						HandleQueue.GameLogChannelId);
@@ -347,6 +352,6 @@ namespace DiscordIntegration_Plugin
 			{
 				Log.Error(e.ToString());
 			}
-		}
+		}*/
     }
 }
