@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices.WindowsRuntime;
+using CISpy;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
@@ -9,12 +10,12 @@ using UnityEngine;
 
 namespace DiscordIntegration_Plugin
 {
-    public class PlayerEvents
-    {
-        public Plugin plugin;
-        public PlayerEvents(Plugin plugin) => this.plugin = plugin;
-        
-	    public void OnGenInsert(InsertingGeneratorTabletEventArgs ev)
+	public class PlayerEvents
+	{
+		public Plugin plugin;
+		public PlayerEvents(Plugin plugin) => this.plugin = plugin;
+
+		public void OnGenInsert(InsertingGeneratorTabletEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.GenInsert)
 				ProcessSTT.SendData($"{ev.Player.Nickname} {Plugin.translation.GenInserted}.", HandleQueue.GameLogChannelId);
@@ -187,8 +188,8 @@ namespace DiscordIntegration_Plugin
 			{
 				try
 				{
-				
-					if (ev.Attacker != null && ev.Target.Side == ev.Attacker.Side && ev.Target != ev.Attacker)
+
+					if (ev.Attacker != null && (ev.Target.Side == ev.Attacker.Side && ev.Target != ev.Attacker || (ev.Attacker.Side == Side.ChaosInsurgency && IsSpy(ev.Target)) || (ev.Target.Side == Side.ChaosInsurgency && IsSpy(ev.Attacker))))
 						ProcessSTT.SendData(
 							$":crossed_swords: **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
 							HandleQueue.GameLogChannelId);
@@ -203,7 +204,9 @@ namespace DiscordIntegration_Plugin
 						ProcessSTT.SendData(
 								$"<a:siren_blue:729921541625741344> **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP que esta arrestado, lo daño con {DamageTypes.FromIndex(ev.Tool).name}.",
 								HandleQueue.GameLogChannelId);
+
 					}
+
 				}
 				catch (Exception e)
 				{
@@ -218,7 +221,7 @@ namespace DiscordIntegration_Plugin
 			{
 				try
 				{
-					if (ev.Killer != null && ev.Target.Side == ev.Killer.Side)
+					if (ev.Killer != null && (ev.Target.Side == ev.Killer.Side || (ev.Killer.Side == Side.ChaosInsurgency && IsSpy(ev.Target)) || (ev.Target.Side == Side.ChaosInsurgency && IsSpy(ev.Killer))))
 						ProcessSTT.SendData(
 							$":x: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
 							HandleQueue.GameLogChannelId);
@@ -353,5 +356,17 @@ namespace DiscordIntegration_Plugin
 				Log.Error(e.ToString());
 			}
 		}*/
-    }
+		public bool IsSpy(Player p)
+		{
+			try
+			{
+				return CISpy.EventHandlers.spies.ContainsKey(p);
+			}
+			catch (Exception)
+			{
+				Log.Error("No se encontró CiSpy");
+				return false;
+			}
+		}
+	}
 }
