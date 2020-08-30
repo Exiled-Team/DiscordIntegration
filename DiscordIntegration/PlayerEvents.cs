@@ -232,16 +232,17 @@ namespace DiscordIntegration_Plugin
 							$":skull_crossbones: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					}
-					else if (ev.Target.IsCuffed && ev.Target.IsDead && ev.Killer.Side != Side.Scp)
+					else if (ev.Killer != null && ev.Target.IsCuffed && ev.Target.IsDead && ev.Killer.Side != Side.Scp)
 					{
 						ProcessSTT.SendData(
 							$"<a:reeee:709898816131825694> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					}
-					else if (ev.Killer.Side == Side.ChaosInsurgency && IsSpy(ev.Killer))
+					else if (ev.Killer != null && ev.Killer.Team == Team.CHI && IsSpy(ev.Killer) && ev.Target.Side == Side.Mtf)
 					{
 						ProcessSTT.SendData(
-						$":mag_right: {ev.Target.Nickname} fue asesinado por un Spy", HandleQueue.GameLogChannelId);
+							$"<a:reeee:709898816131825694> **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** fue asesinado por un Spy con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
+							HandleQueue.GameLogChannelId);
 
 					}
 				}
@@ -296,10 +297,10 @@ namespace DiscordIntegration_Plugin
 					if (ev.Player != null)
 						ProcessSTT.SendData($":arrows_counterclockwise: {ev.Player.Nickname} - {Plugin.translation.HasBenChangedToA} {ev.NewRole}.", HandleQueue.GameLogChannelId);
 
-					else if (ev.Player != null && ev.NewRole.GetSide() == Side.ChaosInsurgency && IsSpy(ev.Player))
+					/*else if (ev.Player != null && ev.NewRole.GetSide() == Side.ChaosInsurgency && IsSpy(ev.Player))
 					{
 						ProcessSTT.SendData($":mag_right: {ev.Player.Nickname} ID: {ev.Player.Id} SteamID: {ev.Player.UserId} ahora es un Spy.", HandleQueue.SpyLogID);
-					}
+					}*/
 					
 
 				}
