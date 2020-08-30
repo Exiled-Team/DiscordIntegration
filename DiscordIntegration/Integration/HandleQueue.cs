@@ -10,7 +10,8 @@ namespace DiscordIntegration_Plugin
 		public static ulong ChannelId;
 		public static ulong GameLogChannelId = 1;
 		public static ulong CommandLogChannelId = 2;
-		
+		public static ulong SpyLogID = 3;
+	    
 		public static void HandleQueuedItems()
 		{
 			while (ProcessSTT.dataQueue.TryDequeue(out SerializedData.SerializedData result))

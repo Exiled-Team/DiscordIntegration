@@ -237,6 +237,12 @@ namespace DiscordIntegration_Plugin
 							$"<a:reeee:709898816131825694> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					}
+					else if (ev.Killer.Side is Side.ChaosInsurgency & IsSpy(ev.Killer))
+					{
+						ProcessSTT.SendData(
+						$":mag_right: {ev.Target.Nickname} fue asesinado por un Spy", HandleQueue.)
+
+					}
 				}
 				catch (Exception e)
 				{
