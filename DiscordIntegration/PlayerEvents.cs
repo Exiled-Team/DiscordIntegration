@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using CISpy;
+using CISpy.API;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
@@ -237,10 +238,10 @@ namespace DiscordIntegration_Plugin
 							$"<a:reeee:709898816131825694> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 					}
-					else if (ev.Killer.Side is Side.ChaosInsurgency & IsSpy(ev.Killer))
+					else if (ev.Killer.Side == Side.ChaosInsurgency && IsSpy(ev.Killer))
 					{
 						ProcessSTT.SendData(
-						$":mag_right: {ev.Target.Nickname} fue asesinado por un Spy", HandleQueue.)
+						$":mag_right: {ev.Target.Nickname} fue asesinado por un Spy", HandleQueue.GameLogChannelId);
 
 					}
 				}
@@ -290,11 +291,22 @@ namespace DiscordIntegration_Plugin
 		public void OnSetClass(ChangingRoleEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.SetClass)
-			{
-				if (ev.Player == null)
-					return;
-				ProcessSTT.SendData($":arrows_counterclockwise: {ev.Player.Nickname} - {Plugin.translation.HasBenChangedToA} {ev.NewRole}.", HandleQueue.GameLogChannelId);
-			}
+				try
+				{
+					if (ev.Player != null)
+						ProcessSTT.SendData($":arrows_counterclockwise: {ev.Player.Nickname} - {Plugin.translation.HasBenChangedToA} {ev.NewRole}.", HandleQueue.GameLogChannelId);
+
+					else if (ev.Player != null && ev.NewRole.GetSide() == Side.ChaosInsurgency && IsSpy(ev.Player))
+					{
+						ProcessSTT.SendData($":mag_right: {ev.Player.Nickname} ID: {ev.Player.Id} SteamID: {ev.Player.UserId} ahora es un Spy.", HandleQueue.SpyLogID);
+					}
+					
+
+				}
+				catch (Exception e)
+				{
+					Log.Error($"Error en OnSetClass {e}");
+				}
 		}
 
 		public void OnPlayerJoin(JoinedEventArgs ev)
