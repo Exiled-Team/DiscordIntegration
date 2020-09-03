@@ -185,30 +185,28 @@ namespace DiscordIntegration_Plugin
 
 		public void OnPlayerHurt(HurtingEventArgs ev)
 		{
+
 			if (Plugin.Singleton.Config.PlayerHurt)
 			{
 				try
 				{
-
-					if (ev.Attacker != null && (ev.Target.Side == ev.Attacker.Side && ev.Target != ev.Attacker || (ev.Attacker.Side == Side.ChaosInsurgency && IsSpy(ev.Target)) || (ev.Target.Side == Side.ChaosInsurgency && IsSpy(ev.Attacker))))
-						ProcessSTT.SendData(
-							$":crossed_swords: **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
+					if (ev.Attacker != null && ev.Attacker != ev.Target)
+					{
+						if (ev.Target.Side == ev.Attacker.Side)
+						{
+							if (IsSpy(ev.Attacker) || IsSpy(ev.Target))
+								return;
+							ProcessSTT.SendData($":crossed_swords: **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
 							HandleQueue.GameLogChannelId);
-					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
-					{
-						ProcessSTT.SendData(
-								$"{ev.HitInformations.Attacker}  {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
-								HandleQueue.GameLogChannelId);
-					}
-					else if (ev.Target.IsCuffed && ev.Attacker.Side != Side.Scp)
-					{
-						ProcessSTT.SendData(
-								$"<a:siren_blue:729921541625741344> **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP que esta arrestado, lo daño con {DamageTypes.FromIndex(ev.Tool).name}.",
-								HandleQueue.GameLogChannelId);
+						}
+						else if (ev.Target.IsCuffed && ev.Attacker.Side != Side.Scp)
+						{
+							ProcessSTT.SendData($"<a:siren_blue:729921541625741344> **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP que esta arrestado, lo daño con {DamageTypes.FromIndex(ev.Tool).name}.",
+									HandleQueue.GameLogChannelId);
+						}
 
-					}
-
-				}
+                    }
+                }
 				catch (Exception e)
 				{
 					Log.Error($"Player Hurt error: {e}");
@@ -222,31 +220,37 @@ namespace DiscordIntegration_Plugin
 			{
 				try
 				{
-					if (ev.Killer != null && (ev.Target.Side == ev.Killer.Side || (ev.Killer.Side == Side.ChaosInsurgency && IsSpy(ev.Target)) || (ev.Target.Side == Side.ChaosInsurgency && IsSpy(ev.Killer))))
-						ProcessSTT.SendData(
-							$":x: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
-							HandleQueue.GameLogChannelId);
-					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
+					if (ev.Killer != null && ev.Killer != ev.Target)
 					{
-						ProcessSTT.SendData(
-							$":skull_crossbones: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
-							HandleQueue.GameLogChannelId);
-					}
-					else if (ev.Killer != null && ev.Target.IsCuffed && ev.Target.IsDead && ev.Killer.Side != Side.Scp)
-					{
-						ProcessSTT.SendData(
-							$"<a:reeee:709898816131825694> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
-							HandleQueue.GameLogChannelId);
-					}
-					else if (ev.Killer != null && ev.Killer.Team == Team.CHI && IsSpy(ev.Killer) && ev.Target.Side == Side.Mtf)
-					{
-						ProcessSTT.SendData(
-							$"<a:reeee:709898816131825694> **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** fue asesinado por un Spy con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
-							HandleQueue.GameLogChannelId);
+						if (ev.Target.Side == ev.Killer.Side)
+						{
 
-					}
-				}
-				catch (Exception e)
+							if (IsSpy(ev.Killer))
+							{
+								ProcessSTT.SendData($"<a:VenAqui:746307229505945687> **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role})** fue asesinado por un espia, con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <a:VenAqui:746307229505945687>",
+								HandleQueue.GameLogChannelId);
+								return;
+							}
+							else if (IsSpy(ev.Target))
+							{
+								ProcessSTT.SendData($"<:FBI:729918970446086225> **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role})** asesino a un espia, con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:FBI:729918970446086225>  ",
+								 HandleQueue.GameLogChannelId);
+								return;
+							}
+
+							ProcessSTT.SendData($"<a:jajajno:746302273386446879>  **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <a:jajajno:746302273386446879> ",
+							HandleQueue.GameLogChannelId);
+						}
+						else if (ev.Target.IsCuffed && ev.Killer.Side != Side.Scp)
+						{
+							ProcessSTT.SendData($"<a:reeee:709898816131825694> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
+							HandleQueue.GameLogChannelId);
+						}
+
+
+                    }
+                }
+                catch (Exception e)
 				{
 					Log.Error($"Player Hurt error: {e}");
 				}
@@ -339,8 +343,7 @@ namespace DiscordIntegration_Plugin
 		{
 		if (Plugin.Singleton.Config.Banned)
 				
-		   ProcessSTT.SendData($":no_entry: {ev.Details.OriginalName} - {ev.Details.Id} {Plugin.translation.WasBannedBy} {ev.Details.Issuer} {Plugin.translation._For} {ev.Details.Reason}. {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
-			Log.Info("Estoy aca");
+		   ProcessSTT.SendData($":no_entry: **{ev.Details.OriginalName}** - ID: **{ev.Details.Id}** IP: **{ev.Player.IPAddress}** {Plugin.translation.WasBannedBy} **{ev.Details.Issuer}** {Plugin.translation._For} **{ev.Details.Reason}.** {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
 		}
 
 		public void OnIntercomSpeak(IntercomSpeakingEventArgs ev)
@@ -379,6 +382,7 @@ namespace DiscordIntegration_Plugin
 		{
 			try
 			{
+
 				return CISpy.EventHandlers.spies.ContainsKey(p);
 			}
 			catch (Exception)
