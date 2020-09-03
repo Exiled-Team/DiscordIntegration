@@ -233,7 +233,7 @@ namespace DiscordIntegration_Plugin
 							}
 							else if (IsSpy(ev.Target))
 							{
-								ProcessSTT.SendData($"<:FBI:729918970446086225> **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role})** asesino a un espia, con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:FBI:729918970446086225>  ",
+								ProcessSTT.SendData($"<:FBI:729918970446086225> **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role})** asesino a un espia que era **{ev.Target.Nickname}** - ID: {ev.Target.Id} fue asesinado con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:FBI:729918970446086225>  ",
 								 HandleQueue.GameLogChannelId);
 								return;
 							}
