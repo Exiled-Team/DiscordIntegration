@@ -63,7 +63,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Player.ThrowingGrenade += PlayerEvents.OnGrenadeThrown;
             Handlers.Player.Hurting += PlayerEvents.OnPlayerHurt;
 			Handlers.Player.Dying += PlayerEvents.OnPlayerDeath;
-            Handlers.Player.Banned += PlayerEvents.OnPlayerBanned;
+            //Handlers.Player.Banned += PlayerEvents.OnPlayerBanned;
             Handlers.Player.InteractingDoor += PlayerEvents.OnDoorInteract;
             Handlers.Player.InteractingElevator += PlayerEvents.OnElevatorInteraction;
             Handlers.Player.InteractingLocker += PlayerEvents.OnLockerInteraction;
@@ -125,7 +125,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Player.ThrowingGrenade -= PlayerEvents.OnGrenadeThrown;
             Handlers.Player.Hurting -= PlayerEvents.OnPlayerHurt;
 			Handlers.Player.Dying -= PlayerEvents.OnPlayerDeath;
-            Handlers.Player.Banned -= PlayerEvents.OnPlayerBanned;
+            //Handlers.Player.Banned -= PlayerEvents.OnPlayerBanned;
             Handlers.Player.InteractingDoor -= PlayerEvents.OnDoorInteract;
             Handlers.Player.InteractingElevator -= PlayerEvents.OnElevatorInteraction;
             Handlers.Player.InteractingLocker -= PlayerEvents.OnLockerInteraction;

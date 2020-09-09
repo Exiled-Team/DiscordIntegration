@@ -339,12 +339,12 @@ namespace DiscordIntegration_Plugin
 						HandleQueue.GameLogChannelId);
 		}
 
-		public void OnPlayerBanned(BannedEventArgs ev)
+		/*public void OnPlayerBanned(BannedEventArgs ev)
 		{
 		if (Plugin.Singleton.Config.Banned)
 				
 		   ProcessSTT.SendData($":no_entry: **{ev.Details.OriginalName}** - ID: **{ev.Details.Id}** IP: **{ev.Player.IPAddress}** {Plugin.translation.WasBannedBy} **{ev.Details.Issuer}** {Plugin.translation._For} **{ev.Details.Reason}.** {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
-		}
+		}*/
 
 		public void OnIntercomSpeak(IntercomSpeakingEventArgs ev)
 		{
