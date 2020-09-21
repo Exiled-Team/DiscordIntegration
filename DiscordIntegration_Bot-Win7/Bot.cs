@@ -16,7 +16,8 @@ namespace DiscordIntegration_Bot
 		public static DiscordSocketClient Client => client ?? (client = new DiscordSocketClient());
 		private readonly Program program;
 		private static string _appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-		private static string _plugins = Path.Combine(_appData, "Plugins");
+		private static string _exiled = Path.Combine(_appData, "EXILED");
+		private static string _plugins = Path.Combine(_exiled, "Plugins");
 		private static string _diPath = Path.Combine(_plugins, "Integration");
 		private string roleSync = Path.Combine(_diPath, "Sync-Roles.txt");
 		private string userSync = Path.Combine(_diPath, "Sync-Users.txt");
