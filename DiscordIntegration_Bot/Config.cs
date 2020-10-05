@@ -14,7 +14,6 @@ namespace DiscordIntegration_Bot
 		public ulong Permlevel4Id { get; set; }
 		public ulong CommandLogChannelId { get; set; }
 		public ulong GameLogChannelId { get; set; }
-		//public ulong SpyLogID { get; set; }
 		public Dictionary<string, PermLevel> AllowedCommands { get; set; }
 		public ulong StaffRoleId { get; set; }
 		public bool EggMode { get; set; }

@@ -28,60 +28,60 @@ namespace DiscordIntegration_Plugin
 			MapEvents = new MapEvents(this);
 			ServerEvents = new ServerEvents(this);
 			PlayerEvents = new PlayerEvents(this);
-			
+
 			Handlers.Map.Decontaminating += MapEvents.OnDecon;
-            Handlers.Map.GeneratorActivated += MapEvents.OnGenFinish;
-            Handlers.Warhead.Starting += MapEvents.OnWarheadStart;
-            Handlers.Warhead.Stopping += MapEvents.OnWarheadCancelled;
-            Handlers.Warhead.Detonated += MapEvents.OnWarheadDetonation;
-            Handlers.Scp914.UpgradingItems += MapEvents.OnScp194Upgrade;
+			Handlers.Map.GeneratorActivated += MapEvents.OnGenFinish;
+			Handlers.Warhead.Starting += MapEvents.OnWarheadStart;
+			Handlers.Warhead.Stopping += MapEvents.OnWarheadCancelled;
+			Handlers.Warhead.Detonated += MapEvents.OnWarheadDetonation;
+			Handlers.Scp914.UpgradingItems += MapEvents.OnScp194Upgrade;
 
-            Handlers.Server.SendingRemoteAdminCommand += ServerEvents.OnCommand;
-            Handlers.Server.WaitingForPlayers += ServerEvents.OnWaitingForPlayers;
-            Handlers.Server.SendingConsoleCommand += ServerEvents.OnConsoleCommand;
-            Handlers.Server.RoundStarted += ServerEvents.OnRoundStart;
-            Handlers.Server.RoundEnded += ServerEvents.OnRoundEnd;
-            Handlers.Server.RespawningTeam += ServerEvents.OnRespawn;
-            Handlers.Server.ReportingCheater += ServerEvents.OnCheaterReport;
+			Handlers.Server.SendingRemoteAdminCommand += ServerEvents.OnCommand;
+			Handlers.Server.WaitingForPlayers += ServerEvents.OnWaitingForPlayers;
+			Handlers.Server.SendingConsoleCommand += ServerEvents.OnConsoleCommand;
+			Handlers.Server.RoundStarted += ServerEvents.OnRoundStart;
+			Handlers.Server.RoundEnded += ServerEvents.OnRoundEnd;
+			Handlers.Server.RespawningTeam += ServerEvents.OnRespawn;
+			Handlers.Server.ReportingCheater += ServerEvents.OnCheaterReport;
 
-            Handlers.Scp914.ChangingKnobSetting += PlayerEvents.On914KnobChange;
-            Handlers.Player.MedicalItemUsed += PlayerEvents.OnMedicalItem;
-            Handlers.Scp079.InteractingTesla += PlayerEvents.On079Tesla;
-            Handlers.Player.PickingUpItem += PlayerEvents.OnPickupItem;
-            Handlers.Player.InsertingGeneratorTablet += PlayerEvents.OnGenInsert;
-            Handlers.Player.EjectingGeneratorTablet += PlayerEvents.OnGenEject;
-            Handlers.Player.UnlockingGenerator += PlayerEvents.OnGenUnlock;
-            Handlers.Player.OpeningGenerator += PlayerEvents.OnGenOpen;
-            Handlers.Player.ClosingGenerator += PlayerEvents.OnGenClosed;
-            Handlers.Scp079.GainingLevel += PlayerEvents.On079GainLvl;
-            Handlers.Scp079.GainingExperience += PlayerEvents.On079GainExp;
-            Handlers.Player.EscapingPocketDimension += PlayerEvents.OnPocketEscape;
-            Handlers.Player.EnteringPocketDimension += PlayerEvents.OnPocketEnter;
-            Handlers.Scp106.CreatingPortal += PlayerEvents.On106CreatePortal;
-            Handlers.Player.ActivatingWarheadPanel += PlayerEvents.OnWarheadAccess;
-            Handlers.Player.TriggeringTesla += PlayerEvents.OnTriggerTesla;
-            Handlers.Player.ThrowingGrenade += PlayerEvents.OnGrenadeThrown;
-            Handlers.Player.Hurting += PlayerEvents.OnPlayerHurt;
+			Handlers.Scp914.ChangingKnobSetting += PlayerEvents.On914KnobChange;
+			Handlers.Player.MedicalItemUsed += PlayerEvents.OnMedicalItem;
+			Handlers.Scp079.InteractingTesla += PlayerEvents.On079Tesla;
+			Handlers.Player.PickingUpItem += PlayerEvents.OnPickupItem;
+			Handlers.Player.InsertingGeneratorTablet += PlayerEvents.OnGenInsert;
+			Handlers.Player.EjectingGeneratorTablet += PlayerEvents.OnGenEject;
+			Handlers.Player.UnlockingGenerator += PlayerEvents.OnGenUnlock;
+			Handlers.Player.OpeningGenerator += PlayerEvents.OnGenOpen;
+			Handlers.Player.ClosingGenerator += PlayerEvents.OnGenClosed;
+			Handlers.Scp079.GainingLevel += PlayerEvents.On079GainLvl;
+			Handlers.Scp079.GainingExperience += PlayerEvents.On079GainExp;
+			Handlers.Player.EscapingPocketDimension += PlayerEvents.OnPocketEscape;
+			Handlers.Player.EnteringPocketDimension += PlayerEvents.OnPocketEnter;
+			Handlers.Scp106.CreatingPortal += PlayerEvents.On106CreatePortal;
+			Handlers.Player.ActivatingWarheadPanel += PlayerEvents.OnWarheadAccess;
+			Handlers.Player.TriggeringTesla += PlayerEvents.OnTriggerTesla;
+			Handlers.Player.ThrowingGrenade += PlayerEvents.OnGrenadeThrown;
+			Handlers.Player.Hurting += PlayerEvents.OnPlayerHurt;
 			Handlers.Player.Dying += PlayerEvents.OnPlayerDeath;
-            //Handlers.Player.Banned += PlayerEvents.OnPlayerBanned;
-            Handlers.Player.InteractingDoor += PlayerEvents.OnDoorInteract;
-            Handlers.Player.InteractingElevator += PlayerEvents.OnElevatorInteraction;
-            Handlers.Player.InteractingLocker += PlayerEvents.OnLockerInteraction;
-            Handlers.Player.IntercomSpeaking += PlayerEvents.OnIntercomSpeak;
-            Handlers.Player.Handcuffing += PlayerEvents.OnPlayerHandcuffed;
-            Handlers.Player.RemovingHandcuffs += PlayerEvents.OnPlayerFreed;
-            Handlers.Scp106.Teleporting += PlayerEvents.On106Teleport;
-            Handlers.Player.ReloadingWeapon += PlayerEvents.OnPlayerReload;
-            Handlers.Player.ItemDropped += PlayerEvents.OnDropItem;
-            Handlers.Player.Joined += PlayerEvents.OnPlayerJoin;
-            Handlers.Player.Left += PlayerEvents.OnPlayerLeave;
-            Handlers.Player.ChangingRole += PlayerEvents.OnSetClass;
-            //Handlers.Player.ChangingGroup += PlayerEvents.OnSetGroup;
-            Handlers.Player.ChangingItem += PlayerEvents.OnItemChanged;
-            Handlers.Scp914.Activating += PlayerEvents.On914Activation;
-            Handlers.Scp106.Containing += PlayerEvents.On106Contain;
+			//Handlers.Player.Banned += PlayerEvents.OnPlayerBanned;
+			Handlers.Player.InteractingDoor += PlayerEvents.OnDoorInteract;
+			Handlers.Player.InteractingElevator += PlayerEvents.OnElevatorInteraction;
+			Handlers.Player.InteractingLocker += PlayerEvents.OnLockerInteraction;
+			Handlers.Player.IntercomSpeaking += PlayerEvents.OnIntercomSpeak;
+			Handlers.Player.Handcuffing += PlayerEvents.OnPlayerHandcuffed;
+			Handlers.Player.RemovingHandcuffs += PlayerEvents.OnPlayerFreed;
+			Handlers.Scp106.Teleporting += PlayerEvents.On106Teleport;
+			Handlers.Player.ReloadingWeapon += PlayerEvents.OnPlayerReload;
+			Handlers.Player.ItemDropped += PlayerEvents.OnDropItem;
+			Handlers.Player.Joined += PlayerEvents.OnPlayerJoin;
+			Handlers.Player.Left += PlayerEvents.OnPlayerLeave;
+			Handlers.Player.ChangingRole += PlayerEvents.OnSetClass;
+			//Handlers.Player.ChangingGroup += PlayerEvents.OnSetGroup;
+			Handlers.Player.ChangingItem += PlayerEvents.OnItemChanged;
+			Handlers.Scp914.Activating += PlayerEvents.On914Activation;
+			Handlers.Scp106.Containing += PlayerEvents.On106Contain;
 
-            LoadTranslation();
+			LoadTranslation();
 
 			new Thread(ProcessSTT.Init).Start();
 			Timing.RunCoroutine(HandleQueue.Handle(), "handle");
@@ -92,70 +92,70 @@ namespace DiscordIntegration_Plugin
 		public override void OnDisabled()
 		{
 			Handlers.Map.Decontaminating -= MapEvents.OnDecon;
-            Handlers.Map.GeneratorActivated -= MapEvents.OnGenFinish;
-            Handlers.Warhead.Starting -= MapEvents.OnWarheadStart;
-            Handlers.Warhead.Stopping -= MapEvents.OnWarheadCancelled;
-            Handlers.Warhead.Detonated -= MapEvents.OnWarheadDetonation;
-            Handlers.Scp914.UpgradingItems -= MapEvents.OnScp194Upgrade;
+			Handlers.Map.GeneratorActivated -= MapEvents.OnGenFinish;
+			Handlers.Warhead.Starting -= MapEvents.OnWarheadStart;
+			Handlers.Warhead.Stopping -= MapEvents.OnWarheadCancelled;
+			Handlers.Warhead.Detonated -= MapEvents.OnWarheadDetonation;
+			Handlers.Scp914.UpgradingItems -= MapEvents.OnScp194Upgrade;
 
-            Handlers.Server.SendingRemoteAdminCommand -= ServerEvents.OnCommand;
-            Handlers.Server.WaitingForPlayers -= ServerEvents.OnWaitingForPlayers;
-            Handlers.Server.SendingConsoleCommand -= ServerEvents.OnConsoleCommand;
-            Handlers.Server.RoundStarted -= ServerEvents.OnRoundStart;
-            Handlers.Server.RoundEnded -= ServerEvents.OnRoundEnd;
-            Handlers.Server.RespawningTeam -= ServerEvents.OnRespawn;
-            Handlers.Server.ReportingCheater -= ServerEvents.OnCheaterReport;
+			Handlers.Server.SendingRemoteAdminCommand -= ServerEvents.OnCommand;
+			Handlers.Server.WaitingForPlayers -= ServerEvents.OnWaitingForPlayers;
+			Handlers.Server.SendingConsoleCommand -= ServerEvents.OnConsoleCommand;
+			Handlers.Server.RoundStarted -= ServerEvents.OnRoundStart;
+			Handlers.Server.RoundEnded -= ServerEvents.OnRoundEnd;
+			Handlers.Server.RespawningTeam -= ServerEvents.OnRespawn;
+			Handlers.Server.ReportingCheater -= ServerEvents.OnCheaterReport;
 
-            Handlers.Scp914.ChangingKnobSetting -= PlayerEvents.On914KnobChange;
-            Handlers.Player.MedicalItemUsed -= PlayerEvents.OnMedicalItem;
-            Handlers.Scp079.InteractingTesla -= PlayerEvents.On079Tesla;
-            Handlers.Player.PickingUpItem -= PlayerEvents.OnPickupItem;
-            Handlers.Player.InsertingGeneratorTablet -= PlayerEvents.OnGenInsert;
-            Handlers.Player.EjectingGeneratorTablet -= PlayerEvents.OnGenEject;
-            Handlers.Player.UnlockingGenerator -= PlayerEvents.OnGenUnlock;
-            Handlers.Player.OpeningGenerator -= PlayerEvents.OnGenOpen;
-            Handlers.Player.ClosingGenerator -= PlayerEvents.OnGenClosed;
-            Handlers.Scp079.GainingLevel -= PlayerEvents.On079GainLvl;
-            Handlers.Scp079.GainingExperience -= PlayerEvents.On079GainExp;
-            Handlers.Player.EscapingPocketDimension -= PlayerEvents.OnPocketEscape;
-            Handlers.Player.EnteringPocketDimension -= PlayerEvents.OnPocketEnter;
-            Handlers.Scp106.CreatingPortal -= PlayerEvents.On106CreatePortal;
-            Handlers.Player.ActivatingWarheadPanel -= PlayerEvents.OnWarheadAccess;
-            Handlers.Player.TriggeringTesla -= PlayerEvents.OnTriggerTesla;
-            Handlers.Player.ThrowingGrenade -= PlayerEvents.OnGrenadeThrown;
-            Handlers.Player.Hurting -= PlayerEvents.OnPlayerHurt;
+			Handlers.Scp914.ChangingKnobSetting -= PlayerEvents.On914KnobChange;
+			Handlers.Player.MedicalItemUsed -= PlayerEvents.OnMedicalItem;
+			Handlers.Scp079.InteractingTesla -= PlayerEvents.On079Tesla;
+			Handlers.Player.PickingUpItem -= PlayerEvents.OnPickupItem;
+			Handlers.Player.InsertingGeneratorTablet -= PlayerEvents.OnGenInsert;
+			Handlers.Player.EjectingGeneratorTablet -= PlayerEvents.OnGenEject;
+			Handlers.Player.UnlockingGenerator -= PlayerEvents.OnGenUnlock;
+			Handlers.Player.OpeningGenerator -= PlayerEvents.OnGenOpen;
+			Handlers.Player.ClosingGenerator -= PlayerEvents.OnGenClosed;
+			Handlers.Scp079.GainingLevel -= PlayerEvents.On079GainLvl;
+			Handlers.Scp079.GainingExperience -= PlayerEvents.On079GainExp;
+			Handlers.Player.EscapingPocketDimension -= PlayerEvents.OnPocketEscape;
+			Handlers.Player.EnteringPocketDimension -= PlayerEvents.OnPocketEnter;
+			Handlers.Scp106.CreatingPortal -= PlayerEvents.On106CreatePortal;
+			Handlers.Player.ActivatingWarheadPanel -= PlayerEvents.OnWarheadAccess;
+			Handlers.Player.TriggeringTesla -= PlayerEvents.OnTriggerTesla;
+			Handlers.Player.ThrowingGrenade -= PlayerEvents.OnGrenadeThrown;
+			Handlers.Player.Hurting -= PlayerEvents.OnPlayerHurt;
 			Handlers.Player.Dying -= PlayerEvents.OnPlayerDeath;
-            //Handlers.Player.Banned -= PlayerEvents.OnPlayerBanned;
-            Handlers.Player.InteractingDoor -= PlayerEvents.OnDoorInteract;
-            Handlers.Player.InteractingElevator -= PlayerEvents.OnElevatorInteraction;
-            Handlers.Player.InteractingLocker -= PlayerEvents.OnLockerInteraction;
-            Handlers.Player.IntercomSpeaking -= PlayerEvents.OnIntercomSpeak;
-            Handlers.Player.Handcuffing -= PlayerEvents.OnPlayerHandcuffed;
-            Handlers.Player.RemovingHandcuffs -= PlayerEvents.OnPlayerFreed;
-            Handlers.Scp106.Teleporting -= PlayerEvents.On106Teleport;
-            Handlers.Player.ReloadingWeapon -= PlayerEvents.OnPlayerReload;
-            Handlers.Player.ItemDropped -= PlayerEvents.OnDropItem;
-            Handlers.Player.Joined -= PlayerEvents.OnPlayerJoin;
-            Handlers.Player.Left -= PlayerEvents.OnPlayerLeave;
-            Handlers.Player.ChangingRole -= PlayerEvents.OnSetClass;
-            //Handlers.Player.ChangingGroup -= PlayerEvents.OnSetGroup;
-            Handlers.Player.ChangingItem -= PlayerEvents.OnItemChanged;
-            Handlers.Scp914.Activating -= PlayerEvents.On914Activation;
-            Handlers.Scp106.Containing -= PlayerEvents.On106Contain;
+			//Handlers.Player.Banned -= PlayerEvents.OnPlayerBanned;
+			Handlers.Player.InteractingDoor -= PlayerEvents.OnDoorInteract;
+			Handlers.Player.InteractingElevator -= PlayerEvents.OnElevatorInteraction;
+			Handlers.Player.InteractingLocker -= PlayerEvents.OnLockerInteraction;
+			Handlers.Player.IntercomSpeaking -= PlayerEvents.OnIntercomSpeak;
+			Handlers.Player.Handcuffing -= PlayerEvents.OnPlayerHandcuffed;
+			Handlers.Player.RemovingHandcuffs -= PlayerEvents.OnPlayerFreed;
+			Handlers.Scp106.Teleporting -= PlayerEvents.On106Teleport;
+			Handlers.Player.ReloadingWeapon -= PlayerEvents.OnPlayerReload;
+			Handlers.Player.ItemDropped -= PlayerEvents.OnDropItem;
+			Handlers.Player.Joined -= PlayerEvents.OnPlayerJoin;
+			Handlers.Player.Left -= PlayerEvents.OnPlayerLeave;
+			Handlers.Player.ChangingRole -= PlayerEvents.OnSetClass;
+			//Handlers.Player.ChangingGroup -= PlayerEvents.OnSetGroup;
+			Handlers.Player.ChangingItem -= PlayerEvents.OnItemChanged;
+			Handlers.Scp914.Activating -= PlayerEvents.On914Activation;
+			Handlers.Scp106.Containing -= PlayerEvents.On106Contain;
 
-            PlayerEvents = null;
-            MapEvents = null;
-            ServerEvents = null;
-            
+			PlayerEvents = null;
+			MapEvents = null;
+			ServerEvents = null;
+
 			Timing.KillCoroutines("handle");
 			Timing.KillCoroutines("update");
 			Timing.KillCoroutines("updatechan");
 			Timing.KillCoroutines("ticks");
 		}
-		
+
 		public IEnumerator<float> UpdateStatus()
 		{
-			for (;;)
+			for (; ; )
 			{
 				ProcessSTT.SendData($"updateStatus {PlayerManager.players.Count}/{ConfigFile.ServerConfig.GetInt("max_players")}", 0);
 				yield return Timing.WaitForSeconds(5f);
@@ -164,7 +164,7 @@ namespace DiscordIntegration_Plugin
 
 		public override void OnReloaded()
 		{
-			
+
 		}
 
 		public static Translation translation = new Translation();
@@ -211,7 +211,7 @@ namespace DiscordIntegration_Plugin
 				File.WriteAllText(translationFileName, json);
 				return;
 			}
-			
+
 			JsonSerializer j = new JsonSerializer();
 			j.Error += Json_Error;
 

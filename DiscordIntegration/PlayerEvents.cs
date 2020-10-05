@@ -6,6 +6,7 @@ using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using scp035;
 using Scp914;
 using UnityEngine;
 
@@ -112,7 +113,7 @@ namespace DiscordIntegration_Plugin
 			if (Plugin.Singleton.Config.GenEject)
 				ProcessSTT.SendData($"{ev.Player.Nickname} {Plugin.translation.GenEjected}.", HandleQueue.GameLogChannelId);
 		}
-		
+
 		public void OnDoorInteract(InteractingDoorEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.DoorInteract)
@@ -169,7 +170,8 @@ namespace DiscordIntegration_Plugin
 			if (Plugin.Singleton.Config.PocketEscape)
 				ProcessSTT.SendData(
 					$":door::man_running: {ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasEscapedPocketDimension}.",
-					HandleQueue.GameLogChannelId);		}
+					HandleQueue.GameLogChannelId);
+		}
 
 		public void On106Teleport(TeleportingEventArgs ev)
 		{
@@ -194,7 +196,7 @@ namespace DiscordIntegration_Plugin
 					{
 						if (ev.Target.Side == ev.Attacker.Side)
 						{
-							if (IsSpy(ev.Attacker) || IsSpy(ev.Target))
+							if (IsSpy(ev.Attacker) || IsSpy(ev.Target) || SCP035(ev.Target) || SCP035(ev.Attacker))
 								return;
 							ProcessSTT.SendData($":crossed_swords: **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
 							HandleQueue.GameLogChannelId);
@@ -205,15 +207,15 @@ namespace DiscordIntegration_Plugin
 									HandleQueue.GameLogChannelId);
 						}
 
-                    }
-                }
+					}
+				}
 				catch (Exception e)
 				{
 					Log.Error($"Player Hurt error: {e}");
 				}
 			}
 		}
-		
+
 		public void OnPlayerDeath(DyingEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.PlayerDeath)
@@ -237,6 +239,19 @@ namespace DiscordIntegration_Plugin
 								 HandleQueue.GameLogChannelId);
 								return;
 							}
+							else if (SCP035(ev.Killer))
+							{
+								ProcessSTT.SendData($" :japanese_ogre: **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role})** fue asesinado por el **SCP-035**, que era **{ev.Killer.Nickname}** - ID: {ev.Target.Id}. :japanese_ogre: ",
+								HandleQueue.GameLogChannelId);
+								return;
+							}
+							else if (SCP035(ev.Target))
+							{
+								ProcessSTT.SendData($" :japanese_goblin: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role})** contuvo al **SCP-035** que era **{ev.Target.Nickname}** - ID: {ev.Target.Id} fue asesinado con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. :japanese_goblin: ",
+								 HandleQueue.GameLogChannelId);
+								return;
+							}
+
 
 							ProcessSTT.SendData($"<a:jajajno:746302273386446879>  **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <a:jajajno:746302273386446879> ",
 							HandleQueue.GameLogChannelId);
@@ -248,9 +263,9 @@ namespace DiscordIntegration_Plugin
 						}
 
 
-                    }
-                }
-                catch (Exception e)
+					}
+				}
+				catch (Exception e)
 				{
 					Log.Error($"Player Hurt error: {e}");
 				}
@@ -305,7 +320,7 @@ namespace DiscordIntegration_Plugin
 					{
 						ProcessSTT.SendData($":mag_right: {ev.Player.Nickname} ID: {ev.Player.Id} SteamID: {ev.Player.UserId} ahora es un Spy.", HandleQueue.SpyLogID);
 					}*/
-					
+
 
 				}
 				catch (Exception e)
@@ -339,13 +354,6 @@ namespace DiscordIntegration_Plugin
 						HandleQueue.GameLogChannelId);
 		}
 
-		/*public void OnPlayerBanned(BannedEventArgs ev)
-		{
-		if (Plugin.Singleton.Config.Banned)
-				
-		   ProcessSTT.SendData($":no_entry: **{ev.Details.OriginalName}** - ID: **{ev.Details.Id}** IP: **{ev.Player.IPAddress}** {Plugin.translation.WasBannedBy} **{ev.Details.Issuer}** {Plugin.translation._For} **{ev.Details.Reason}.** {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
-		}*/
-
 		public void OnIntercomSpeak(IntercomSpeakingEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Intercom)
@@ -372,12 +380,27 @@ namespace DiscordIntegration_Plugin
 					ProcessSTT.SendData(
 						$"<a:CerberusDance:742610186413277184> {ev.Player.Nickname} - {Plugin.translation.GroupSet}: **{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})**.<a:CerberusDance:742610186413277184>",
 						HandleQueue.GameLogChannelId);
+				Log.Info("AAAAA pero de caca");
 			}
 			catch (Exception e)
 			{
 				Log.Error(e.ToString());
 			}
 		}*/
+		public bool SCP035(Player p)
+		{
+			try
+			{
+
+				return p == scp035.EventHandlers.scpPlayer;
+			}
+			catch (Exception)
+			{
+				Log.Error("No");
+				return false;
+			}
+		}
+
 		public bool IsSpy(Player p)
 		{
 			try
@@ -392,4 +415,6 @@ namespace DiscordIntegration_Plugin
 			}
 		}
 	}
+
+
 }
