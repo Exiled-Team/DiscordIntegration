@@ -91,11 +91,11 @@ namespace DiscordIntegration_Plugin
 				{
 					Data = data, Port = ServerConsole.Port, Channel = channel
 				};
-				if (Plugin.Singleton.Config.Egg)
+				/*if (Plugin.Singleton.Config.Egg)
 					serializedData = new SerializedData.SerializedData
 					{
 						Data = data, Port = ServerConsole.Port + 4130, Channel = channel
-					};
+					};*/
 				BinaryFormatter formatter = new BinaryFormatter();
 				formatter.Serialize(tcpClient.GetStream(), serializedData);
 				Log.Debug($"Sent {data}", Plugin.Singleton.Config.Debug);
