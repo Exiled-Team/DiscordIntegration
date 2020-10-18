@@ -164,6 +164,8 @@ namespace DiscordIntegration_Plugin
 
 		public override void OnReloaded()
 		{
+			OnDisabled();
+			OnEnabled();
 
 		}
 
