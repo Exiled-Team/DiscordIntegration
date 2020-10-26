@@ -272,14 +272,14 @@ namespace DiscordIntegration_Plugin
 			}
 		}
 
-		public void OnGrenadeThrown(ThrowingGrenadeEventArgs ev)
+		public void OnGrenadeThrown(ExplodingGrenadeEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.GrenadeThrown)
 			{
-				if (ev.Player == null)
+				if (ev.Thrower == null)
 					return;
 				string t = "", emoji = "";
-				switch (ev.Id)
+				switch (ev.Thrower.Id)
 				{
 					case 0:
 						t = "Granada de Fragmentación";
@@ -294,7 +294,7 @@ namespace DiscordIntegration_Plugin
 						emoji = ":red_circle:";
 						break;
 				}
-				ProcessSTT.SendData($"{emoji} {ev.Player.Nickname} - ({ev.Player.Role}) lanzó una {t}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emoji} {ev.Thrower.Nickname} - ({ev.Thrower.Role}) lanzó una {t}.", HandleQueue.GameLogChannelId);
 			}
 		}
 

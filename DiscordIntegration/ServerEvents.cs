@@ -19,12 +19,16 @@ namespace DiscordIntegration_Plugin
             {
                 Log.Info("Getting List");
                 ev.IsAllowed = false;
-                string message = "";
+                int max = GameCore.ConfigFile.ServerConfig.GetInt("max_players", 20);
+                int cur = Player.List.Count();
+                string message = $"```diff\n--- Jugadores conectados [{cur}/{max}] ---\n\n";
                 foreach (Player player in Player.List)
                     if (!player.IsHost)
-                        message += $"{player.Nickname} - ({player.UserId})\n";
+                        message += $"+ {player.Nickname} | SteamID: {player.UserId} | IP: {player.IPAddress}\n";
+                        
                 if (string.IsNullOrEmpty(message))
                     message = $"{Plugin.translation.NoPlayersOnline}";
+                message += "```";
                 ev.CommandSender.RaReply($"{message}", true, true, string.Empty);
             }
             else if (ev.Name.ToLower() == "stafflist")
@@ -32,19 +36,22 @@ namespace DiscordIntegration_Plugin
                 Log.Info("Getting StaffList");
                 ev.IsAllowed = false;
                 Log.Info("Staff list");
+                int max = GameCore.ConfigFile.ServerConfig.GetInt("max_players", 20);
+                int cur = Player.List.Count();
                 bool isStaff = false;
-                string names = "";
+                string names = $"```diff\n--- Jugadores conectados [{cur}/{max}] ---\n\n";
                 foreach (Player player in Player.List)
                 {
                     if (player.ReferenceHub.serverRoles.RemoteAdmin)
                     {
                         isStaff = true;
-                        names += $"{player.Nickname} - {player.Id} ";
+                        names += $"- {player.Nickname} |  ID: {player.Id} | SteamID: {player.UserId} | IP: {player.IPAddress} \n";
                     }
                 }
 
                 Log.Info($"Bool: {isStaff} Names: {names}");
                 string response = isStaff ? names : $"{Plugin.translation.NoStaffOnline}";
+                response += $"\n```";
                 ev.CommandSender.RaReply($"{PlayerManager.players.Count}/{plugin.MaxPlayers} {response}", true, true, string.Empty);
             }
         }

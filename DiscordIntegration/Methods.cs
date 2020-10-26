@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Exiled.API.Features;
@@ -55,11 +55,11 @@ namespace DiscordIntegration_Plugin
 							aliveCount++;
 						else if (player.ReferenceHub.characterClassManager.IsAnyScp())
 							scpCount++;
-					string warhead = Warhead.IsDetonated ? "Warhead has been detonated." :
-						Warhead.IsInProgress ? "Warhead is counting down to detonation." :
-						"Warhead has not been detonated.";
+					string warhead = Warhead.IsDetonated ? "<a:explosion:763586070020751370> La Warhead fue detonada." :
+						Warhead.IsInProgress ? "⏲️ Warhead ah iniciado su cuenta regresiva." :
+						"<:079Agree:767172053718925373> Warhead sin detonar.";
 					ProcessSTT.SendData(
-						$"channelstatus Players online: {cur}/{max}. Round Duration: {Mathf.Floor((float)dur.TotalMinutes)} minutes. Humans Alive: {aliveCount}. Active SCPs: {scpCount}. {warhead} IP: {ServerConsole.Ip}:{ServerConsole.Port} TPS: {ResetTicks() / 10.0f}",
+						$"channelstatus Jugadores Online: {cur}/{max}. ⌛ Duracion de la ronda: {Mathf.Floor((float)dur.TotalMinutes)} minutos. <:chiquito:701486171523514381> Humanos vivos: {aliveCount}. <:grenade:732065387511808090>  SCPs con vida: {scpCount}. {warhead} TPS del servidor: {ResetTicks() / 10.0f}",
 						119);
 				}
 				catch (Exception e)

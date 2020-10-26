@@ -60,7 +60,7 @@ namespace DiscordIntegration_Plugin
 			Handlers.Scp106.CreatingPortal += PlayerEvents.On106CreatePortal;
 			Handlers.Player.ActivatingWarheadPanel += PlayerEvents.OnWarheadAccess;
 			Handlers.Player.TriggeringTesla += PlayerEvents.OnTriggerTesla;
-			Handlers.Player.ThrowingGrenade += PlayerEvents.OnGrenadeThrown;
+			Handlers.Map.ExplodingGrenade += PlayerEvents.OnGrenadeThrown;
 			Handlers.Player.Hurting += PlayerEvents.OnPlayerHurt;
 			Handlers.Player.Dying += PlayerEvents.OnPlayerDeath;
 			//Handlers.Player.Banned += PlayerEvents.OnPlayerBanned;
@@ -122,7 +122,7 @@ namespace DiscordIntegration_Plugin
 			Handlers.Scp106.CreatingPortal -= PlayerEvents.On106CreatePortal;
 			Handlers.Player.ActivatingWarheadPanel -= PlayerEvents.OnWarheadAccess;
 			Handlers.Player.TriggeringTesla -= PlayerEvents.OnTriggerTesla;
-			Handlers.Player.ThrowingGrenade -= PlayerEvents.OnGrenadeThrown;
+			Handlers.Map.ExplodingGrenade -= PlayerEvents.OnGrenadeThrown;
 			Handlers.Player.Hurting -= PlayerEvents.OnPlayerHurt;
 			Handlers.Player.Dying -= PlayerEvents.OnPlayerDeath;
 			//Handlers.Player.Banned -= PlayerEvents.OnPlayerBanned;

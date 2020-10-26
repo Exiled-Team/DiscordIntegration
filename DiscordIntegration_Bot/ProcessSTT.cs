@@ -211,14 +211,14 @@ namespace DiscordIntegration_Bot
 				
 				if (data.Data.StartsWith("channelstatus"))
 				{
-					/*  -- Disabled due to Discord.NET bug.
+					// -- Disabled due to Discord.NET bug.
 					Program.Log($"updating channel topic", true);
 					string status = data.Data.Replace("channelstatus", "");
 					SocketTextChannel chan1 = guild.GetTextChannel(GameChannelId);
 					await chan1.ModifyAsync(x => x.Topic = status);
 					SocketTextChannel chan2 = guild.GetTextChannel(CmdChannelId);
 					await chan2.ModifyAsync(x => x.Topic = status);
-					*/
+					
 
 					return;
 				}
