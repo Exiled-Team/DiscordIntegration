@@ -67,7 +67,7 @@ namespace DiscordIntegration_Plugin
 					//ignored
 				}
 
-				yield return Timing.WaitForSeconds(10f);
+				yield return Timing.WaitForSeconds(170f);
 			}
 		}
 

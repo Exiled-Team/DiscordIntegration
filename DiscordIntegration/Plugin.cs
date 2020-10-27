@@ -13,7 +13,7 @@ using Handlers = Exiled.Events.Handlers;
 
 namespace DiscordIntegration_Plugin
 {
-	public class Plugin : Exiled.API.Features.Plugin<Config>
+	public class Plugin : Plugin<Config>
 	{
 		public MapEvents MapEvents;
 		public ServerEvents ServerEvents;

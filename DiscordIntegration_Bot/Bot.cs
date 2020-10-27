@@ -51,7 +51,7 @@ namespace DiscordIntegration_Bot
 			{
 				try
 				{
-					HandleCommand(context);
+					await HandleCommand(context);
 				}
 				catch (Exception e)
 				{
@@ -77,7 +77,7 @@ namespace DiscordIntegration_Bot
 				switch (args[0].ToLower())
 				{
 					case "ping":
-						await context.Channel.SendMessageAsync($"Pong!");
+						await context.Channel.SendMessageAsync($"{context.Message.Author.Mention} Pong!");
 						return;
 					case "addusr":
 					{
