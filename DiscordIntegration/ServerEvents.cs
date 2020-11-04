@@ -22,7 +22,7 @@ namespace DiscordIntegration_Plugin
                 int max = GameCore.ConfigFile.ServerConfig.GetInt("max_players", 20);
                 int cur = Player.List.Count();
                 string message = $"```diff\n--- Jugadores conectados [{cur}/{max}] ---\n\n";
-                foreach (Player player in Player.List)
+                foreach (Player player in Player.List.OrderBy(pl => pl.Id))
                     if (!player.IsHost)
                         message += $"+ {player.Nickname} | SteamID: {player.UserId} | IP: {player.IPAddress}\n";
                         

@@ -43,6 +43,7 @@ namespace DiscordIntegration_Plugin
         {
             if (Plugin.Singleton.Config.Scp914Upgrade)
             {
+                
                 string players = "";
                 foreach (Player player in ev.Players) 
                     players += $"--- {player.Nickname} - {player.Role}\n";

@@ -161,7 +161,7 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.PocketEnter)
 				ProcessSTT.SendData(
-					$":eight_pointed_black_star: {ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasEnteredPocketDimension}.",
+					$"<:argentinospordentro:772943936679182406> {ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasEnteredPocketDimension}.",
 					HandleQueue.GameLogChannelId);
 		}
 
@@ -272,29 +272,29 @@ namespace DiscordIntegration_Plugin
 			}
 		}
 
-		public void OnGrenadeThrown(ExplodingGrenadeEventArgs ev)
+		public void OnGrenadeThrown(ThrowingGrenadeEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.GrenadeThrown)
 			{
-				if (ev.Thrower == null)
+				if (ev.Player == null)
 					return;
 				string t = "", emoji = "";
-				switch (ev.Thrower.Id)
+				switch (ev.Type)
 				{
-					case 0:
+					case GrenadeType.FragGrenade:
 						t = "Granada de Fragmentación";
 						emoji = ":boom:";
 						break;
-					case 1:
+					case GrenadeType.Flashbang:
 						t = "Granada Cegadora";
 						emoji = ":flashlight:";
 						break;
-					case 2:
+					case GrenadeType.Scp018:
 						t = "Bola (SCP-018)";
 						emoji = ":red_circle:";
 						break;
 				}
-				ProcessSTT.SendData($"{emoji} {ev.Thrower.Nickname} - ({ev.Thrower.Role}) lanzó una {t}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emoji} {ev.Player.Nickname} - ({ev.Player.Role}) lanzó una {t}.", HandleQueue.GameLogChannelId);
 			}
 		}
 

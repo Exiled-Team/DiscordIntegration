@@ -6,7 +6,22 @@ namespace DiscordIntegration_Plugin
 {
     public class Config : IConfig
     {
+        [Description("Muestra logs en la consola")]
         public bool Debug { get; set; } = false;
+        [Description("Wether or not it should use the EggAddress IP for connecting to the Discord Bot. Note that while this option exists, it's use it not supported, or recommended.")]
+        public bool Egg { get; set; } = false;
+
+        [Description("The IP address to connect to the bot, if EggMode is enabled.")]
+        public string EggAddress { get; set; } = "";
+
+        [Description("Only log friendly fire for damage.")]
+        public bool OnlyFriendlyFire { get; set; } = true;
+
+        [Description("Wether or not the plugin should try adn set player's roles when they join based on the Discord Bot's discord sync feature.")]
+        public bool RoleSync { get; set; } = true;
+
+        [Description("Wether or not the plugin is enabled.")]
+        public bool IsEnabled { get; set; } = true;
         public bool RaCommands { get; set; } = true;
         public bool RoundStart { get; set; } = true;
         public bool RoundEnd { get; set; } = true;
@@ -57,20 +72,5 @@ namespace DiscordIntegration_Plugin
         public bool PlayerReload { get; set; } = false;
         public bool SetGroup { get; set; } = true;
 
-
-        [Description("Wether or not it should use the EggAddress IP for connecting to the Discord Bot. Note that while this option exists, it's use it not supported, or recommended.")]
-        public bool Egg { get; set; } = false;
-        
-        [Description("The IP address to connect to the bot, if EggMode is enabled.")]
-        public string EggAddress { get; set; } = "";
-        
-        [Description("Only log friendly fire for damage.")]
-        public bool OnlyFriendlyFire { get; set; } = true;
-        
-        [Description("Wether or not the plugin should try adn set player's roles when they join based on the Discord Bot's discord sync feature.")]
-        public bool RoleSync { get; set; } = true;
-        
-        [Description("Wether or not the plugin is enabled.")]
-        public bool IsEnabled { get; set; } = true;
     }
 }
