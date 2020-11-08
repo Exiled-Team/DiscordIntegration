@@ -316,11 +316,6 @@ namespace DiscordIntegration_Plugin
 					if (ev.Player != null)
 						ProcessSTT.SendData($":arrows_counterclockwise: {ev.Player.Nickname} - {Plugin.translation.HasBenChangedToA} {ev.NewRole}.", HandleQueue.GameLogChannelId);
 
-					/*else if (ev.Player != null && ev.NewRole.GetSide() == Side.ChaosInsurgency && IsSpy(ev.Player))
-					{
-						ProcessSTT.SendData($":mag_right: {ev.Player.Nickname} ID: {ev.Player.Id} SteamID: {ev.Player.UserId} ahora es un Spy.", HandleQueue.SpyLogID);
-					}*/
-
 
 				}
 				catch (Exception e)
