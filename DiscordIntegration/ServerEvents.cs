@@ -77,14 +77,14 @@ namespace DiscordIntegration_Plugin
         public void OnCheaterReport(ReportingCheaterEventArgs ev)
         {
             if (Plugin.Singleton.Config.CheaterReport)
-                ProcessSTT.SendData($":pirate_flag: **{Plugin.translation.CheaterReportFiled}: {ev.Reporter.Nickname} - ({ev.Reporter.Role}) {Plugin.translation.Reported} {ev.Reported.Nickname} - ({ev.Reported.Role}) {Plugin.translation._For} {ev.Reason}.**", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($":pirate_flag: **{Plugin.translation.CheaterReportFiled}: {ev.Reporter.Nickname} - ({ev.Reporter.Role}) {Plugin.translation.Reported} {ev.Reported.Nickname} - ({ev.Reported.Role.Traduccion()}) {Plugin.translation._For} {ev.Reason}.**", HandleQueue.GameLogChannelId);
         }
         
         public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
             string Argies = string.Join(" ", ev.Arguments);
             if (Plugin.Singleton.Config.ConsoleCommand)
-                ProcessSTT.SendData($":joystick: {ev.Player.Nickname} - {ev.Player.UserId} - {ev.Player.Id} - ({ev.Player.Role}) {Plugin.translation.HasRunClientConsoleCommand}: {ev.Name} {Argies}", HandleQueue.CommandLogChannelId);
+                ProcessSTT.SendData($":joystick: {ev.Player.Nickname} - {ev.Player.UserId} - {ev.Player.Id} - ({ev.Player.Role.Traduccion()}) {Plugin.translation.HasRunClientConsoleCommand}: {ev.Name} {Argies}", HandleQueue.CommandLogChannelId);
         }
         
         public void OnRespawn(RespawningTeamEventArgs ev)

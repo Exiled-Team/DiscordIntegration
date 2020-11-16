@@ -308,7 +308,7 @@ namespace DiscordIntegration_Bot
 					_messages.Clear();
 				}
 
-				Thread.Sleep(20000);
+				Thread.Sleep(5000);
 			}
 		}
 

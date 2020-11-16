@@ -9,6 +9,7 @@ using Exiled.Events.EventArgs;
 using scp035;
 using Scp914;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 namespace DiscordIntegration_Plugin
 {
@@ -118,15 +119,15 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.DoorInteract)
 				ProcessSTT.SendData(ev.Door.NetworkisOpen
-						? $"{ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasClosedADoor}: {ev.Door.DoorName}."
-						: $"{ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasOpenedADoor}: {ev.Door.DoorName}.",
+						? $"{ev.Player.Nickname} ({ev.Player.Role.Traduccion()}) {Plugin.translation.HasClosedADoor}: {ev.Door.DoorName}."
+						: $"{ev.Player.Nickname} ({ev.Player.Role.Traduccion()}) {Plugin.translation.HasOpenedADoor}: {ev.Door.DoorName}.",
 					HandleQueue.GameLogChannelId);
 		}
 
 		public void On914Activation(ActivatingEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp914Activation)
-				ProcessSTT.SendData($":gear: {ev.Player.Nickname} - {ev.Player.Role} {Plugin.translation.Scp914HasBeenActivated} {Scp914Machine.singleton.knobState}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":gear: {ev.Player.Nickname} - {ev.Player.Role.Traduccion()} {Plugin.translation.Scp914HasBeenActivated} {Scp914Machine.singleton.knobState}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void On914KnobChange(ChangingKnobSettingEventArgs ev)
@@ -154,14 +155,14 @@ namespace DiscordIntegration_Plugin
 					break;
 			}
 			if (Plugin.Singleton.Config.Scp914KnobChange)
-				ProcessSTT.SendData($"{A} {ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.Scp914Knobchange} {ev.KnobSetting}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{A} {ev.Player.Nickname} ({ev.Player.Role.Traduccion()}) {Plugin.translation.Scp914Knobchange} {ev.KnobSetting}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPocketEnter(EnteringPocketDimensionEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.PocketEnter)
 				ProcessSTT.SendData(
-					$"<:argentinospordentro:772943936679182406> {ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasEnteredPocketDimension}.",
+					$"<:argentinospordentro:772943936679182406> {ev.Player.Nickname} ({ev.Player.Role.Traduccion()}) {Plugin.translation.HasEnteredPocketDimension}.",
 					HandleQueue.GameLogChannelId);
 		}
 
@@ -169,7 +170,7 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.PocketEscape)
 				ProcessSTT.SendData(
-					$":door::man_running: {ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasEscapedPocketDimension}.",
+					$":door::man_running: {ev.Player.Nickname} ({ev.Player.Role.Traduccion()}) {Plugin.translation.HasEscapedPocketDimension}.",
 					HandleQueue.GameLogChannelId);
 		}
 
@@ -182,7 +183,7 @@ namespace DiscordIntegration_Plugin
 		public void On079Tesla(InteractingTeslaEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Scp079Tesla)
-				ProcessSTT.SendData($":zap: {ev.Player.Nickname} ({ev.Player.Role}) {Plugin.translation.HasTriggeredATeslaGate}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":zap: {ev.Player.Nickname} ({ev.Player.Role.Traduccion()}) {Plugin.translation.HasTriggeredATeslaGate}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPlayerHurt(HurtingEventArgs ev)
@@ -198,14 +199,30 @@ namespace DiscordIntegration_Plugin
 						{
 							if (IsSpy(ev.Attacker) || IsSpy(ev.Target) || SCP035(ev.Target) || SCP035(ev.Attacker))
 								return;
-							ProcessSTT.SendData($":crossed_swords: **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
+							ProcessSTT.SendData($":crossed_swords: **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()})** {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 						}
 						else if (ev.Target.IsCuffed && ev.Attacker.Side != Side.Scp)
 						{
-							ProcessSTT.SendData($"<a:siren_blue:729921541625741344> **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role})** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** {Plugin.translation._For} {(int)ev.Amount}HP que esta arrestado, lo daño con {DamageTypes.FromIndex(ev.Tool).name}.",
+							ProcessSTT.SendData($"<a:siren_blue:729921541625741344> **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()})** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** {Plugin.translation._For} {(int)ev.Amount}HP que esta arrestado, lo daño con {DamageTypes.FromIndex(ev.Tool).name}.",
 									HandleQueue.GameLogChannelId);
 						}
+						else if (SCP035(ev.Attacker))
+						{
+							if (ev.Target.Side == Side.Scp)
+								return;
+
+							ProcessSTT.SendData($"<:AAAAA:772943855531196457>  **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()}) que es SCP-035** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** por  **{(int)ev.Amount}HP** con  {DamageTypes.FromIndex(ev.Tool).name}.",
+							HandleQueue.GameLogChannelId);
+
+						}
+						else if (ev.Target.Side == Side.Scp && ev.Attacker.Side != ev.Target.Side)
+						{
+							ProcessSTT.SendData($"<a:GabzPepegaGun:777681767494057984> **{ev.Attacker.Nickname}** - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()}) daño a **{ev.Target.Nickname}** - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()}) {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
+							HandleQueue.GameLogChannelId);
+
+						}
+
 
 					}
 				}
@@ -229,36 +246,36 @@ namespace DiscordIntegration_Plugin
 
 							if (IsSpy(ev.Killer))
 							{
-								ProcessSTT.SendData($"<a:VenAqui:746307229505945687> **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role})** fue asesinado por un espia, con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <a:VenAqui:746307229505945687>",
+								ProcessSTT.SendData($"<a:VenAqui:746307229505945687> **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** fue asesinado por un espia, con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <a:VenAqui:746307229505945687>",
 								HandleQueue.GameLogChannelId);
 								return;
 							}
 							else if (IsSpy(ev.Target))
 							{
-								ProcessSTT.SendData($"<:FBI:729918970446086225> **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role})** asesino a un espia que era **{ev.Target.Nickname}** - ID: {ev.Target.Id} fue asesinado con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:FBI:729918970446086225>  ",
+								ProcessSTT.SendData($"<:FBI:729918970446086225> **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role.Traduccion()})** asesino a un espia que era **{ev.Target.Nickname}** - ID: {ev.Target.Id} fue asesinado con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:FBI:729918970446086225>  ",
 								 HandleQueue.GameLogChannelId);
 								return;
 							}
 							else if (SCP035(ev.Killer))
 							{
-								ProcessSTT.SendData($" :japanese_ogre: **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role})** fue asesinado por el **SCP-035**, que era **{ev.Killer.Nickname}** - ID: {ev.Target.Id}. :japanese_ogre: ",
+								ProcessSTT.SendData($" :japanese_ogre: **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** fue asesinado por el **SCP-035**, que era **{ev.Killer.Nickname}** - ID: {ev.Target.Id}. :japanese_ogre: ",
 								HandleQueue.GameLogChannelId);
 								return;
 							}
 							else if (SCP035(ev.Target))
 							{
-								ProcessSTT.SendData($" :japanese_goblin: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role})** contuvo al **SCP-035** que era **{ev.Target.Nickname}** - ID: {ev.Target.Id} fue asesinado con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. :japanese_goblin: ",
+								ProcessSTT.SendData($" :japanese_goblin: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role.Traduccion()})** contuvo al **SCP-035** que era **{ev.Target.Nickname}** - ID: {ev.Target.Id} fue asesinado con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. :japanese_goblin: ",
 								 HandleQueue.GameLogChannelId);
 								return;
 							}
 
 
-							ProcessSTT.SendData($"<a:jajajno:746302273386446879>  **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <a:jajajno:746302273386446879> ",
+							ProcessSTT.SendData($"<a:jajajno:746302273386446879>  **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role.Traduccion()})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <a:jajajno:746302273386446879> ",
 							HandleQueue.GameLogChannelId);
 						}
 						else if (ev.Target.IsCuffed && ev.Killer.Side != Side.Scp)
 						{
-							ProcessSTT.SendData($"<a:reeee:709898816131825694> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
+							ProcessSTT.SendData($"<a:reeee:709898816131825694> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role.Traduccion()})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 						}
 
@@ -294,7 +311,7 @@ namespace DiscordIntegration_Plugin
 						emoji = ":red_circle:";
 						break;
 				}
-				ProcessSTT.SendData($"{emoji} {ev.Player.Nickname} - ({ev.Player.Role}) lanzó una {t}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($"{emoji} {ev.Player.Nickname} - ({ev.Player.Role.Traduccion()}) lanzó una {t}.", HandleQueue.GameLogChannelId);
 			}
 		}
 
@@ -304,7 +321,7 @@ namespace DiscordIntegration_Plugin
 			{
 				if (ev.Player == null)
 					return;
-				ProcessSTT.SendData($":medical_symbol: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.UsedA} {ev.Item}", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":medical_symbol: {ev.Player.Nickname} - ({ev.Player.Role.Traduccion()}) {Plugin.translation.UsedA} {ev.Item}", HandleQueue.GameLogChannelId);
 			}
 		}
 
@@ -337,7 +354,7 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.Freed)
 				ProcessSTT.SendData(
-					$":unlock: {ev.Target.Nickname} - ({ev.Target.Role}) {Plugin.translation.HasBeenFreedBy} {ev.Cuffer.Nickname} - ({ev.Cuffer.Role})",
+					$":unlock: {ev.Target.Nickname} - ({ev.Target.Role.Traduccion()}) {Plugin.translation.HasBeenFreedBy} {ev.Cuffer.Nickname} - ({ev.Cuffer.Role.Traduccion()})",
 						HandleQueue.GameLogChannelId);
 		}
 
@@ -345,26 +362,26 @@ namespace DiscordIntegration_Plugin
 		{
 			if (Plugin.Singleton.Config.Cuffed)
 				ProcessSTT.SendData(
-					$":lock: {ev.Target.Nickname} - ({ev.Target.Role}) {Plugin.translation.HasBeenHandcuffedBy} {ev.Cuffer.Nickname} - ({ev.Cuffer.Role})",
+					$":lock: {ev.Target.Nickname} - ({ev.Target.Role.Traduccion()}) {Plugin.translation.HasBeenHandcuffedBy} {ev.Cuffer.Nickname} - ({ev.Cuffer.Role.Traduccion()})",
 						HandleQueue.GameLogChannelId);
 		}
 
 		public void OnIntercomSpeak(IntercomSpeakingEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.Intercom)
-				ProcessSTT.SendData($":loudspeaker: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasStartedUsingTheIntercom}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":loudspeaker: {ev.Player.Nickname} - ({ev.Player.Role.Traduccion()}) {Plugin.translation.HasStartedUsingTheIntercom}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnPickupItem(PickingUpItemEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.PickupItem)
-				ProcessSTT.SendData($":outbox_tray: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasPickedUp} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":outbox_tray: {ev.Player.Nickname} - ({ev.Player.Role.Traduccion()}) {Plugin.translation.HasPickedUp} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
 		}
 
 		public void OnDropItem(ItemDroppedEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.DropItem)
-				ProcessSTT.SendData($":inbox_tray: {ev.Player.Nickname} - ({ev.Player.Role}) {Plugin.translation.HasDropped} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
+				ProcessSTT.SendData($":inbox_tray: {ev.Player.Nickname} - ({ev.Player.Role.Traduccion()}) {Plugin.translation.HasDropped} {ev.Pickup.ItemId}.", HandleQueue.GameLogChannelId);
 		}
 
 		/*public void OnSetGroup(ChangingGroupEventArgs ev)
