@@ -199,7 +199,7 @@ namespace DiscordIntegration_Plugin
 						{
 							if (IsSpy(ev.Attacker) || IsSpy(ev.Target) || SCP035(ev.Target) || SCP035(ev.Attacker))
 								return;
-							ProcessSTT.SendData($":crossed_swords: **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()})** {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
+							ProcessSTT.SendData($"<:Hitmark:777991200342147172> **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()})** {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 						}
 						else if (ev.Target.IsCuffed && ev.Attacker.Side != Side.Scp)
@@ -213,12 +213,6 @@ namespace DiscordIntegration_Plugin
 								return;
 
 							ProcessSTT.SendData($"<:AAAAA:772943855531196457>  **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()}) que es SCP-035** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** por  **{(int)ev.Amount}HP** con  {DamageTypes.FromIndex(ev.Tool).name}.",
-							HandleQueue.GameLogChannelId);
-
-						}
-						else if (ev.Target.Side == Side.Scp && ev.Attacker.Side != ev.Target.Side)
-						{
-							ProcessSTT.SendData($"<a:GabzPepegaGun:777681767494057984> **{ev.Attacker.Nickname}** - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()}) daño a **{ev.Target.Nickname}** - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()}) {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 
 						}
@@ -246,7 +240,7 @@ namespace DiscordIntegration_Plugin
 
 							if (IsSpy(ev.Killer))
 							{
-								ProcessSTT.SendData($"<a:VenAqui:746307229505945687> **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** fue asesinado por un espia, con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <a:VenAqui:746307229505945687>",
+								ProcessSTT.SendData($"<:Spy:777990138625261578> **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** fue asesinado por un espia, con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:Spy:777990138625261578>",
 								HandleQueue.GameLogChannelId);
 								return;
 							}
@@ -270,12 +264,12 @@ namespace DiscordIntegration_Plugin
 							}
 
 
-							ProcessSTT.SendData($"<a:jajajno:746302273386446879>  **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role.Traduccion()})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <a:jajajno:746302273386446879> ",
+							ProcessSTT.SendData($"<:RIP:777989450353475654>  **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role.Traduccion()})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:RIP:777989450353475654> ",
 							HandleQueue.GameLogChannelId);
 						}
 						else if (ev.Target.IsCuffed && ev.Killer.Side != Side.Scp)
 						{
-							ProcessSTT.SendData($"<a:reeee:709898816131825694> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role.Traduccion()})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
+							ProcessSTT.SendData($"<:smallbrain:682243919278375016> ** {ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role.Traduccion()})** mato a  **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** que estaba arrestado, lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.",
 							HandleQueue.GameLogChannelId);
 						}
 
