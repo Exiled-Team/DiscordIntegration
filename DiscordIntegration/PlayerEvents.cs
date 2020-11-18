@@ -6,7 +6,6 @@ using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
-using scp035;
 using Scp914;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
@@ -197,7 +196,7 @@ namespace DiscordIntegration_Plugin
 					{
 						if (ev.Target.Side == ev.Attacker.Side)
 						{
-							if (IsSpy(ev.Attacker) || IsSpy(ev.Target) || SCP035(ev.Target) || SCP035(ev.Attacker))
+							if (IsSpy(ev.Attacker) || IsSpy(ev.Target))
 								return;
 							ProcessSTT.SendData($"<:Hitmark:777991200342147172> **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()})** {Plugin.translation.Damaged} **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** {Plugin.translation._For} {(int)ev.Amount}HP {Plugin.translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
 							HandleQueue.GameLogChannelId);
@@ -207,15 +206,7 @@ namespace DiscordIntegration_Plugin
 							ProcessSTT.SendData($"<a:siren_blue:729921541625741344> **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()})** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** {Plugin.translation._For} {(int)ev.Amount}HP que esta arrestado, lo daño con {DamageTypes.FromIndex(ev.Tool).name}.",
 									HandleQueue.GameLogChannelId);
 						}
-						else if (SCP035(ev.Attacker))
-						{
-							if (ev.Target.Side == Side.Scp)
-								return;
-
-							ProcessSTT.SendData($"<:AAAAA:772943855531196457>  **{ev.Attacker.Nickname} - ID: {ev.Attacker.Id} - ({ev.Attacker.Role.Traduccion()}) que es SCP-035** daño a **{ev.Target.Nickname} - ID: {ev.Target.Id} - ({ev.Target.Role.Traduccion()})** por  **{(int)ev.Amount}HP** con  {DamageTypes.FromIndex(ev.Tool).name}.",
-							HandleQueue.GameLogChannelId);
-
-						}
+						
 
 
 					}
@@ -247,18 +238,6 @@ namespace DiscordIntegration_Plugin
 							else if (IsSpy(ev.Target))
 							{
 								ProcessSTT.SendData($"<:FBI:729918970446086225> **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role.Traduccion()})** asesino a un espia que era **{ev.Target.Nickname}** - ID: {ev.Target.Id} fue asesinado con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:FBI:729918970446086225>  ",
-								 HandleQueue.GameLogChannelId);
-								return;
-							}
-							else if (SCP035(ev.Killer))
-							{
-								ProcessSTT.SendData($" :japanese_ogre: **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** fue asesinado por el **SCP-035**, que era **{ev.Killer.Nickname}** - ID: {ev.Target.Id}. :japanese_ogre: ",
-								HandleQueue.GameLogChannelId);
-								return;
-							}
-							else if (SCP035(ev.Target))
-							{
-								ProcessSTT.SendData($" :japanese_goblin: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role.Traduccion()})** contuvo al **SCP-035** que era **{ev.Target.Nickname}** - ID: {ev.Target.Id} fue asesinado con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. :japanese_goblin: ",
 								 HandleQueue.GameLogChannelId);
 								return;
 							}
@@ -393,19 +372,6 @@ namespace DiscordIntegration_Plugin
 				Log.Error(e.ToString());
 			}
 		}*/
-		public bool SCP035(Player p)
-		{
-			try
-			{
-
-				return p == scp035.EventHandlers.scpPlayer;
-			}
-			catch (Exception)
-			{
-				Log.Error("No");
-				return false;
-			}
-		}
 
 		public bool IsSpy(Player p)
 		{
