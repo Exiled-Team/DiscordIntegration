@@ -290,9 +290,14 @@ namespace DiscordIntegration_Plugin
 			try
 			{
 				if (Plugin.Singleton.Config.SetGroup)
+				{
+					string roleMessage = ev.NewGroup == null
+						? "None"
+						: $"{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})";
 					ProcessSTT.SendData(
-						$"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.Translation.GroupSet}: **{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})**.",
+						$"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.Translation.GroupSet}: **{roleMessage}**.",
 						HandleQueue.GameLogChannelId);
+				}
 			}
 			catch (Exception e)
 			{
