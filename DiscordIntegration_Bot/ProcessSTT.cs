@@ -267,12 +267,12 @@ namespace DiscordIntegration_Bot
 					{
 						if (!_messages.ContainsKey(chan.Id))
 							_messages.Add(chan.Id, string.Empty);
-						_messages[chan.Id] += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data} {Environment.NewLine}";
+						_messages[chan.Id] += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data} {Environment.NewLine}".Replace("<", "<​");
 					}
 					return;
 				}
 				Console.WriteLine("Sending message.");
-				await chan.SendMessageAsync($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data}");
+				await chan.SendMessageAsync($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data}".Replace("<", "<​"));
 				
 			}
 			catch (Exception e)
