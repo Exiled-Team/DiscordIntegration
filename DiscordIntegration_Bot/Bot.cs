@@ -37,7 +37,7 @@ namespace DiscordIntegration_Bot
 			await Client.LoginAsync(TokenType.Bot, Program.Config.BotToken);
 			await Client.StartAsync();
 			Program.Log("Login successful, starting STT..");
-			new Thread((() => ProcessSTT.Init(program))).Start();
+			new Thread(() => ProcessSTT.Init(program)).Start();
 			await Task.Delay(-1);
 		}
 
