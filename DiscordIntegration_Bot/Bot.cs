@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using DiscordIntegration_Bot.Logging;
 
 namespace DiscordIntegration_Bot
 {
@@ -16,10 +17,17 @@ namespace DiscordIntegration_Bot
 		public static DiscordSocketClient Client => client ?? (client = new DiscordSocketClient());
 		private readonly Program program;
 		private static string _appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-		private static string _plugins = Path.Combine(_appData, "Plugins");
+		private static string _exiled = Path.Combine(_appData, "EXILED");
+		private static string _plugins = Path.Combine(_exiled, "Plugins");
 		private static string _diPath = Path.Combine(_plugins, "Integration");
 		private string roleSync = Path.Combine(_diPath, "Sync-Roles.txt");
 		private string userSync = Path.Combine(_diPath, "Sync-Users.txt");
+
+		/// <summary>
+		///     Signals to a <see cref="CancellationToken"/>. <br/>
+		///     <note>We'll use to end the bot if needed(used for most async stuff).</note>
+		/// </summary>
+		public CancellationTokenSource cts { get; set; }
 
 		public Bot(Program program)
 		{
@@ -29,21 +37,43 @@ namespace DiscordIntegration_Bot
 
 		private async Task InitBot()
 		{
-			Program.Log("Setting up bot..", true);
-			await ReloadConfig();
-			Client.Log += Program.Log;
+            Console.WriteLine("\t\t──────────── BOT ────────────");
+            Logger.LogInfo("DiscordIntegration", "Starting the Bot"); //Notifying that the app is starting ...
+
+            this.cts = new CancellationTokenSource();
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+			/*Loading the configuration file*/
+			Logger.LogInfo("DiscordIntegration", "[1/4] Loading config file...");
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+            await ReloadConfig();
+
+			/* Creating a Discord.Net Client */
+			Logger.LogInfo("DiscordIntegration", $"[2/4] Creating client...");
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+            Client.Log += Program.Log;
+
+			/* Register Commands */
+			Logger.LogInfo("DiscordIntegration", $"[3/4] Loading commands...");
+            await Task.Delay(TimeSpan.FromSeconds(2));
 			Client.MessageReceived += OnMessageReceived;
-			Program.Log("Logging into bot..", true);
+
+			// Connect to discord service
+			Logger.LogInfo("DiscordIntegration", $"[4/4] Connecting...");
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
 			await Client.LoginAsync(TokenType.Bot, Program.Config.BotToken);
-			await Client.StartAsync();
-			Program.Log("Login successful, starting STT..");
-			new Thread(() => ProcessSTT.Init(program)).Start();
+            await Client.StartAsync();
+
+			Logger.LogInfo("DiscordIntegration", "Successfully connected!");
+			new Thread((() => ProcessSTT.Init(program))).Start();
 			await Task.Delay(-1);
 		}
 
 		public async Task OnMessageReceived(SocketMessage message)
 		{
-            if (message is SocketSystemMessage sysMsg) return;
 			CommandContext context = new CommandContext(Client, (IUserMessage)message);
 
 			if (message.Content.StartsWith(Program.Config.BotPrefix) ||
@@ -51,11 +81,11 @@ namespace DiscordIntegration_Bot
 			{
 				try
 				{
-					await HandleCommand(context);
+                    await HandleCommand(context);
 				}
 				catch (Exception e)
 				{
-					Console.WriteLine(e);
+					Logger.LogException("OnMessageReceived", e);
 				}
 			}
 		}
@@ -77,7 +107,7 @@ namespace DiscordIntegration_Bot
 				switch (args[0].ToLower())
 				{
 					case "ping":
-						await context.Channel.SendMessageAsync($"{context.Message.Author.Mention} Pong!");
+						await context.Channel.SendMessageAsync($"Pong!");
 						return;
 					case "addusr":
 					{
@@ -247,7 +277,7 @@ namespace DiscordIntegration_Bot
 				string[] sync = rs.Split(':');
 				if (!ulong.TryParse(sync[0], out ulong roleId))
 				{
-					Program.Error($"Invalid DiscordRole defined: {sync[0]}");
+					Logger.LogError("DiscordIntegration", $"Invalid DiscordRole defined: {sync[0]}");
 					continue;
 				}
 				
@@ -259,7 +289,7 @@ namespace DiscordIntegration_Bot
 				string[] sync = us.Split(':');
 				if (!ulong.TryParse(sync[0], out ulong userId))
 				{
-					Program.Error($"Invalid Discord User ID defined: {sync[0]}");
+					Logger.LogError("DiscordIntegration", $"Invalid Discord User ID defined: {sync[0]}");
 					continue;
 				}
 				

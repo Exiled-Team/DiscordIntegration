@@ -14,6 +14,7 @@ using Discord;
 using Discord.Rest;
 using Discord.Webhook;
 using Discord.WebSocket;
+using DiscordIntegration_Bot.Logging;
 
 namespace DiscordIntegration_Bot
 {
@@ -22,10 +23,11 @@ namespace DiscordIntegration_Bot
 		private static ConcurrentDictionary<int, TcpClient> bag = new ConcurrentDictionary<int, TcpClient>();
 		private static ConcurrentDictionary<int, int> heartbeats = new ConcurrentDictionary<int, int>();
 		public static ulong GameChannelId;
-		public static ulong CmdChannelId;
+        public static ulong CmdChannelId;
+		public static Config Config = Program.GetConfig();
 		private static Dictionary<ulong, string> _messages = new Dictionary<ulong, string>();
 
-		public static void SendData(string data, int port, string name, ulong channel = 0)
+        public static void SendData(string data, int port, string name, ulong channel = 0)
 		{
 			try
 			{
@@ -35,7 +37,7 @@ namespace DiscordIntegration_Bot
 				//Console.WriteLine($"Sending {serializedData.Data}");
 				if (!bag.ContainsKey(port))
 				{
-					Console.WriteLine($"STT: Bag does not contain {port}");
+					Logger.LogError("SendData", $"STT: Bag does not contain {port}");
 					return;
 				}
 
@@ -43,14 +45,14 @@ namespace DiscordIntegration_Bot
 					formatter.Serialize(bag[port].GetStream(), serializedData);
 				else
 				{
-					Console.WriteLine($"Error - Bag {port} is null or not connected.");
+					Logger.LogError("SendData", $"Error - Bag {port} is null or not connected.");
 					if (bag.TryRemove(port, out TcpClient client))
 						client.Dispose();
 				}
 			}
 			catch (IOException s)
 			{
-				Console.WriteLine($"STT: Socket exception, removing..");
+				Logger.LogException("SendData", s, $"STT: Socket exception, removing..");
 				KeyValuePair<int, TcpClient> thingything = default;
 				foreach (var thing in bag)
 					if (thing.Key == port)
@@ -58,12 +60,12 @@ namespace DiscordIntegration_Bot
 
 				if (bag.TryRemove(thingything.Key, out TcpClient _client))
 				{
-					_client.Close();
+                    _client.Close();
 				}
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				Logger.LogException("SendData", e);
 			}
 		}
 
@@ -72,14 +74,14 @@ namespace DiscordIntegration_Bot
 		{
 			Bot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
 			TcpListener list = new TcpListener(Program.Config.EggMode ? IPAddress.Any : IPAddress.Loopback, Program.Config.Port);
-			Program.Log($"STT started for {Program.Config.Port}");
+			Logger.LogInfo("DiscordIntegration", $"STT started for {Program.Config.Port}");
 			GameChannelId = Program.Config.GameLogChannelId;
 			CmdChannelId = Program.Config.CommandLogChannelId;
-			Program.Log("STT: Adding listener to list", true);
+			Logger.LogInfo("Bot", $"STT: Adding listener to list");
 			listener.Add(list);
-			Program.Log("STT: Starting listener.");
+			Logger.LogInfo("Bot", "STT: Starting listener...");
 			list.Start();
-			Program.Log("STT: Listener started.");
+			Logger.LogInfo("Bot", "STT: Listener started.");
 			ThreadPool.QueueUserWorkItem(ListenForConn, list);
 			new Thread(DequeueMessages).Start();
 		}
@@ -89,10 +91,10 @@ namespace DiscordIntegration_Bot
 			await Task.Delay(10000);
 			for (;;)
 			{
-				Console.WriteLine("STT: Starting Heartbeat");
+				Logger.LogInfo("Bot", "STT: Starting Heartbeat");
 				if (heartbeats[port] > 3)
 				{
-					Console.WriteLine($"STT: Removing {port} due to heartbeat timeout.");
+					Logger.LogInfo("DiscordIntegration", $"STT: Removing {port} due to heartbeat timeout.");
 					await Bot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
 					if (bag.TryRemove(port, out TcpClient client))
 						client.Close();
@@ -102,10 +104,10 @@ namespace DiscordIntegration_Bot
 
 				heartbeats[port]++;
 
-				Console.WriteLine($"STT: Sending heartbeat to: {port}");
+				Logger.LogInfo("Bot", $"STT: Sending heartbeat to: {port}");
 				if (!bag[port].Connected)
 				{
-					Console.WriteLine($"STT: {port} is null, removing.");
+					Logger.LogError("Bot", $"STT: {port} is null, removing.");
 					await Bot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
 					if (bag.TryRemove(port, out TcpClient client)) 
 						client.Close();
@@ -119,19 +121,20 @@ namespace DiscordIntegration_Bot
 
 		public static void ListenForConn(object token)
 		{
-			Program.Log($"STT: Listener started.", true);
+            Logger.LogInfo("Bot", "STT: Listener started.");
+
 			TcpListener listen = token as TcpListener;
 				for (;;)
 				{
 					try
 					{
-						Program.Log($"STT: Attempting to start connection.");
+					    Logger.LogInfo("DiscordIntegration", $"STT: Attempting to start connection.");
 						TcpClient thing = listen.AcceptTcpClient();
 						ThreadPool.QueueUserWorkItem(ListenOn, thing);
 					}
 					catch (Exception e)
 					{
-						Console.WriteLine(e);
+					 Logger.LogException("ListenForConn", e);
 					}
 			}
 		}
@@ -142,26 +145,27 @@ namespace DiscordIntegration_Bot
 			{
 				if (data == null)
 				{
-					Console.WriteLine("STT: Received data null");
+					Logger.LogError("DiscordIntegration", "STT: Received data null");
 					return;
 				}
-				
+				if (Config.Default.Debug == true)
 				Program.Log($"Receiving data: {data.Data} Channel: {data.Channel} for {data.Port}", true);
-				if (data.Data.Contains("REQUEST_DATA PLAYER_LIST SILENT"))
-					return;
-
-
-				SocketGuild guild = Bot.Client.Guilds.FirstOrDefault();
+                if (data.Data.Contains("REQUEST_DATA PLAYER_LIST SILENT"))
+                    return;
+                //Guild Stuff
+                // The last discord server where the bot entered
+                SocketGuild guild = Bot.Client.Guilds.LastOrDefault();
 
 				if (data.Data.StartsWith("checksync"))
 				{
-					string[] args = data.Data.Split(' ');
-					Program.Log($"Checking rolesync for {args[1]}", true);
+                    string[] args = data.Data.Split(' ');
+					Logger.LogDebug("Debug", $"Checking rolesync for {args[1]}");
+					Program.Log($"Checking rolesync for {args[1]}\n", false);
 					SyncedUser user = Program.Users.FirstOrDefault(u => u.UserId == args[1]);
 					if (user == null)
 					{
 						Program.Log($"Role sync for {args[1]} not found.", true);
-						return;
+                        return;
 					}
 
 					foreach (SocketRole role in guild.GetUser(user.DiscordId).Roles)
@@ -174,28 +178,31 @@ namespace DiscordIntegration_Bot
 				{
 					if (!bag.ContainsKey(data.Port))
 					{
-						Console.WriteLine($"STT: Adding {data.Port}");
+						Logger.LogInfo("Bot", $"STT: Adding {data.Port}");
 						bag.TryAdd(data.Port, client);
 					}
 
 					if (!bag[data.Port].Connected || bag[data.Port] == null)
 					{
-						Console.WriteLine($"STT: Bag {data.Port} not connected or null, removing.");
+						Logger.LogInfo("Bot", $"STT: Bag {data.Port} not connected or null, removing.");
 						if (bag.TryRemove(data.Port, out TcpClient cli))
 						{
 							cli?.Close();
 						}
 					}
-					Console.WriteLine($"STT: Received heartbeat for: {data.Port}");
-					if (!heartbeats.ContainsKey(data.Port))
-					{
-						Heartbeat(data.Port);
-						heartbeats.TryAdd(data.Port, 0);
-					}
-					else
-						heartbeats[data.Port]--;
+					Logger.LogInfo("Bot", $"STT: Received heartbeat for: {data.Port}");
+                    if (!heartbeats.ContainsKey(data.Port))
+                    {
+                        Heartbeat(data.Port);
+                        heartbeats.TryAdd(data.Port, 0);
+                    }
+                    else
+                        heartbeats[data.Port]--;
 
-					Program.Log($"Updating channelID's for plugin..{data.Port}", true);
+					if (Config.Debug)
+					{
+						Logger.LogDebug("DI", $"Updating channelID's for plugin..{data.Port}");
+					}
 					try
 					{
 						Program.Log($"GameChannelID: {GameChannelId}", true);
@@ -205,29 +212,37 @@ namespace DiscordIntegration_Bot
 					}
 					catch (Exception e)
 					{
-						Program.Log(e.ToString());
+						Logger.LogException("ReceiveData", e);
 					}
 
 					return;
 				}
-
+				
 				if (data.Data.StartsWith("channelstatus"))
 				{
-					/*// -- Disabled due to Discord.NET bug.
-					Program.Log($"updating channel topic", true);
-					string status = data.Data.Replace("channelstatus", "");
-					ITextChannel chan1 = guild.GetTextChannel(GameChannelId);
+
+                    if (Config.Debug)
+                    {
+                        Program.Log($"updating channel topic", true);
+                    }
+
+					/*string status = data.Data.Replace("channelstatus", "");
+					SocketTextChannel chan1 = guild.GetTextChannel(GameChannelId);
 					await chan1.ModifyAsync(x => x.Topic = status);
-					ITextChannel chan2 = guild.GetTextChannel(CmdChannelId);
-					await chan2.ModifyAsync(x => x.Topic = status);
-					*/
+					SocketTextChannel chan2 = guild.GetTextChannel(CmdChannelId);
+					await chan2.ModifyAsync(x => x.Topic = status);*/
+					
 
 					return;
 				}
 
 				if (data.Data.StartsWith("updateStatus"))
 				{
-					Program.Log($"updating status for bot", true);
+					if (Config.Debug)
+					{
+						Logger.LogDebug("DI", $"updating status for bot");
+					}
+
 					string status = data.Data.Replace("updateStatus ", "");
 					if (status.StartsWith("0"))
 						await Bot.Client.SetStatusAsync(UserStatus.Idle);
@@ -238,13 +253,13 @@ namespace DiscordIntegration_Bot
 				}
 				data.Data = data.Data.Substring(data.Data.IndexOf('#') + 1);
 
-				
-				
-				Console.WriteLine("Getting guild.");
-				Console.WriteLine("Getting channel");
+
+
+				Logger.LogInfo("DiscordIntegration", "Getting guild.");
+				Logger.LogInfo("DiscordIntegration", "Getting channel.");
 				if (guild == null)
 				{
-					Console.WriteLine("Guild not found.");
+					Logger.LogError("Bot", "Guild not found.");
 					return;
 				}
 
@@ -258,47 +273,53 @@ namespace DiscordIntegration_Bot
 				
 				if (chan == null)
 				{
-					await Program.Log(new LogMessage(LogSeverity.Critical, "recievedData", "Channel not found."));
+					Logger.LogCritical("recievedData", "Channel not found.");
 					return;
 				}
 
 				if (chan.Id == Program.Config.GameLogChannelId || chan.Id == Program.Config.CommandLogChannelId)
 				{
-					Program.Log("Storing message.", true);
+					if (Config.Debug)
+					{
+						Logger.LogDebug("Bot", "Storing message.");
+					}
 					lock (_messages)
 					{
 						if (!_messages.ContainsKey(chan.Id))
 							_messages.Add(chan.Id, string.Empty);
-						_messages[chan.Id] += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data} {Environment.NewLine}";
+						_messages[chan.Id] += $"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data} {Environment.NewLine}".Replace("<", "<​").Replace("@everyone", "@​everyone").Replace("@here", "@​here");
 					}
 					return;
 				}
-				Console.WriteLine("Sending message.");
-				await chan.SendMessageAsync($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data}");
+				Logger.LogDebug("Bot", "Sending message.");
+				await chan.SendMessageAsync($"[{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}] {data.Data}".Replace("<", "<​").Replace("@everyone", "@​everyone").Replace("@here", "@​here"));
 				
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				Logger.LogException("ReceiveData", e);
 			}
 
 		}
 
 		private static void DequeueMessages()
 		{
-			for (;;)
+			for (; ; )
 			{
-				Program.Log("For loop start", true);
+				if (Config.Debug)
+				{
+					Logger.LogDebug("Bot", "For loop start");
+				}
 
 				lock (_messages)
 				{
 					foreach (KeyValuePair<ulong, string> kvp in _messages)
 					{
 						Program.Log($"Sending messages.{_messages[kvp.Key]}", true);
-						SocketTextChannel chan = Bot.Client.Guilds.FirstOrDefault()?.GetTextChannel(kvp.Key);
+						SocketTextChannel chan = Bot.Client.Guilds.LastOrDefault()?.GetTextChannel(kvp.Key);
 						if (chan == null)
 						{
-							Program.Log(new LogMessage(LogSeverity.Critical, "DequeueSend", "Channel not found!"));
+							Logger.LogCritical("DequeueSend", "Channel not found!");
 							continue;
 						}
 
@@ -308,7 +329,7 @@ namespace DiscordIntegration_Bot
 					_messages.Clear();
 				}
 
-				Thread.Sleep(5000);
+				Thread.Sleep(3000);
 			}
 		}
 
@@ -323,7 +344,7 @@ namespace DiscordIntegration_Bot
 					SerializedData.SerializedData serializedData;
 					if (!client.Connected)
 					{
-						Console.WriteLine($"Client not connected..");
+						Logger.LogError("Bot", $"Client not connected..");
 						client.Close();
 						continue;
 					}
@@ -334,7 +355,7 @@ namespace DiscordIntegration_Bot
 			}
 			catch (SerializationException s)
 			{
-				Console.WriteLine($"STT: Serialization exception, removing..");
+				Logger.LogError("Bot", $"STT: Serialization exception, removing..");
 				KeyValuePair<int, TcpClient> thingything = default;
 				foreach (var thing in bag)
 					if (thing.Value == client)
@@ -347,7 +368,7 @@ namespace DiscordIntegration_Bot
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				Logger.LogException("SerializationException", e);
 			}
 		}
 	}

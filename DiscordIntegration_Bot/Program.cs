@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using DiscordIntegration_Bot.Logging;
 
 namespace DiscordIntegration_Bot
 {
@@ -24,14 +25,14 @@ namespace DiscordIntegration_Bot
 
 		public static void Main()
 		{
-			Log("Hello yes welcome to DiscordIntegration", true);
+			Logger.LogInfo("Joker", "Hello yes welcome to DiscordIntegration");
 			new Program();
 		}
 
 		public Program()
 		{
-			string path = $"{Directory.GetCurrentDirectory()}/logs/{DateTime.UtcNow.Ticks}.txt";
-			Log($"Creating log file: {path}", true);
+			string path = $"{Directory.GetCurrentDirectory()}/logs/Debug-{DateTime.UtcNow.ToString("yyyy-MM-dd")}.txt";
+			Logger.LogInfo("Logs", $"Creating log file: {path}");
 			if (!Directory.Exists($"{Directory.GetCurrentDirectory()}/logs"))
 				Directory.CreateDirectory($"{Directory.GetCurrentDirectory()}/logs");
 			foreach (string file in Directory.GetFiles($"{Directory.GetCurrentDirectory()}/logs"))
@@ -39,7 +40,7 @@ namespace DiscordIntegration_Bot
 			if (!File.Exists(path))
 				File.Create(path).Close();
 
-			while (LogFiles.Count > 5)
+			while (LogFiles.Count > 10)
 			{
 				string file = LogFiles[0];
 				File.Delete(file);
@@ -49,7 +50,6 @@ namespace DiscordIntegration_Bot
 			LogFile = path;
 			LogFiles.Add(path);
 			FileCreated = DateTime.UtcNow;
-			Log("Initializing bot", true);
 			_bot = new Bot(this);
 		}
 
@@ -59,9 +59,9 @@ namespace DiscordIntegration_Bot
 			while (fileLocked)
 				Thread.Sleep(1000);
 
-			if ((FileCreated - DateTime.UtcNow).TotalHours > 2)
+			if ((FileCreated - DateTime.UtcNow).TotalDays > 1)
 			{
-				LogFile = $"{Directory.GetCurrentDirectory()}/logs/{DateTime.UtcNow.Ticks}.txt";
+				LogFile = $"{Directory.GetCurrentDirectory()}/logs/Debug-{DateTime.UtcNow.ToString("yyyy-MM-dd")}.txt";
 				FileCreated = DateTime.UtcNow;
 				LogFiles.Add(LogFile);
 			}
@@ -73,7 +73,7 @@ namespace DiscordIntegration_Bot
 			}
 
 			fileLocked = false;
-			while (LogFiles.Count > 5)
+			while (LogFiles.Count > 10)
 			{
 				string file = LogFiles[0];
 				File.Delete(file);
