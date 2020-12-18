@@ -60,7 +60,8 @@ namespace DiscordIntegration_Plugin
             {
                 Plugin.Singleton.OnDisabled();
                 Plugin.Singleton.OnEnabled();
-               
+                Log.Info("Se reinicio el plugin de DiscordIntration con el comando");
+                ev.CommandSender.RaReply($"Se reinicio el plugin de DiscordIntegration.", true, true, string.Empty);
             }
         }
 
