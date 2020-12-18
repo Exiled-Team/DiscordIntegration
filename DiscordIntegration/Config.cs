@@ -1,6 +1,5 @@
-using System.ComponentModel;
 using Exiled.API.Interfaces;
-using Exiled.Loader;
+using System.ComponentModel;
 
 namespace DiscordIntegration_Plugin
 {

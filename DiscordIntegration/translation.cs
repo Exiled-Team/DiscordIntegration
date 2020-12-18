@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DiscordIntegration_Plugin
+﻿namespace DiscordIntegration_Plugin
 {
     public static class Translate
     {

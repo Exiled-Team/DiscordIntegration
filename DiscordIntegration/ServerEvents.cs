@@ -1,7 +1,7 @@
-using System.Linq;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using Respawning;
+using System.Linq;
 
 namespace DiscordIntegration_Plugin
 {
@@ -9,7 +9,7 @@ namespace DiscordIntegration_Plugin
     {
         public Plugin plugin;
         public ServerEvents(Plugin plugin) => this.plugin = plugin;
-        
+
         public void OnCommand(SendingRemoteAdminCommandEventArgs ev)
         {
             string Args = string.Join(" ", ev.Arguments);
@@ -25,7 +25,7 @@ namespace DiscordIntegration_Plugin
                 foreach (Player player in Player.List.OrderBy(pl => pl.Id))
                     if (!player.IsHost)
                         message += $"+ {player.Nickname} | SteamID: {player.UserId} | IP: {player.IPAddress}\n";
-                        
+
                 if (string.IsNullOrEmpty(message))
                     message = $"{Plugin.translation.NoPlayersOnline}";
                 message += "```";
@@ -53,9 +53,17 @@ namespace DiscordIntegration_Plugin
                 string response = isStaff ? names : $"{Plugin.translation.NoStaffOnline}";
                 response += $"\n```";
                 ev.CommandSender.RaReply($"{PlayerManager.players.Count}/{plugin.MaxPlayers} {response}", true, true, string.Empty);
+
+
+            }
+            else if(ev.Name.ToLower() == "direstart")
+            {
+                Plugin.Singleton.OnDisabled();
+                Plugin.Singleton.OnEnabled();
+               
             }
         }
-        
+
         public void OnWaitingForPlayers()
         {
             if (Plugin.Singleton.Config.WaitingForPlayers)
@@ -79,14 +87,14 @@ namespace DiscordIntegration_Plugin
             if (Plugin.Singleton.Config.CheaterReport)
                 ProcessSTT.SendData($":pirate_flag: **{Plugin.translation.CheaterReportFiled}: {ev.Reporter.Nickname} - ({ev.Reporter.Role}) {Plugin.translation.Reported} {ev.Reported.Nickname} - ({ev.Reported.Role.Traduccion()}) {Plugin.translation._For} {ev.Reason}.**", HandleQueue.GameLogChannelId);
         }
-        
+
         public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
             string Argies = string.Join(" ", ev.Arguments);
             if (Plugin.Singleton.Config.ConsoleCommand)
                 ProcessSTT.SendData($":joystick: {ev.Player.Nickname} - {ev.Player.UserId} - {ev.Player.Id} - ({ev.Player.Role.Traduccion()}) {Plugin.translation.HasRunClientConsoleCommand}: {ev.Name} {Argies}", HandleQueue.CommandLogChannelId);
         }
-        
+
         public void OnRespawn(RespawningTeamEventArgs ev)
         {
             if (Plugin.Singleton.Config.Respawn)
