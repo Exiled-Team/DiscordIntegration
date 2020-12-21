@@ -3,8 +3,9 @@ using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using Scp914;
 using System;
+using DiscordIntegration_Plugin.System;
 
-namespace DiscordIntegration_Plugin
+namespace DiscordIntegration_Plugin.EvHandlers
 {
     public class PlayerEvents
     {
@@ -239,6 +240,10 @@ namespace DiscordIntegration_Plugin
 
                             ProcessSTT.SendData($"<:RIP:777989450353475654>  **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role.Traduccion()})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:RIP:777989450353475654> ",
                             HandleQueue.GameLogChannelId);
+
+                            Log.Debug("Antes TK " + Methods.TKCount);
+                            Methods.TKCount++;
+                            Log.Debug("Despues TK " + Methods.TKCount);
                         }
                         else if (ev.Target.IsCuffed && ev.Killer.Side != Side.Scp)
                         {
@@ -246,6 +251,8 @@ namespace DiscordIntegration_Plugin
                             HandleQueue.GameLogChannelId);
                         }
 
+
+                        Methods.PlayerTotalDeaths++;
 
                     }
                 }
@@ -310,6 +317,8 @@ namespace DiscordIntegration_Plugin
 
         public void OnPlayerJoin(JoinedEventArgs ev)
         {
+            Methods.PlayerJoinCount++;
+
             if (Plugin.Singleton.Config.RoleSync)
                 Methods.CheckForSyncRole(ev.Player);
             if (Plugin.Singleton.Config.PlayerJoin)

@@ -35,8 +35,10 @@ namespace DiscordIntegration_Bot
             InitBot().GetAwaiter().GetResult();
         }
 
+
         private async Task InitBot()
         {
+            Console.Clear();
             Console.WriteLine("\t\t──────────── BOT ────────────");
             Logger.LogInfo("DiscordIntegration", "Starting the Bot"); //Notifying that the app is starting ...
 

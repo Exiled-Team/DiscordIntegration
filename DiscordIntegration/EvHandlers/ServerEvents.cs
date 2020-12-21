@@ -1,9 +1,12 @@
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using Respawning;
+using System.IO;
 using System.Linq;
+using DiscordIntegration_Plugin.System;
+using System;
 
-namespace DiscordIntegration_Plugin
+namespace DiscordIntegration_Plugin.EvHandlers
 {
     public class ServerEvents
     {
@@ -79,10 +82,28 @@ namespace DiscordIntegration_Plugin
 
         public void OnRoundEnd(RoundEndedEventArgs ev)
         {
-            if (Plugin.Singleton.Config.RoundEnd)
-                ProcessSTT.SendData($":stop_button: {Plugin.translation.RoundEnded}: {Player.List.Count()} {Plugin.translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
+          try
+          {
+                if (Plugin.Singleton.Config.RoundEnd)
+                    ProcessSTT.SendData($":stop_button: {Plugin.translation.RoundEnded}: {Player.List.Count()} {Plugin.translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
+
+                Log.Debug("Antes RoundsPlayed " + Methods.RoundsPlayed);
+                Methods.RoundsPlayed++;
+                Log.Debug("Despues RoundsPlayed " + Methods.RoundsPlayed);
+
+                Methods.UpdateStats(Methods.TKCount, Methods.RoundsPlayed, Methods.PlayerTotalDeaths, Methods.PlayerJoinCount);
+            }
+            catch(Exception e)
+            {
+                Log.Error($"OnRoundEnd: {e}");
+          }
+            
+
         }
 
+     
+
+        
         public void OnCheaterReport(ReportingCheaterEventArgs ev)
         {
             if (Plugin.Singleton.Config.CheaterReport)

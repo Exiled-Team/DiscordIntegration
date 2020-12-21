@@ -1,4 +1,4 @@
-﻿namespace DiscordIntegration_Plugin
+﻿namespace DiscordIntegration_Plugin.System
 {
     public static class Translate
     {

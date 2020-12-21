@@ -1,7 +1,8 @@
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using DiscordIntegration_Plugin.System;
 
-namespace DiscordIntegration_Plugin
+namespace DiscordIntegration_Plugin.EvHandlers
 {
     public class MapEvents
     {

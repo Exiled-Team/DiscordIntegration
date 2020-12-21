@@ -150,8 +150,8 @@ namespace DiscordIntegration_Bot
                 if (data.Data.Contains("REQUEST_DATA PLAYER_LIST SILENT"))
                     return;
                 //Guild Stuff
-                // The last discord server where the bot entered
-                SocketGuild guild = Bot.Client.Guilds.LastOrDefault();
+                // The Discord Server
+                SocketGuild guild = Bot.Client.GetGuild(Config.ServerGuild);
 
                 if (data.Data.StartsWith("checksync"))
                 {
@@ -217,17 +217,14 @@ namespace DiscordIntegration_Bot
 
                 if (data.Data.StartsWith("channelstatus"))
                 {
+                    
+                    Logger.LogDebug("Plugin & Bot", $"updating channel topic");
 
-                    if (Config.Debug)
-                    {
-                        Program.Log($"updating channel topic", true);
-                    }
-
-                    /*string status = data.Data.Replace("channelstatus", "");
+                    string status = data.Data.Replace("channelstatus", "");
 					SocketTextChannel chan1 = guild.GetTextChannel(GameChannelId);
 					await chan1.ModifyAsync(x => x.Topic = status);
 					SocketTextChannel chan2 = guild.GetTextChannel(CmdChannelId);
-					await chan2.ModifyAsync(x => x.Topic = status);*/
+					await chan2.ModifyAsync(x => x.Topic = status);
 
 
                     return;
@@ -305,7 +302,7 @@ namespace DiscordIntegration_Bot
             {
                 if (Config.Debug)
                 {
-                    Logger.LogDebug("Bot", "For loop start");
+                    Logger.LogDebug("Bot", "Waiting For loop start");
                 }
 
                 lock (_messages)
@@ -313,7 +310,7 @@ namespace DiscordIntegration_Bot
                     foreach (KeyValuePair<ulong, string> kvp in _messages)
                     {
                         Program.Log($"Sending messages.{_messages[kvp.Key]}", true);
-                        SocketTextChannel chan = Bot.Client.Guilds.LastOrDefault()?.GetTextChannel(kvp.Key);
+                        SocketTextChannel chan = Bot.Client.GetGuild(Config.ServerGuild)?.GetTextChannel(kvp.Key);
                         if (chan == null)
                         {
                             Logger.LogCritical("DequeueSend", "Channel not found!");

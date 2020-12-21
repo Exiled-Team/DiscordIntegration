@@ -1,7 +1,7 @@
 using Exiled.API.Interfaces;
 using System.ComponentModel;
 
-namespace DiscordIntegration_Plugin
+namespace DiscordIntegration_Plugin.System
 {
     public class Config : IConfig
     {

@@ -1,3 +1,4 @@
+using DiscordIntegration_Plugin.EvHandlers;
 using Exiled.API.Features;
 using GameCore;
 using MEC;
@@ -10,7 +11,7 @@ using System.Threading;
 using Handlers = Exiled.Events.Handlers;
 using Log = Exiled.API.Features.Log;
 
-namespace DiscordIntegration_Plugin
+namespace DiscordIntegration_Plugin.System
 {
     public class Plugin : Plugin<Config>
     {
@@ -20,13 +21,15 @@ namespace DiscordIntegration_Plugin
         public static Plugin Singleton;
         public int MaxPlayers = ConfigFile.ServerConfig.GetInt("max_players", 20);
 
+
         public override void OnEnabled()
         {
             Singleton = this;
-            Timing.RunCoroutine(Methods.TickCounter(), Segment.Update, "ticks");
+            //Timing.RunCoroutine(Methods.TickCounter(), Segment.Update, "ticks");
             MapEvents = new MapEvents(this);
             ServerEvents = new ServerEvents(this);
             PlayerEvents = new PlayerEvents(this);
+            
 
             Handlers.Map.Decontaminating += MapEvents.OnDecon;
             Handlers.Map.GeneratorActivated += MapEvents.OnGenFinish;
@@ -81,6 +84,7 @@ namespace DiscordIntegration_Plugin
             Handlers.Scp106.Containing += PlayerEvents.On106Contain;
 
             LoadTranslation();
+            Methods.LoadStats();
 
             new Thread(ProcessSTT.Init).Start();
             Timing.RunCoroutine(HandleQueue.Handle(), "handle");
@@ -157,7 +161,7 @@ namespace DiscordIntegration_Plugin
             for (; ; )
             {
                 ProcessSTT.SendData($"updateStatus {PlayerManager.players.Count}/{ConfigFile.ServerConfig.GetInt("max_players")}", 0);
-                yield return Timing.WaitForSeconds(5f);
+                yield return Timing.WaitForSeconds(8f);
             }
         }
 
@@ -174,11 +178,10 @@ namespace DiscordIntegration_Plugin
 
         public void LoadTranslation()
         {
-            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string pluginsPath = Path.Combine(appData, "Plugins");
-            string configPath = Path.Combine(pluginsPath, "Integration");
+            string configPath = Path.Combine(Paths.Configs, "DiscordIntegration");
             string translationFileName = Path.Combine(configPath, "translations.json");
             string translationBackupFileName = Path.Combine(configPath, "translations_backup.json");
+
 
             if (!Directory.Exists(configPath))
             {
@@ -316,4 +319,5 @@ namespace DiscordIntegration_Plugin
         public string GroupSet = "has been assigned a group";
         public string ItemChanged = "changed the item in their hand";
     }
+
 }
