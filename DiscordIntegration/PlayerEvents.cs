@@ -2,6 +2,7 @@ using System;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using Interactables.Interobjects.DoorUtils;
 using Scp914;
 
 namespace DiscordIntegration_Plugin
@@ -111,9 +112,9 @@ namespace DiscordIntegration_Plugin
 		public void OnDoorInteract(InteractingDoorEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.DoorInteract)
-				ProcessSTT.SendData(ev.Door.NetworkisOpen
-						? $"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.Translation.HasClosedADoor}: {ev.Door.DoorName}."
-						: $"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.Translation.HasOpenedADoor}: {ev.Door.DoorName}.",
+				ProcessSTT.SendData(ev.Door.NetworkTargetState
+						? $"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.Translation.HasClosedADoor}: {ev.Door.GetComponent<DoorNametagExtension>().GetName}."
+						: $"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Plugin.Translation.HasOpenedADoor}: {ev.Door.GetComponent<DoorNametagExtension>().GetName}.",
 					HandleQueue.GameLogChannelId);
 		}
 

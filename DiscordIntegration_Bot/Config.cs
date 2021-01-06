@@ -17,6 +17,7 @@ namespace DiscordIntegration_Bot
 		public Dictionary<string, PermLevel> AllowedCommands { get; set; }
 		public ulong StaffRoleId { get; set; }
 		public bool EggMode { get; set; }
+		public ulong GuildId { get; set; }
 
 		public static readonly Config Default = new Config
 		{
@@ -32,7 +33,8 @@ namespace DiscordIntegration_Bot
 			GameLogChannelId = 0,
 			AllowedCommands = new Dictionary<string, PermLevel>() { {"list", PermLevel.PermLevel0} },
 			StaffRoleId = 0,
-			EggMode = false
+			EggMode = false,
+			GuildId = 0
 		};
 	}
 }

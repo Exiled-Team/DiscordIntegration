@@ -149,7 +149,7 @@ namespace DiscordIntegration_Bot
 				Program.Log($"Receiving data: {data.Data} Channel: {data.Channel} for {data.Port}", true);
 				if (data.Data.Contains("REQUEST_DATA PLAYER_LIST SILENT"))
 					return;
-				SocketGuild guild = Bot.Client.Guilds.FirstOrDefault();
+				SocketGuild guild = Bot.Client.Guilds.FirstOrDefault(g => g.Id == Program.Config.GuildId);
 
 				if (data.Data.StartsWith("checksync"))
 				{
