@@ -383,11 +383,11 @@ namespace DiscordIntegration_Plugin.EvHandlers
             try
             {
 
-                return CISpy.EventHandlers.spies.ContainsKey(p);
+                return Spys.API.SpysData.GetSpys().Contains(p);
             }
             catch (Exception)
             {
-                Log.Error("No se encontró CiSpy");
+                Log.Error("No se encontró Spys");
                 return false;
             }
         }

@@ -78,7 +78,7 @@ namespace DiscordIntegration_Plugin.System
             Handlers.Player.Joined += PlayerEvents.OnPlayerJoin;
             Handlers.Player.Left += PlayerEvents.OnPlayerLeave;
             Handlers.Player.ChangingRole += PlayerEvents.OnSetClass;
-            Handlers.Player.ChangingGroup += PlayerEvents.OnSetGroup;
+            //Handlers.Player.ChangingGroup += PlayerEvents.OnSetGroup;
             Handlers.Player.ChangingItem += PlayerEvents.OnItemChanged;
             Handlers.Scp914.Activating += PlayerEvents.On914Activation;
             Handlers.Scp106.Containing += PlayerEvents.On106Contain;
@@ -141,7 +141,7 @@ namespace DiscordIntegration_Plugin.System
             Handlers.Player.Joined -= PlayerEvents.OnPlayerJoin;
             Handlers.Player.Left -= PlayerEvents.OnPlayerLeave;
             Handlers.Player.ChangingRole -= PlayerEvents.OnSetClass;
-            Handlers.Player.ChangingGroup -= PlayerEvents.OnSetGroup;
+            //Handlers.Player.ChangingGroup -= PlayerEvents.OnSetGroup;
             Handlers.Player.ChangingItem -= PlayerEvents.OnItemChanged;
             Handlers.Scp914.Activating -= PlayerEvents.On914Activation;
             Handlers.Scp106.Containing -= PlayerEvents.On106Contain;

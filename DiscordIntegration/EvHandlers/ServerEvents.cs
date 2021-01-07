@@ -113,7 +113,7 @@ namespace DiscordIntegration_Plugin.EvHandlers
         public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
             string Argies = string.Join(" ", ev.Arguments);
-            //if (Plugin.Singleton.Config.ConsoleCommand)
+            if (ev.Name == "zr") return;
                 ProcessSTT.SendData($":joystick: **{ev.Player.Nickname}** |**ID:** {ev.Player.UserId} |\nUsó el comando: ``{ev.Name} {Argies}``", HandleQueue.CommandLogChannelId);
         }
 

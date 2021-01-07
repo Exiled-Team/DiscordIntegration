@@ -29,10 +29,10 @@ namespace DiscordIntegration_Plugin.EvHandlers
         public static string _statsFileNamePath = Path.Combine(_configPath, "stats.json");
 
         public static Stats stats = new Stats();
-        public static int RoundsPlayed { get; set; }
-        public static int TKCount { get; set; }
-        public static int PlayerTotalDeaths { get; set; }
-        public static int PlayerJoinCount { get; set; }
+        public static ulong RoundsPlayed { get; set; }
+        public static ulong TKCount { get; set; }
+        public static ulong PlayerTotalDeaths { get; set; }
+        public static ulong PlayerJoinCount { get; set; }
 
         public static void LoadStats()
         {
@@ -63,7 +63,7 @@ namespace DiscordIntegration_Plugin.EvHandlers
             }
             catch (Exception e)
             {
-                Log.Info("Invalid or corrupted translation file, creating backup and overwriting.");
+                Log.Info("Invalid or corrupted stats file, creating backup and overwriting.");
                 Log.Error(e.Message);
 
                 string json = JObject.FromObject(stats).ToString();
@@ -73,43 +73,9 @@ namespace DiscordIntegration_Plugin.EvHandlers
                 File.WriteAllText(statsFile, json);
                 return;
             }
+        }  
 
-            JsonSerializer j = new JsonSerializer();
-            j.Error += Json_Error;
-
-            try
-            {
-                stats = o.ToObject<Stats>(j);
-            }
-            catch (Exception e)
-            {
-                Log.Info("Invalid or corrupted translation file, creating backup and overwriting.");
-                Log.Error(e.Message);
-                refreshTranslationFile = true;
-            }
-
-            if (refreshTranslationFile)
-            {
-                string json = JObject.FromObject(stats).ToString();
-
-                Log.Info("Invalid or missing translation element detected fixing: " + string.Join(", ", propertyNames) + ".");
-
-                File.Copy(statsFile, StatsBackupFile, true);
-
-                File.WriteAllText(statsFile, json);
-                return;
-            }
-        }
-        private static void Json_Error(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs e)
-        {
-            refreshTranslationFile = true;
-
-            propertyNames.Add(e.ErrorContext.Member.ToString());
-
-            e.ErrorContext.Handled = true;
-        }
-
-        public static void UpdateStats(int tkAmount, int roundsPlayed, int totalDeaths, int totalplayerjoincount)
+        public static void UpdateStats(ulong tkAmount, ulong roundsPlayed, ulong totalDeaths, ulong totalplayerjoincount)
         {
             string json = File.ReadAllText(_statsFileNamePath);
             JObject jObject = JsonConvert.DeserializeObject(json) as JObject;
@@ -119,8 +85,12 @@ namespace DiscordIntegration_Plugin.EvHandlers
             jObject.SelectToken("Player_TotalDeaths").Replace($"{totalDeaths}");
             jObject.SelectToken("Player_JoinCount").Replace($"{totalplayerjoincount}");
 
-            File.WriteAllText(_statsFileNamePath, 
+            File.WriteAllText(_statsFileNamePath,
                 JsonConvert.SerializeObject(jObject, Formatting.Indented));
+        }
+        public static void SaveStats()
+        {
+
         }
 
         public static void CheckForSyncRole(Player player)
