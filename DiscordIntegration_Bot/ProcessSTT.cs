@@ -234,8 +234,8 @@ namespace DiscordIntegration_Bot
 					await Bot.Client.SetActivityAsync(new Game(status));
 					return;
 				}
-				data.Data = data.Data.Substring(data.Data.IndexOf('#') + 1);
-
+				//data.Data = data.Data.Substring(data.Data.IndexOf('#') + 1);
+				//Disabled to fix broken names, if it includes a #
 				
 				
 				Console.WriteLine("Getting guild.");
