@@ -312,12 +312,18 @@ namespace DiscordIntegration_Plugin
 			{
 				if (Plugin.Singleton.Config.SetGroup)
 				{
-					string roleMessage = ev.NewGroup == null
-						? "None"
-						: $"{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})";
-					ProcessSTT.SendData(
-						$"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.Translation.GroupSet}: **{roleMessage}**.",
-						HandleQueue.GameLogChannelId);
+					if (ev.NewGroup == null)
+					{
+						string roleMessage = "None";
+						ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.Translation.GroupSet}: **{roleMessage}**.",
+							HandleQueue.GameLogChannelId);
+					}
+					else
+					{
+						string roleMessage = $"{ev.NewGroup.BadgeText} ({ev.NewGroup.BadgeColor})";
+						ProcessSTT.SendData($"{ev.Player.Nickname} - {ev.Player.UserId} {Plugin.Translation.GroupSet}: **{roleMessage}**.",
+							HandleQueue.GameLogChannelId);
+					}
 				}
 			}
 			catch (Exception e)
