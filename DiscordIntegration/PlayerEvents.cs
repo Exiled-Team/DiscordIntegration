@@ -176,7 +176,7 @@ namespace DiscordIntegration_Plugin
 						}
 						else if (!Plugin.Singleton.Config.OnlyFriendlyFireDMG)
 						{
-							if (ev.Attacker != null && ev.Target.Role.GetTeam() == ev.Attacker.Role.GetTeam() && ev.Target != ev.Attacker)
+							if (ev.Attacker != null && ev.Target != ev.Attacker && ev.Target.Role.GetTeam() == ev.Attacker.Role.GetTeam() || ev.Attacker.Role.GetSide() == ev.Target.Role.GetSide())
 							{
 								ProcessSTT.SendData($":crossed_swords: **{ev.Attacker.Nickname} - `{ev.Attacker.UserId}` ({ev.Attacker.Role}) {Plugin.Translation.Damaged} {ev.Target.Nickname} - `{ev.Target.UserId}` ({ev.Target.Role}) {Plugin.Translation._For} {ev.Amount} {Plugin.Translation.With} {DamageTypes.FromIndex(ev.Tool).name}.**", HandleQueue.GameLogChannelId);
 							}
@@ -201,15 +201,21 @@ namespace DiscordIntegration_Plugin
 			{
 				try
 				{
-					if (ev.Killer != null && ev.Target.Role.GetTeam() == ev.Killer.Role.GetTeam())
-						ProcessSTT.SendData(
-							$":o: **{ev.Killer.Nickname} - {ev.Killer.UserId} ({ev.Killer.Role}) {Plugin.Translation.Killed} {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.Translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
+					if (ev.Killer != null && ev.Target.Role.GetTeam() == ev.Killer.Role.GetTeam() || ev.Killer.Role.GetSide() == ev.Target.Role.GetSide())
+						ProcessSTT.SendData($":o: **{ev.Killer.Nickname} - `{ev.Killer.UserId}` ({ev.Killer.Role}) {Plugin.Translation.Killed} {ev.Target.Nickname} - `{ev.Target.UserId}` ({ev.Target.Role}) {Plugin.Translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
 							HandleQueue.GameLogChannelId);
 					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
 					{
-						ProcessSTT.SendData(
-							$":skull_crossbones: **{ev.Killer.Nickname} - {ev.Killer.UserId} ({ev.Killer.Role}) {Plugin.Translation.Killed} {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.Translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
-							HandleQueue.GameLogChannelId);
+						if (ev.Killer != null && ev.Killer != ev.Target && ev.Target.Role.GetTeam() == ev.Killer.Role.GetTeam() || ev.Killer.Role.GetSide() == ev.Target.Role.GetSide())
+						{
+							ProcessSTT.SendData($":o: **{ev.Killer.Nickname} - `{ev.Killer.UserId}` ({ev.Killer.Role}) {Plugin.Translation.Killed} {ev.Target.Nickname} - `{ev.Target.UserId}` ({ev.Target.Role}) {Plugin.Translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
+								HandleQueue.GameLogChannelId);
+						}
+						else
+						{
+							ProcessSTT.SendData($":skull_crossbones: **{ev.Killer.Nickname} - `{ev.Killer.UserId}` ({ev.Killer.Role}) {Plugin.Translation.Killed} {ev.Target.Nickname} - `{ev.Target.UserId}` ({ev.Target.Role}) {Plugin.Translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}.**",
+								HandleQueue.GameLogChannelId);
+						}
 					}
 				}
 				catch (Exception e)
