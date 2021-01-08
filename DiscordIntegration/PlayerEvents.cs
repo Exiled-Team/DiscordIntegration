@@ -163,15 +163,29 @@ namespace DiscordIntegration_Plugin
 			{
 				try
 				{
-					if (ev.Attacker != null && ev.Target.Role.GetTeam() == ev.Attacker.Role.GetTeam() && ev.Target != ev.Attacker)
-						ProcessSTT.SendData(
-							$":crossed_swords: **{ev.Attacker.Nickname} - {ev.Attacker.UserId} ({ev.Attacker.Role}) {Plugin.Translation.Damaged} {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.Translation._For} {ev.Amount} {Plugin.Translation.With} {DamageTypes.FromIndex(ev.Tool).name}.**",
-							HandleQueue.GameLogChannelId);
-					else if (!Plugin.Singleton.Config.OnlyFriendlyFire)
+					string scp = "SCP-207";
+					if (DamageTypes.FromIndex(ev.Tool).name == scp)
 					{
-						ProcessSTT.SendData(
-								$"{ev.HitInformations.Attacker}  {Plugin.Translation.Damaged} {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.Translation._For} {ev.Amount} {Plugin.Translation.With} {DamageTypes.FromIndex(ev.Tool).name}.",
-								HandleQueue.GameLogChannelId);
+						//
+					}
+					else
+					{
+						if (ev.Attacker != null && ev.Target != ev.Attacker && ev.Target.Role.GetTeam() == ev.Attacker.Role.GetTeam() || ev.Attacker.Role.GetSide() == ev.Target.Role.GetSide())
+						{
+							ProcessSTT.SendData($":crossed_swords: **{ev.Attacker.Nickname} - `{ev.Attacker.UserId}` ({ev.Attacker.Role}) {Plugin.Translation.Damaged} {ev.Target.Nickname} - `{ev.Target.UserId}` ({ev.Target.Role}) {Plugin.Translation._For} {ev.Amount} {Plugin.Translation.With} {DamageTypes.FromIndex(ev.Tool).name}.**", HandleQueue.GameLogChannelId);
+						}
+						else if (!Plugin.Singleton.Config.OnlyFriendlyFireDMG)
+						{
+							if (ev.Attacker != null && ev.Target.Role.GetTeam() == ev.Attacker.Role.GetTeam() && ev.Target != ev.Attacker)
+							{
+								ProcessSTT.SendData($":crossed_swords: **{ev.Attacker.Nickname} - `{ev.Attacker.UserId}` ({ev.Attacker.Role}) {Plugin.Translation.Damaged} {ev.Target.Nickname} - `{ev.Target.UserId}` ({ev.Target.Role}) {Plugin.Translation._For} {ev.Amount} {Plugin.Translation.With} {DamageTypes.FromIndex(ev.Tool).name}.**", HandleQueue.GameLogChannelId);
+							}
+							else
+							{
+								//ProcessSTT.SendData($"{ev.HitInformations.Attacker}  {Plugin.Translation.Damaged} {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {Plugin.Translation._For} {ev.Amount} {Plugin.Translation.With} {DamageTypes.FromIndex(ev.Tool).name}.", HandleQueue.GameLogChannelId);
+								ProcessSTT.SendData($"{ev.Attacker.Nickname} - `{ev.Attacker.UserId}` ({ev.Attacker.Role}) {Plugin.Translation.Damaged} {ev.Target.Nickname} - `{ev.Target.UserId}` ({ev.Target.Role}) {Plugin.Translation._For} {ev.Amount} {Plugin.Translation.With} {DamageTypes.FromIndex(ev.Tool).name}.", HandleQueue.GameLogChannelId);
+							}
+						}
 					}
 				}
 				catch (Exception e)
