@@ -111,6 +111,12 @@ namespace DiscordIntegration_Bot
                     case "ping":
                         await context.Channel.SendMessageAsync($"Pong!");
                         return;
+                    case "help":
+                        {
+                            await context.Channel.SendMessageAsync("```md\n## Comandos\n\n# addusr\n- Permite agregar un usuario a rolesync\n\n#");
+
+                            return;
+                        }
                     case "addusr":
                         {
                             if (user.RoleIds.All(r => r != Program.Config.StaffRoleId))

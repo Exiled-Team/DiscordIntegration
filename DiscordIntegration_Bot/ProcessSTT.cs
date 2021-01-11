@@ -151,7 +151,7 @@ namespace DiscordIntegration_Bot
                     return;
                 //Guild Stuff
                 // The Discord Server
-                SocketGuild guild = Bot.Client.GetGuild(Config.ServerGuild);
+                SocketGuild guild = Bot.Client.Guilds.FirstOrDefault(g => g.Id == Program.Config.ServerGuild);
 
                 if (data.Data.StartsWith("checksync"))
                 {
