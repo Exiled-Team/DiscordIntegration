@@ -152,6 +152,7 @@ namespace DiscordIntegration_Bot
                 //Guild Stuff
                 // The Discord Server
                 SocketGuild guild = Bot.Client.Guilds.FirstOrDefault(g => g.Id == Program.Config.ServerGuild);
+                SocketGuild guild2 = Bot.Client.Guilds.FirstOrDefault(g => g.Id == Program.Config.ServerGuild2);
 
                 if (data.Data.StartsWith("checksync"))
                 {
@@ -263,7 +264,7 @@ namespace DiscordIntegration_Bot
                 else if (data.Channel == 2)
                     chan = guild.GetTextChannel(CmdChannelId);
                 else
-                    chan = guild.GetTextChannel(data.Channel);
+                    chan = guild.GetTextChannel(data.Channel) == null ? guild2.GetTextChannel(data.Channel) : guild.GetTextChannel(data.Channel);
 
                 if (chan == null)
                 {
