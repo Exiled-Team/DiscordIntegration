@@ -284,8 +284,21 @@ namespace DiscordIntegration_Plugin
 
 		public void OnPlayerBanned(BannedEventArgs ev)
 		{
-			if (Plugin.Singleton.Config.Banned)
-				ProcessSTT.SendData($":no_entry: {ev.Details.OriginalName} - {ev.Details.Id} {Plugin.Translation.WasBannedBy} {ev.Details.Issuer} {Plugin.Translation._For} {ev.Details.Reason}. {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+			if (Plugin.Singleton.Config.ShowIpAddresses)
+			{
+				ProcessSTT.SendData($":no_entry: {ev.Details.OriginalName} - `{ev.Details.Id}` {Plugin.Translation.WasBannedBy} {ev.Details.Issuer} {Plugin.Translation._For} {ev.Details.Reason}. {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+			}
+			else
+			{
+				if (ev.Details.Id.ToString().Contains("."))
+				{
+					ProcessSTT.SendData($":no_entry: {ev.Details.OriginalName} - `IP Hidden` {Plugin.Translation.WasBannedBy} {ev.Details.Issuer} {Plugin.Translation._For} {ev.Details.Reason}. {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+				}
+				else
+				{
+					ProcessSTT.SendData($":no_entry: {ev.Details.OriginalName} - `{ev.Details.Id}` {Plugin.Translation.WasBannedBy} {ev.Details.Issuer} {Plugin.Translation._For} {ev.Details.Reason}. {new DateTime(ev.Details.Expires)}", HandleQueue.CommandLogChannelId);
+				}
+			}
 		}
 
 		public void OnIntercomSpeak(IntercomSpeakingEventArgs ev)
