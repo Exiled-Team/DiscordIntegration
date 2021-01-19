@@ -1,9 +1,9 @@
+using System;
+using System.Collections.Generic;
 using DiscordIntegration_Plugin.EvHandlers;
 using DiscordIntegration_Plugin.System;
 using Exiled.API.Features;
 using MEC;
-using System;
-using System.Collections.Generic;
 
 namespace DiscordIntegration_Plugin
 {
@@ -12,15 +12,15 @@ namespace DiscordIntegration_Plugin
 		public static ulong ChannelId;
 		public static ulong GameLogChannelId = 1;
 		public static ulong CommandLogChannelId = 2;
-
+		
 		public static void HandleQueuedItems()
 		{
 			while (ProcessSTT.dataQueue.TryDequeue(out SerializedData.SerializedData result))
 			{
 				string command = result.Data;
 				Log.Debug($"STT: Received {result.Data} for {result.Port} at {result.Channel}", Plugin.Singleton.Config.Debug);
-
-
+				
+				
 				if (result.Data == "ping")
 				{
 					Log.Debug("STT: Heartbeat received.", Plugin.Singleton.Config.Debug);
@@ -64,7 +64,7 @@ namespace DiscordIntegration_Plugin
 
 		public static IEnumerator<float> Handle()
 		{
-			for (; ; )
+			for (;;)
 			{
 				try
 				{
@@ -77,11 +77,11 @@ namespace DiscordIntegration_Plugin
 				}
 
 				yield return Timing.WaitForSeconds(1f);
-
+				
 			}
 		}
 	}
-
+	
 	public class BotSender : CommandSender
 	{
 		public override void RaReply(string text, bool success, bool logToConsole, string overrideDisplay)

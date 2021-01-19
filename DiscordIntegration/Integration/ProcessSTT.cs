@@ -1,5 +1,3 @@
-using DiscordIntegration_Plugin.System;
-using Exiled.API.Features;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -7,12 +5,14 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using DiscordIntegration_Plugin.System;
+using Exiled.API.Features;
 
 namespace DiscordIntegration_Plugin
 {
 	public class ProcessSTT
 	{
-		private static TcpClient tcpClient;
+		private static TcpClient tcpClient; 
 		public static readonly ConcurrentQueue<SerializedData.SerializedData> dataQueue = new ConcurrentQueue<SerializedData.SerializedData>();
 		private static Thread _init;
 		private static bool _locked;
@@ -35,8 +35,8 @@ namespace DiscordIntegration_Plugin
 					{
 						if (Plugin.Singleton.Config.Egg)
 						{
-							/*Log.Debug($"Starting connection for: '{Plugin.Singleton.Config.EggAddress}' on port {ServerConsole.Port}", Plugin.Singleton.Config.Debug);
-							tcpClient.Connect(Plugin.Singleton.Config.EggAddress, ServerConsole.Port);*/
+							Log.Debug($"Starting connection for: '{Plugin.Singleton.Config.EggAddress}' on port {ServerConsole.Port}", Plugin.Singleton.Config.Debug);
+							tcpClient.Connect(Plugin.Singleton.Config.EggAddress, ServerConsole.Port);
 						}
 						else
 						{
@@ -90,20 +90,16 @@ namespace DiscordIntegration_Plugin
 
 				SerializedData.SerializedData serializedData = new SerializedData.SerializedData
 				{
-					Data = data,
-					Port = ServerConsole.Port,
-					Channel = channel
+					Data = data, Port = ServerConsole.Port, Channel = channel
 				};
 				if (Plugin.Singleton.Config.Egg)
-					/*serializedData = new SerializedData.SerializedData
+					serializedData = new SerializedData.SerializedData
 					{
-						Data = data,
-						Port = ServerConsole.Port + 4130,
-						Channel = channel
+						//Data = data, Port = ServerConsole.Port + 4130, Channel = channel
 					};
 				BinaryFormatter formatter = new BinaryFormatter();
 				formatter.Serialize(tcpClient.GetStream(), serializedData);
-				Log.Debug($"Sent {data}", Plugin.Singleton.Config.Debug)*/;
+				Log.Debug($"Sent {data}", Plugin.Singleton.Config.Debug);
 			}
 			catch (IOException io)
 			{
@@ -124,7 +120,7 @@ namespace DiscordIntegration_Plugin
 				if (!tcpClient.Connected)
 					throw new InvalidOperationException("Tcp Client not connected!");
 				BinaryFormatter formatter = new BinaryFormatter();
-				for (; ; )
+				for (;;)
 				{
 					SerializedData.SerializedData deserialize =
 						formatter.Deserialize(tcpClient.GetStream()) as SerializedData.SerializedData;
