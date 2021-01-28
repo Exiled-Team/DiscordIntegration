@@ -316,7 +316,7 @@ namespace DiscordIntegration_Plugin.EvHandlers
                 }
         }
 
-        public void OnPlayerJoin(JoinedEventArgs ev)
+        public void OnPlayerJoin(VerifiedEventArgs ev)
         {
             Methods.PlayerJoinCount++;
 

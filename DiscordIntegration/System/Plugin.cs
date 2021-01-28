@@ -75,7 +75,7 @@ namespace DiscordIntegration_Plugin.System
             Handlers.Scp106.Teleporting += PlayerEvents.On106Teleport;
             Handlers.Player.ReloadingWeapon += PlayerEvents.OnPlayerReload;
             Handlers.Player.ItemDropped += PlayerEvents.OnDropItem;
-            Handlers.Player.Joined += PlayerEvents.OnPlayerJoin;
+            Handlers.Player.Verified += PlayerEvents.OnPlayerJoin;
             Handlers.Player.Left += PlayerEvents.OnPlayerLeave;
             Handlers.Player.ChangingRole += PlayerEvents.OnSetClass;
             //Handlers.Player.ChangingGroup += PlayerEvents.OnSetGroup;
@@ -138,7 +138,7 @@ namespace DiscordIntegration_Plugin.System
             Handlers.Scp106.Teleporting -= PlayerEvents.On106Teleport;
             Handlers.Player.ReloadingWeapon -= PlayerEvents.OnPlayerReload;
             Handlers.Player.ItemDropped -= PlayerEvents.OnDropItem;
-            Handlers.Player.Joined -= PlayerEvents.OnPlayerJoin;
+            Handlers.Player.Verified -= PlayerEvents.OnPlayerJoin;
             Handlers.Player.Left -= PlayerEvents.OnPlayerLeave;
             Handlers.Player.ChangingRole -= PlayerEvents.OnSetClass;
             //Handlers.Player.ChangingGroup -= PlayerEvents.OnSetGroup;
