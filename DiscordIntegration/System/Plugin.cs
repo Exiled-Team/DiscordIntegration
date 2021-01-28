@@ -76,7 +76,7 @@ namespace DiscordIntegration_Plugin.System
             Handlers.Player.ReloadingWeapon += PlayerEvents.OnPlayerReload;
             Handlers.Player.ItemDropped += PlayerEvents.OnDropItem;
             Handlers.Player.Verified += PlayerEvents.OnPlayerJoin;
-            Handlers.Player.Left += PlayerEvents.OnPlayerLeave;
+            Handlers.Player.Destroying += PlayerEvents.OnPlayerLeave;
             Handlers.Player.ChangingRole += PlayerEvents.OnSetClass;
             //Handlers.Player.ChangingGroup += PlayerEvents.OnSetGroup;
             Handlers.Player.ChangingItem += PlayerEvents.OnItemChanged;
@@ -139,7 +139,7 @@ namespace DiscordIntegration_Plugin.System
             Handlers.Player.ReloadingWeapon -= PlayerEvents.OnPlayerReload;
             Handlers.Player.ItemDropped -= PlayerEvents.OnDropItem;
             Handlers.Player.Verified -= PlayerEvents.OnPlayerJoin;
-            Handlers.Player.Left -= PlayerEvents.OnPlayerLeave;
+            Handlers.Player.Destroying -= PlayerEvents.OnPlayerLeave;
             Handlers.Player.ChangingRole -= PlayerEvents.OnSetClass;
             //Handlers.Player.ChangingGroup -= PlayerEvents.OnSetGroup;
             Handlers.Player.ChangingItem -= PlayerEvents.OnItemChanged;

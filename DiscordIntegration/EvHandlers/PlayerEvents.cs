@@ -59,10 +59,10 @@ namespace DiscordIntegration_Plugin.EvHandlers
         public void On079GainLvl(GainingLevelEventArgs ev)
         {
             if (Plugin.Singleton.Config.Scp079Lvl)
-                ProcessSTT.SendData($"<:stonks:733310275415048222> {ev.Player.Nickname} {Plugin.translation.GainedLevel} {ev.OldLevel} -> {ev.NewLevel}.", HandleQueue.GameLogChannelId);
+                ProcessSTT.SendData($"<:stonks:733310275415048222> {ev.Player.Nickname} {Plugin.translation.GainedLevel} {ev.NewLevel - 1} -> {ev.NewLevel}.", HandleQueue.GameLogChannelId);
         }
 
-        public void OnPlayerLeave(LeftEventArgs ev)
+        public void OnPlayerLeave(DestroyingEventArgs ev)
         {
             if (Plugin.Singleton.Config.PlayerLeave)
                 ProcessSTT.SendData($":arrow_left: **{ev.Player.Nickname} {Plugin.translation.LeftServer}.**", HandleQueue.GameLogChannelId);
