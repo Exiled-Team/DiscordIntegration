@@ -235,7 +235,7 @@ namespace DiscordIntegration_Plugin
 			}
 		}
 
-		public void OnPlayerJoin(JoinedEventArgs ev)
+		public void OnPlayerVerified(VerifiedEventArgs ev)
 		{
 			if (Plugin.Singleton.Config.RoleSync)
 				Methods.CheckForSyncRole(ev.Player);
