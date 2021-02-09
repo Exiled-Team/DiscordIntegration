@@ -96,8 +96,6 @@ namespace DiscordIntegration_Plugin.EvHandlers
 
         }
 
-     
-
         
         public void OnCheaterReport(ReportingCheaterEventArgs ev)
         {
