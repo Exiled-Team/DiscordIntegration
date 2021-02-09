@@ -23,76 +23,6 @@ namespace DiscordIntegration_Plugin.EvHandlers
         private static bool refreshTranslationFile;
         private static List<string> propertyNames = new List<string>();
 
-        public static string _configPath = Path.Combine(Paths.Configs, "DiscordIntegration");
-        public static string _translationFileName = Path.Combine(_configPath, "translations.json");
-        public static string _translationBackupFileName = Path.Combine(_configPath, "translations_backup.json");
-        public static string _statsFileNamePath = Path.Combine(_configPath, "stats.json");
-
-        public static Stats stats = new Stats();
-        public static ulong RoundsPlayed { get; set; }
-        public static ulong TKCount { get; set; }
-        public static ulong PlayerTotalDeaths { get; set; }
-        public static ulong PlayerJoinCount { get; set; }
-
-        public static void LoadStats()
-        {
-            string configPath = Path.Combine(Paths.Configs, "DiscordIntegration");
-            string statsFile = Path.Combine(configPath, "stats.json");
-            string StatsBackupFile = Path.Combine(configPath, "stats_backup.json");
-
-
-            if (!Directory.Exists(configPath))
-            {
-                Directory.CreateDirectory(configPath);
-            }
-
-            if (!File.Exists(statsFile))
-            {
-                string defaults = JObject.FromObject(stats).ToString();
-
-                File.WriteAllText(statsFile, defaults);
-                return;
-            }
-
-            string fileText = File.ReadAllText(statsFile);
-            JObject o;
-
-            try
-            {
-                o = JObject.Parse(fileText);
-            }
-            catch (Exception e)
-            {
-                Log.Info("Invalid or corrupted stats file, creating backup and overwriting.");
-                Log.Error(e.Message);
-
-                string json = JObject.FromObject(stats).ToString();
-
-                File.Copy(statsFile, StatsBackupFile, true);
-
-                File.WriteAllText(statsFile, json);
-                return;
-            }
-        }  
-
-        public static void UpdateStats(ulong tkAmount, ulong roundsPlayed, ulong totalDeaths, ulong totalplayerjoincount)
-        {
-            string json = File.ReadAllText(_statsFileNamePath);
-            JObject jObject = JsonConvert.DeserializeObject(json) as JObject;
-
-            jObject.SelectToken("Tk_Amount").Replace($"{tkAmount}");
-            jObject.SelectToken("Played_Rounds").Replace($"{roundsPlayed}");
-            jObject.SelectToken("Player_TotalDeaths").Replace($"{totalDeaths}");
-            jObject.SelectToken("Player_JoinCount").Replace($"{totalplayerjoincount}");
-
-            File.WriteAllText(_statsFileNamePath,
-                JsonConvert.SerializeObject(jObject, Formatting.Indented));
-        }
-        public static void SaveStats()
-        {
-
-        }
-
         public static void CheckForSyncRole(Player player)
         {
             Log.Info($"Checking rolesync for {player.UserId}");
@@ -127,7 +57,6 @@ namespace DiscordIntegration_Plugin.EvHandlers
             {
                 try
                 {
-                    UpdateStats(TKCount, RoundsPlayed, PlayerTotalDeaths, PlayerJoinCount);
 
                     int max = GameCore.ConfigFile.ServerConfig.GetInt("max_players", 20);
                     int cur = Player.List.Count();
@@ -140,7 +69,7 @@ namespace DiscordIntegration_Plugin.EvHandlers
                         else if (player.ReferenceHub.characterClassManager.IsAnyScp())
                             scpCount++;
                     ProcessSTT.SendData(
-                        $"channelstatus | <:079Agree:767172053718925373> Rondas Jugadas: {RoundsPlayed} | <:RIP:777989450353475654> Muertes Totales: {PlayerTotalDeaths} | <:argentinospordentro:772943936679182406> Contador de TK: {TKCount} | <a:SrLichtDespuesDeUnaActualizacion:746303286537093130> Contador de jugadores que se unieron: {PlayerJoinCount} | <a:nyaAAAAAAAAAAA:788500757313486938> IP: {ServerConsole.Ip}:{ServerConsole.Port} |",
+                        $"channelstatus | <a:nyaAAAAAAAAAAA:788500757313486938> IP: {ServerConsole.Ip}:{ServerConsole.Port} | <a:popcat:796825671913046027> Jugadores: {cur}/{max}| <:079Agree:767172053718925373> SCPs vivos: {scpCount} | <:ClassDSadge:808671027051757640> Humanos vivos: {aliveCount} |",
                         119);
 
                     Log.Info("Actualizando channel topic");
@@ -178,17 +107,6 @@ namespace DiscordIntegration_Plugin.EvHandlers
                 yield return Timing.WaitForOneFrame;
             }
         }
-    }
-
-    [JsonObject(ItemRequired = Required.Always)]
-    public class Stats
-    {
-        public int Tk_Amount = 0;
-        public int Player_TotalDeaths = 0;
-        public int Played_Rounds = 0;
-        public int Player_JoinCount = 0;
-
-
     }
 
 }

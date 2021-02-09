@@ -229,22 +229,24 @@ namespace DiscordIntegration_Plugin.EvHandlers
                             {
                                 ProcessSTT.SendData($"<:Spy:777990138625261578> **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** fue asesinado por un espia, con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:Spy:777990138625261578>",
                                 HandleQueue.GameLogChannelId);
-                                return;
+
                             }
                             else if (IsSpy(ev.Target))
                             {
                                 ProcessSTT.SendData($"<:FBI:729918970446086225> **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role.Traduccion()})** asesino a un espia que era **{ev.Target.Nickname}** - ID: {ev.Target.Id} fue asesinado con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:FBI:729918970446086225>  ",
                                  HandleQueue.GameLogChannelId);
-                                return;
+
                             }
 
+                            if (ev.HitInformation.GetDamageType() == DamageTypes.Grenade)
+                            {
+                                ProcessSTT.SendData($"<:Grenade:808647757429866517> :boom: TK de: **{ev.Killer.Nickname} - ID: {ev.Killer.Id} ({ev.Killer.Role.Traduccion()})** Mato a {ev.Target.Nickname} -- ID: {ev.Target.Id} con una granada.",
+                                 HandleQueue.GameLogChannelId);
+
+                            }
 
                             ProcessSTT.SendData($"<:RIP:777989450353475654>  **{ev.Killer.Nickname} - ID: {ev.Killer.Id} - ({ev.Killer.Role.Traduccion()})** {Plugin.translation.Killed} **{ev.Target.Nickname} - ID: {ev.Target.Id} ({ev.Target.Role.Traduccion()})** {Plugin.translation.With} {DamageTypes.FromIndex(ev.HitInformation.Tool).name}. <:RIP:777989450353475654> ",
                             HandleQueue.GameLogChannelId);
-
-                            Log.Debug("Antes TK " + Methods.TKCount);
-                            Methods.TKCount++;
-                            Log.Debug("Despues TK " + Methods.TKCount);
                         }
                         else if (ev.Target.IsCuffed && ev.Killer.Side != Side.Scp)
                         {
@@ -253,7 +255,6 @@ namespace DiscordIntegration_Plugin.EvHandlers
                         }
 
 
-                        Methods.PlayerTotalDeaths++;
 
                     }
                 }
@@ -275,7 +276,7 @@ namespace DiscordIntegration_Plugin.EvHandlers
                 {
                     case GrenadeType.FragGrenade:
                         t = "Granada de Fragmentación";
-                        emoji = ":boom:";
+                        emoji = "<:Grenade:808647757429866517>";
                         break;
                     case GrenadeType.Flashbang:
                         t = "Granada Cegadora";
@@ -318,7 +319,7 @@ namespace DiscordIntegration_Plugin.EvHandlers
 
         public void OnPlayerJoin(VerifiedEventArgs ev)
         {
-            Methods.PlayerJoinCount++;
+            
 
             if (Plugin.Singleton.Config.RoleSync)
                 Methods.CheckForSyncRole(ev.Player);

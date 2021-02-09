@@ -86,12 +86,7 @@ namespace DiscordIntegration_Plugin.EvHandlers
           {
                 if (Plugin.Singleton.Config.RoundEnd)
                     ProcessSTT.SendData($":stop_button: {Plugin.translation.RoundEnded}: {Player.List.Count()} {Plugin.translation.PlayersOnline}.", HandleQueue.GameLogChannelId);
-
-                Log.Debug("Antes RoundsPlayed " + Methods.RoundsPlayed);
-                Methods.RoundsPlayed++;
-                Log.Debug("Despues RoundsPlayed " + Methods.RoundsPlayed);
-
-                Methods.UpdateStats(Methods.TKCount, Methods.RoundsPlayed, Methods.PlayerTotalDeaths, Methods.PlayerJoinCount);
+               
             }
             catch(Exception e)
             {

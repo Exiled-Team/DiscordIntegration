@@ -84,7 +84,6 @@ namespace DiscordIntegration_Plugin.System
             Handlers.Scp106.Containing += PlayerEvents.On106Contain;
 
             LoadTranslation();
-            Methods.LoadStats();
 
             new Thread(ProcessSTT.Init).Start();
             Timing.RunCoroutine(HandleQueue.Handle(), "handle");
