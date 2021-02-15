@@ -14,9 +14,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DiscordIntegration")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Galaxy119, Jeppe, DGVagabond & iopietro")]
+[assembly: AssemblyCompany("Exiled Team")]
 [assembly: AssemblyProduct("DiscordIntegration")]
-[assembly: AssemblyCopyright("Copyright © Galaxy119, Jeppe, DGVagabond & iopietro 2020")]
+[assembly: AssemblyCopyright("Copyright © Exiled Team 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
