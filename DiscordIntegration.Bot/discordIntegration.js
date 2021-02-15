@@ -45,13 +45,20 @@ discordClient.on('ready', async () => {
  * Handles commands from Discord.
  */
 discordClient.on('message', message => {
-  if (message.author.bot || !message.content.startsWith(config.prefix) || !config.channels.command.includes(message.channel.id))
+  if (!config.channels.command || message.author.bot || !message.content.startsWith(config.prefix) || !config.channels.command.includes(message.channel.id))
     return;
+
+  if (sockets.length === 0) {
+    message.channel.send('Server is not connected.');
+    return;
+  }
 
   const command = message.content.substring(config.prefix.length, message.content.length).toLowerCase();
 
-  if (command.length === 0 || !this.canExecuteCommand(message.member, command))
+  if (command.length === 0 || !this.canExecuteCommand(message.member, command)) {
+    message.channel.send('Permission denied or invalid command.');
     return;
+  }
 
   if (config.isDebugEnabled)
     console.debug(`[DISCORD][DEBUG] ${message.author.tag} (${message.author.id}) executed a command: [${command}]`);
