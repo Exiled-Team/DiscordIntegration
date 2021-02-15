@@ -45,7 +45,7 @@ discordClient.on('ready', async () => {
  * Handles commands from Discord.
  */
 discordClient.on('message', message => {
-  if (message.author.bot || !message.content.startsWith(config.prefix) || !config.channels.commands.includes(message.channel.id))
+  if (message.author.bot || !message.content.startsWith(config.prefix) || !config.channels.command.includes(message.channel.id))
     return;
 
   const command = message.content.substring(config.prefix.length, message.content.length).toLowerCase();

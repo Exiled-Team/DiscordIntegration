@@ -20,7 +20,7 @@ channels:
   topic:
     - "channel-id-4"
   # Channels in which commands are allowed to be executed.
-  commands:
+  command:
     - "channel-id-5"
   
 
