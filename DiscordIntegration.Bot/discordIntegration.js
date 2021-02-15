@@ -284,12 +284,10 @@ exports.sendMessage = function (channelId, content, shouldLogTimestamp = false) 
  * @param {any} content The content to be logged.
  */
 exports.log = function (type, content, isInstant = false) {
-  if (!config.channels[type])
+  if (!config.channels.log[type])
     return;
 
-  console.log(type, content);
-
-  config.channels[type].forEach(channelId => isInstant ? this.sendMessage(channelId, content, true) : this.queueMessage(channelId, content));
+  config.channels.log[type].forEach(channelId => isInstant ? this.sendMessage(channelId, content, true) : this.queueMessage(channelId, content));
 }
 
 /**
@@ -315,10 +313,10 @@ exports.updateChannelTopic = function (channelId, newTopic) {
  * @param {any} newTopic The new topic to be set.
  */
 exports.updateChannelsTopic = function (newTopic) {
-  if (!config.channels.gameEvents)
+  if (!config.channels.topic)
     return;
 
-  config.channels.gameEvents.forEach(channelId => this.updateChannelTopic(channelId, newTopic));
+  config.channels.topic.forEach(channelId => this.updateChannelTopic(channelId, newTopic));
 }
 
 /**
