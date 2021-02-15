@@ -112,8 +112,6 @@ namespace DiscordIntegration.Features
 
         public string HasEscapedPocketDimension { get; set; } = "has escaped the pocket dimension";
 
-        public string HasTraveledThroughTheirPortal { get; set; } = "has traveled through their portal";
-
         public string HasTriggeredATeslaGate { get; set; } = "has triggered a tesla gate";
 
         public string Scp914HasProcessedTheFollowingPlayers { get; set; } = "SCP-914 has processed the following players";
@@ -210,8 +208,6 @@ namespace DiscordIntegration.Features
 
         public string SentData { get; set; } = "Sent {0} ({1} bytes) to server.";
 
-        public string DisconnectingError { get; set; } = "An error has occurred while disconnecting: {0}";
-
         public string TryingToConnect { get; set; } = "Trying to connect to {0}:{1}";
 
         public string ReloadLanguageCommandDescription { get; set; } = "Reloads plugin language.";
@@ -264,9 +260,7 @@ namespace DiscordIntegration.Features
 
         public string ServerHasBeenClosed { get; set; } = "The server has been closed.";
 
-        public string CloseCommandDescription { get; set; } = "Closes the bot.";
-
-        public string CloseCommandSuccess { get; set; } = "Close request has been sent successfully.";
+        public string WasKicked { get; set; } = "was kicked";
 
 #pragma warning restore CS1591
 #pragma warning restore SA1600 // Elements should be documented

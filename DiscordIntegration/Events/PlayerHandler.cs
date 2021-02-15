@@ -264,6 +264,12 @@ namespace DiscordIntegration.Events
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":lock: {ev.Target.Nickname} - {ev.Target.UserId} ({ev.Target.Role}) {DiscordIntegration.Language.HasBeenHandcuffedBy} {ev.Cuffer.Nickname} - {ev.Cuffer.UserId} ({ev.Cuffer.Role})")).ConfigureAwait(false);
         }
 
+        public async void OnKicked(KickedEventArgs ev)
+        {
+            if (Instance.Config.EventsToLog.PlayerBanned)
+                await Network.SendAsync(new RemoteCommand("log", "kicks", $":no_entry: {ev.Target.Nickname} - {ev.Target.UserId} {DiscordIntegration.Language.WasKicked} {DiscordIntegration.Language.For} {ev.Reason}.")).ConfigureAwait(false);
+        }
+
         public async void OnBanned(BannedEventArgs ev)
         {
             if (Instance.Config.EventsToLog.PlayerBanned)

@@ -164,6 +164,7 @@ namespace DiscordIntegration
             Handlers.Player.ThrowingGrenade += playerHandler.OnThrowingGrenade;
             Handlers.Player.Hurting += playerHandler.OnHurting;
             Handlers.Player.Dying += playerHandler.OnDying;
+            Handlers.Player.Kicked += playerHandler.OnKicked;
             Handlers.Player.Banned += playerHandler.OnBanned;
             Handlers.Player.InteractingDoor += playerHandler.OnInteractingDoor;
             Handlers.Player.InteractingElevator += playerHandler.OnInteractingElevator;
@@ -226,6 +227,7 @@ namespace DiscordIntegration
             Handlers.Player.ThrowingGrenade -= playerHandler.OnThrowingGrenade;
             Handlers.Player.Hurting -= playerHandler.OnHurting;
             Handlers.Player.Dying -= playerHandler.OnDying;
+            Handlers.Player.Kicked -= playerHandler.OnKicked;
             Handlers.Player.Banned -= playerHandler.OnBanned;
             Handlers.Player.InteractingDoor -= playerHandler.OnInteractingDoor;
             Handlers.Player.InteractingElevator -= playerHandler.OnInteractingElevator;

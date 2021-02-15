@@ -73,8 +73,8 @@ namespace DiscordIntegration
         /// </summary>
         /// <typeparam name="T">The data type.</typeparam>
         /// <param name="data">The data to be sent.</param>
-        /// <returns>Returns the <see cref="Task"/>.</returns>
-        public static async Task SendAsync<T>(T data)
+        /// <returns>Returns the <see cref="ValueTask"/>.</returns>
+        public static async ValueTask SendAsync<T>(T data)
         {
             try
             {

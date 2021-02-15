@@ -25,9 +25,9 @@ namespace DiscordIntegration.Features
         /// </summary>
         public static void Handle()
         {
-            while (Network.DataQueue.TryDequeue(out string result))
+            while (Network.DataQueue.TryDequeue(out string data))
             {
-                RemoteCommand remoteCommand = JsonConvert.DeserializeObject<RemoteCommand>(result, DiscordIntegration.JsonSerializerSettings);
+                RemoteCommand remoteCommand = JsonConvert.DeserializeObject<RemoteCommand>(data, DiscordIntegration.JsonSerializerSettings);
 
                 Log.Debug($"[NET] {string.Format(DiscordIntegration.Language.HandlingQueueItem, remoteCommand.Action, remoteCommand.Parameters[0], Network.TcpClient?.Client?.RemoteEndPoint)}", Instance.Config.IsDebugEnabled);
 
