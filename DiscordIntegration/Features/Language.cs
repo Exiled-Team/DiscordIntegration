@@ -130,13 +130,15 @@ namespace DiscordIntegration.Features
 
         public string CancelledWarhead { get; set; } = "has cancelled the warhead";
 
-        public string WarheadHasDetonated { get; set; } = "***The Alpha-warhead has detonated***";
+        public string WarheadHasDetonated { get; set; } = "**The Alpha-warhead has detonated**.";
 
         public string WarheadHasBeenDetonated { get; set; } = "Warhead has been detonated.";
 
         public string WarheadIsCoutingToDetonation { get; set; } = "Warhead is counting down to detonation.";
 
         public string WarheadHasntBeenDetonated { get; set; } = "Warhead has not been detonated.";
+
+        public string PlayerWarheadStarted { get; set; } = "{0} started the alpha-warhead countdown, detonation in:";
 
         public string WarheadStarted { get; set; } = "Alpha-warhead countdown initiated, detonation in:";
 
@@ -154,7 +156,7 @@ namespace DiscordIntegration.Features
 
         public string GeneratorEjected { get; set; } = "has ejected a tablet from a generator";
 
-        public string GeneratorFinished { get; set; } = "A generator has finished it's charge up";
+        public string GeneratorFinished { get; set; } = "Generator in {0} has finished it's charge up, {1} generators have been activated";
 
         public string GeneratorInserted { get; set; } = "has inserted a tablet into a generator";
 

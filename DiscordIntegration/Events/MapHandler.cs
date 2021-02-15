@@ -24,13 +24,13 @@ namespace DiscordIntegration.Events
         public async void OnWarheadDetonated()
         {
             if (Instance.Config.EventsToLog.WarheadDetonated)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":radioactive: **{Language.WarheadHasDetonated}.**")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":radioactive: {Language.WarheadHasDetonated}")).ConfigureAwait(false);
         }
 
         public async void OnGeneratorActivated(GeneratorActivatedEventArgs ev)
         {
             if (Instance.Config.EventsToLog.GeneratorActivated)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $"{Language.GeneratorFinished}")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorFinished, ev.Generator.CurRoom, Generator079.mainGenerator.totalVoltage + 1))).ConfigureAwait(false);
         }
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "Discard operator")]
@@ -43,7 +43,7 @@ namespace DiscordIntegration.Events
         public async void OnStartingWarhead(StartingEventArgs ev)
         {
             if (Instance.Config.EventsToLog.StartingWarhead)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":radioactive: **{Language.WarheadStarted} {Warhead.Controller.NetworktimeToDetonation} seconds.**")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":radioactive: **{(ev.Player == null ? Language.WarheadStarted : Language.PlayerWarheadStarted)} {Warhead.Controller.NetworktimeToDetonation} seconds.**")).ConfigureAwait(false);
         }
 
         public async void OnStoppingWarhead(StoppingEventArgs ev)

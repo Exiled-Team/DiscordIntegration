@@ -50,10 +50,7 @@ namespace DiscordIntegration.Commands
             else
             {
                 foreach (Player player in Player.List)
-                {
-                    if (!player.IsHost)
-                        message.Append(player.Nickname).Append(" - ").Append(player.UserId).AppendLine();
-                }
+                    message.Append(player.Nickname).Append(" - ").Append(player.UserId).AppendLine();
             }
 
             response = message.ToString();
