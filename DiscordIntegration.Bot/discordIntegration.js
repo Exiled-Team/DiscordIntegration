@@ -26,19 +26,20 @@ discordClient.on('ready', async () => {
   await discordClient.user.setActivity('for connections.', {type: "LISTENING"});
   await discordClient.user.setStatus('dnd');
 
-  this.handleMessagesQueue();
-
   console.log(`[DISCORD][INFO] Successfully logged in as ${discordClient.user.tag}.`)
   console.log(`[NET][INFO] Starting server at ${config.tcpServer.ipAddress}:${config.tcpServer.port}...`)
 
   tcpServer.listen(config.tcpServer.port, config.tcpServer.ipAddress);
   tcpServer.ref();
 
-  discordClient.guilds.fetch(config.discordServer.id).then(result => discordServer = result)
+  discordClient.guilds.fetch(config.discordServer.id)
+    .then(result => discordServer = result)
     .catch(error => {
       console.error(`[DISCORD][ERROR] Invalid Discord server ID: ${error.message}`);
       process.exit(0);
-  });
+    });
+
+  await this.handleMessagesQueue();
 });
 
 /**
