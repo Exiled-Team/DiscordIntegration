@@ -229,7 +229,13 @@ exports.getGroupFromId = async function (id) {
       return;
   }
 
-  const user = await discordServer.members.fetch(obtainedId).catch(console.error(`[BOT][ERROR] Cannot sync ${id} user ID, user not found!`));
+  let user;
+
+  try {
+    user = await discordServer.members.fetch(obtainedId)
+  } catch (exception) {
+    console.error(`[BOT][ERROR] Cannot sync ${id} (${obtainedId}) user ID, user not found! ${exception}`);
+  }
 
   if (!user)
     return;
