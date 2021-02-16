@@ -136,7 +136,7 @@ namespace DiscordIntegration.Features
 
         public string WarheadHasntBeenDetonated { get; set; } = "Warhead has not been detonated.";
 
-        public string PlayerWarheadStarted { get; set; } = "{0} started the alpha-warhead countdown, detonation in:";
+        public string PlayerWarheadStarted { get; set; } = "{0} ({1}) started the alpha-warhead countdown, detonation in:";
 
         public string WarheadStarted { get; set; } = "Alpha-warhead countdown initiated, detonation in:";
 

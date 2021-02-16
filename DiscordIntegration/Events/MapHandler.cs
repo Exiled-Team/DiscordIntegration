@@ -43,7 +43,7 @@ namespace DiscordIntegration.Events
         public async void OnStartingWarhead(StartingEventArgs ev)
         {
             if (Instance.Config.EventsToLog.StartingWarhead)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":radioactive: **{(ev.Player == null ? Language.WarheadStarted : Language.PlayerWarheadStarted)} {Warhead.Controller.NetworktimeToDetonation} seconds.**")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":radioactive: **{(ev.Player == null ? Language.WarheadStarted : string.Format(Language.PlayerWarheadStarted, ev.Player.Nickname, ev.Player.UserId))} {Warhead.Controller.NetworktimeToDetonation} seconds.**")).ConfigureAwait(false);
         }
 
         public async void OnStoppingWarhead(StoppingEventArgs ev)
