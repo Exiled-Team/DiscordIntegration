@@ -81,7 +81,10 @@ namespace DiscordIntegration_Bot
             Logger.LogInfo("Bot", "STT: Listener started.");
             ThreadPool.QueueUserWorkItem(ListenForConn, list);
             new Thread(DequeueMessages).Start();
+
+
         }
+        
 
         public static async Task Heartbeat(int port)
         {

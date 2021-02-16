@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace DiscordIntegration_Bot
     public class Bot
     {
         private static DiscordSocketClient client;
+        public static Bot bot;
         public static DiscordSocketClient Client => client ?? (client = new DiscordSocketClient());
         private readonly Program program;
         private static string _appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -36,41 +38,41 @@ namespace DiscordIntegration_Bot
         }
 
 
-        private async Task InitBot()
+        public async Task InitBot()
         {
             Console.Clear();
             Console.WriteLine("\t\t──────────── BOT ────────────");
             Logger.LogInfo("DiscordIntegration", "Starting the Bot"); //Notifying that the app is starting ...
 
             this.cts = new CancellationTokenSource();
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
             /*Loading the configuration file*/
             Logger.LogInfo("DiscordIntegration", "[1/4] Loading config file...");
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
             await ReloadConfig();
 
             /* Creating a Discord.Net Client */
             Logger.LogInfo("DiscordIntegration", $"[2/4] Creating client...");
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
             Client.Log += Program.Log;
 
             /* Register Commands */
             Logger.LogInfo("DiscordIntegration", $"[3/4] Loading commands...");
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(1));
             Client.MessageReceived += OnMessageReceived;
 
             // Connect to discord service
             Logger.LogInfo("DiscordIntegration", $"[4/4] Connecting...");
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
             await Client.LoginAsync(TokenType.Bot, Program.Config.BotToken);
             await Client.StartAsync();
 
             Logger.LogInfo("DiscordIntegration", "Successfully connected!");
-            new Thread((() => ProcessSTT.Init(program))).Start();
+            new Thread(() => ProcessSTT.Init(program)).Start();
             await Task.Delay(-1);
         }
 
@@ -113,7 +115,20 @@ namespace DiscordIntegration_Bot
                         return;
                     case "help":
                         {
-                            await context.Channel.SendMessageAsync("```md\n## Comandos\n\n# addusr\n- Permite agregar un usuario a rolesync\n\n#");
+                            string response = $"```md\n\n" +
+                                $"## Comandos del servidor\n\n" +
+                                $"<Prefix del bot: \" {Program.Config.BotPrefix} \" >\n\n" +
+                                $"# {Program.Config.BotPrefix}ban\n\n" +
+                                $"- Te permite sancionar a un jugador desde el discord, usando la Id que proporciona el comando {Program.Config.BotPrefix}players. <Formato de uso: {Program.Config.BotPrefix}ban [Id] [Tiempo] [Razón] >\n\n" +
+                                $"- Ejemplo: {Program.Config.BotPrefix}ban 5 3d Por Tk.\n\n" +
+                                $"# {Program.Config.BotPrefix}players\n\n" +
+                                $"- Te da una lista de jugadores en el servidor.\n\n" +
+                                $"# {Program.Config.BotPrefix}setrole\n\n" +
+                                $"- Te permite asignar un rol temporal ingame a un jugador, requisitando la ID de dicho jugador.\n\n" +
+                                $"- Ejemplo: {Program.Config.BotPrefix}setrole 111111111111111@steam vip 30d | Al ejecutar ese comando le dare al usuario con esa id 30 dias de VIP\n\n" +
+                                $"\n```";
+
+                            await context.Channel.SendMessageAsync(response);
 
                             return;
                         }
@@ -241,6 +256,7 @@ namespace DiscordIntegration_Bot
                             await context.Channel.SendMessageAsync("Role sync successfully removed.");
                             return;
                         }
+        
                 }
 
                 if (Program.Config.AllowedCommands.ContainsKey(args[0].ToLower()))
