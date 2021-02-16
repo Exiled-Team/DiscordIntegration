@@ -93,6 +93,8 @@ namespace DiscordIntegration
             catch (Exception exception) when (exception.GetType() != typeof(OperationCanceledException))
             {
                 Log.Error($"[NET] {string.Format(Language.SendingDataError, Instance.Config.IsDebugEnabled ? exception.ToString() : exception.Message)}");
+
+                Disconnect();
             }
         }
 
