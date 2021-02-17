@@ -118,7 +118,7 @@ tcpServer.on('connection', socket => {
         }
 
       } catch (exception) {
-        console.error(`[NET][ERROR] An error has occurred while receiving data from ${socket?.address()?.address}:${socket?.address()?.port}: ${error}`);
+        console.error(`[NET][ERROR] An error has occurred while receiving data from ${socket?.address()?.address}:${socket?.address()?.port}: ${exception}`);
       }
     });    
   });
