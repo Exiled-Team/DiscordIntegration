@@ -107,14 +107,19 @@ tcpServer.on('connection', socket => {
       if (!remoteCommand)
         return;
 
-      remoteCommand = JSON.parse(remoteCommand);
+      try {
+        remoteCommand = JSON.parse(remoteCommand);
 
-      if (typeof remoteCommand.action !== 'undefined' && remoteCommand.action in this) {
-        const returnedValue = await this[remoteCommand.action](...remoteCommand.parameters);
+        if (typeof remoteCommand.action !== 'undefined' && remoteCommand.action in this) {
+          const returnedValue = await this[remoteCommand.action](...remoteCommand.parameters);
 
-        if (returnedValue)
-          socket.write(returnedValue + '\0');
-      } 
+          if (returnedValue)
+            socket.write(returnedValue + '\0');
+        }
+
+      } catch (exception) {
+        console.error(`[NET][ERROR] An error has occurred while receiving data from ${socket?.address()?.address}:${socket?.address()?.port}: ${error}`);
+      }
     });    
   });
 
@@ -235,10 +240,8 @@ exports.getGroupFromId = async function (id) {
     user = await discordServer.members.fetch(obtainedId)
   } catch (exception) {
     console.error(`[BOT][ERROR] Cannot sync ${id} (${obtainedId}) user ID, user not found! ${exception}`);
-  }
-
-  if (!user)
     return;
+  }
 
   let group;
 

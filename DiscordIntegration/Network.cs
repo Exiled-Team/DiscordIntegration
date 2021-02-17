@@ -93,8 +93,6 @@ namespace DiscordIntegration
             catch (Exception exception) when (exception.GetType() != typeof(OperationCanceledException))
             {
                 Log.Error($"[NET] {string.Format(Language.SendingDataError, Instance.Config.IsDebugEnabled ? exception.ToString() : exception.Message)}");
-
-                Disconnect();
             }
         }
 
@@ -170,12 +168,15 @@ namespace DiscordIntegration
 
                     TcpClient = new TcpClient();
                 }
-                catch (SocketException socketException)
+                catch (SocketException socketException) when (socketException.ErrorCode == 10061)
                 {
                     Log.Error($"[NET] {string.Format(Language.TryingToConnectError, Instance.Config.IsDebugEnabled ? socketException.ToString() : socketException.Message)}");
+                }
+                catch (Exception exception)
+                {
+                    Log.Error($"[NET] {string.Format(Language.GenericNetworkError, Instance.Config.IsDebugEnabled ? exception.ToString() : exception.Message)}");
 
-                    if (socketException.ErrorCode != 10061)
-                        TcpClient = new TcpClient();
+                    TcpClient = new TcpClient();
                 }
 
                 cancellationTokenSource.Token.ThrowIfCancellationRequested();

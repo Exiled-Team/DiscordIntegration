@@ -262,6 +262,8 @@ namespace DiscordIntegration.Features
 
         public string WasKicked { get; set; } = "was kicked";
 
+        public string GenericNetworkError { get; set; } = "A network error has occurred: {0}";
+
 #pragma warning restore CS1591
 #pragma warning restore SA1600 // Elements should be documented
 
