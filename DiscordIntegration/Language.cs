@@ -66,27 +66,27 @@ namespace DiscordIntegration
 
         public string CheaterReportFilled { get; set; } = ":incoming_envelope: **Cheater report filled: {0} ({1}) [{2}] reported {3} ({4}) [{5}] for {6}.**";
 
-        public string HasDamagedForWith { get; set; } = ":crossed_swords: **{0} ({1}) [{2}] has damaged {3} ({4}) [{5}] for {6} with {7}**";
+        public string HasDamagedForWith { get; set; } = ":crossed_swords: **{0} ({1}) [{2}] has damaged {3} ({4}) [{5}] for {6} with {7}.**";
 
-        public string HasKilledWith { get; set; } = ":skull_crossbones: **{0} ({1}) [{2}] killed {3} ({4}) [{5}] with {6}**";
+        public string HasKilledWith { get; set; } = ":skull_crossbones: **{0} ({1}) [{2}] killed {3} ({4}) [{5}] with {6}.**";
 
         public string ThrewAGrenade { get; set; } = ":bomb: {0} ({1}) [{2}] threw a {3}.";
 
         public string UsedMedicalItem { get; set; } = ":medical_symbol: {0} ({1}) [{2}] healed with {3}.";
 
-        public string ChangedRole { get; set; } = ":mens: {0} ({1}) [{2}] has been changed to a {3}";
+        public string ChangedRole { get; set; } = ":mens: {0} ({1}) [{2}] has been changed to a {3}.";
 
         public string ChaosInsurgencyHaveSpawned { get; set; } = ":spy: Chaos Insurgency has spawned with {0} players.";
 
         public string NineTailedFoxHaveSpawned { get; set; } = ":cop: Nine-Tailed Fox has spawned with {0} players.";
 
-        public string HasJoinedTheGame { get; set; } = ":arrow_right: **{0} ({1}) [{2}] has joined the game**";
+        public string HasJoinedTheGame { get; set; } = ":arrow_right: **{0} ({1}) [{2}] has joined the game.**";
 
-        public string HasBeenFreedBy { get; set; } = ":unlock: {0} ({1}) [{2}] has been freed by {3} ({4}) [{5}]";
+        public string HasBeenFreedBy { get; set; } = ":unlock: {0} ({1}) [{2}] has been freed by {3} ({4}) [{5}].";
 
-        public string HasBeenHandcuffedBy { get; set; } = ":lock: {0} ({1}) [{2}] has been handcuffed by {3} ({4}) [{5}]";
+        public string HasBeenHandcuffedBy { get; set; } = ":lock: {0} ({1}) [{2}] has been handcuffed by {3} ({4}) [{5}].";
 
-        public string WasKicked { get; set; } = ":no_entry: {0} ({1}) was kicked for {2}";
+        public string WasKicked { get; set; } = ":no_entry: {0} ({1}) was kicked for {2}.";
 
         public string WasBannedBy { get; set; } = ":no_entry: {0} ({1}) was banned by {2} for {3} expire {4}.";
 
@@ -118,7 +118,7 @@ namespace DiscordIntegration
 
         public string CanceledWarhead { get; set; } = ":no_entry: **Warhead detonation sequence canceled.**";
 
-        public string WarheadHasDetonated { get; set; } = ":radioactive: **The Alpha-warhead has detonated**.";
+        public string WarheadHasDetonated { get; set; } = ":radioactive: **The Alpha-warhead has detonated.**";
 
         public string WarheadHasBeenDetonated { get; set; } = "Warhead has been detonated.";
 
@@ -126,15 +126,15 @@ namespace DiscordIntegration
 
         public string WarheadHasntBeenDetonated { get; set; } = "Warhead has not been detonated.";
 
-        public string PlayerWarheadStarted { get; set; } = ":radioactive: **{0} ({1}) [{2}] started the alpha-warhead countdown, detonation in: {3}**";
+        public string PlayerWarheadStarted { get; set; } = ":radioactive: **{0} ({1}) [{2}] started the alpha-warhead countdown, detonation in: {3}.**";
 
-        public string WarheadStarted { get; set; } = ":radioactive: **Alpha-warhead countdown initiated, detonation in: {0}**";
+        public string WarheadStarted { get; set; } = ":radioactive: **Alpha-warhead countdown initiated, detonation in: {0}.**";
 
         public string AccessedWarhead { get; set; } = "{0} ({1}) [{2}] has accessed the Alpha-warhead detonation button cover.";
 
-        public string CalledElevator { get; set; } = "{0} ({1}) [{2}] has called an elevator";
+        public string CalledElevator { get; set; } = "{0} ({1}) [{2}] has called an elevator.";
 
-        public string UsedLocker { get; set; } = "{0} ({1}) [{2}] has opened a locker";
+        public string UsedLocker { get; set; } = "{0} ({1}) [{2}] has opened a locker.";
 
         public string TriggeredTesla { get; set; } = "{0} ({1}) [{2}] has triggered a tesla gate.";
 
@@ -156,17 +156,17 @@ namespace DiscordIntegration
 
         public string Scp106Teleported { get; set; } = "{0} ({1}) has teleported to a portal.";
 
-        public string GainedExperience { get; set; } = "{0} ({1}) has gained {2} XP ({3})";
+        public string GainedExperience { get; set; } = "{0} ({1}) has gained {2} XP ({3}).";
 
-        public string GainedLevel { get; set; } = "{0} ({1}) has gained a level: {2} :arrow_right: {3}";
+        public string GainedLevel { get; set; } = "{0} ({1}) has gained a level: {2} :arrow_right: {3}.";
 
-        public string LeftServer { get; set; } = ":arrow_left: **{0} ({1}) [{2}] has left the server**";
+        public string LeftServer { get; set; } = ":arrow_left: **{0} ({1}) [{2}] has left the server.**";
 
         public string Reloaded { get; set; } = "{0} ({1}) [{2}] has reloaded their {3} weapon.";
 
-        public string GroupSet { get; set; } = "{0} ({1}) [{2}] has been assigned to the **{3} ({4})** group";
+        public string GroupSet { get; set; } = "{0} ({1}) [{2}] has been assigned to the **{3} ({4})** group.";
 
-        public string ItemChanged { get; set; } = "{0} ({1}) [{2}] changed the item in their hand: {2} :arrow_right: {3}";
+        public string ItemChanged { get; set; } = "{0} ({1}) [{2}] changed the item in their hand: {2} :arrow_right: {3}.";
 
         public string InvalidSubcommand { get; set; } = "Invalid subcommand!";
 
@@ -194,11 +194,11 @@ namespace DiscordIntegration
 
         public string SuccessfullyConnected { get; set; } = "Successfully connected to {0}:{1}.";
 
-        public string ReceivedData { get; set; } = "Received {0} ({1} bytes) from the server";
+        public string ReceivedData { get; set; } = "Received {0} ({1} bytes) from the server.";
 
         public string SentData { get; set; } = "Sent {0} ({1} bytes) to server.";
 
-        public string ConnectingTo { get; set; } = "Connecting to {0}:{1}";
+        public string ConnectingTo { get; set; } = "Connecting to {0}:{1}.";
 
         public string ReloadLanguageCommandDescription { get; set; } = "Reloads plugin language.";
 
@@ -214,7 +214,7 @@ namespace DiscordIntegration
 
         public string AssingingSyncedGroup { get; set; } = "Assigning synced group \"{0}\" to {1}.";
 
-        public string HandlingRemoteCommand { get; set; } = "Handling remote command \"{0}\" with parameters: {1} from {2}";
+        public string HandlingRemoteCommand { get; set; } = "Handling remote command \"{0}\" with parameters: {1} from {2}.";
 
         public string HandlingRemoteCommandError { get; set; } = "An error has occurred while handling a remote command: {0}";
 
