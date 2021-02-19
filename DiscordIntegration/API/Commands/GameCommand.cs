@@ -5,8 +5,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace DiscordIntegration.Features.Commands
+namespace DiscordIntegration.API.Commands
 {
+    using API.User;
     using Newtonsoft.Json;
 
     /// <summary>

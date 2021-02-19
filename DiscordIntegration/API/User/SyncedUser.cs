@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace DiscordIntegration.Features
+namespace DiscordIntegration.API.User
 {
     using Exiled.API.Features;
     using Newtonsoft.Json;

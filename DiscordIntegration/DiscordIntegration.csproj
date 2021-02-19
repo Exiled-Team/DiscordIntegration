@@ -88,6 +88,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\EventArgs\Network\ConnectingEventArgs.cs" />
+    <Compile Include="API\EventArgs\Network\TerminatedEventArgs.cs" />
+    <Compile Include="API\EventArgs\Network\ConnectingErrorEventArgs.cs" />
+    <Compile Include="API\EventArgs\Network\ErrorEventArgs.cs" />
+    <Compile Include="API\EventArgs\Network\ReceivedEventArgs.cs" />
+    <Compile Include="API\EventArgs\Network\ReceivedFullEventArgs.cs" />
+    <Compile Include="API\EventArgs\Network\ReceivedPartialEventArgs.cs" />
+    <Compile Include="API\EventArgs\Network\ReceivingErrorEventArgs.cs" />
+    <Compile Include="API\EventArgs\Network\SendingErrorEventArgs.cs" />
+    <Compile Include="API\EventArgs\Network\SentEventArgs.cs" />
+    <Compile Include="API\EventArgs\Network\UpdatingConnectionErrorEventArgs.cs" />
     <Compile Include="Commands\Add\Add.cs" />
     <Compile Include="Commands\Main.cs" />
     <Compile Include="Commands\PlayerList.cs" />
@@ -102,30 +113,30 @@
     <Compile Include="Commands\Remove\Remove.cs" />
     <Compile Include="Commands\Add\User.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Events\NetworkHandler.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Features\Commands\CommandReply.cs" />
-    <Compile Include="Features\Configs\Bot.cs" />
-    <Compile Include="Features\Commands\BotCommandSender.cs" />
-    <Compile Include="Features\Commands\GameCommand.cs" />
-    <Compile Include="Features\Commands\RemoteCommand.cs" />
-    <Compile Include="Features\Configs\EventsToLog.cs" />
-    <Compile Include="Features\DataQueue.cs" />
-    <Compile Include="Features\SyncedUser.cs" />
-    <Compile Include="Network.cs" />
+    <Compile Include="API\Commands\CommandReply.cs" />
+    <Compile Include="API\Configs\Bot.cs" />
+    <Compile Include="API\Commands\BotCommandSender.cs" />
+    <Compile Include="API\Commands\GameCommand.cs" />
+    <Compile Include="API\Commands\RemoteCommand.cs" />
+    <Compile Include="API\Configs\EventsToLog.cs" />
+    <Compile Include="API\User\SyncedUser.cs" />
+    <Compile Include="API\Network.cs" />
     <Compile Include="Events\MapHandler.cs" />
     <Compile Include="Events\PlayerHandler.cs" />
     <Compile Include="DiscordIntegration.cs" />
-    <Compile Include="Features\Commands\PlayerCommandSender.cs" />
+    <Compile Include="API\Commands\PlayerCommandSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Events\ServerHandler.cs" />
-    <Compile Include="Features\Language.cs" />
+    <Compile Include="API\Language.cs" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Features\DiscordUser.cs" />
+    <Compile Include="API\User\DiscordUser.cs" />
     <None Include="packages.config" />
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>

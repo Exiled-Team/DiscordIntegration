@@ -5,17 +5,17 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace DiscordIntegration.Features.Commands
+namespace DiscordIntegration.API.Commands
 {
     using Newtonsoft.Json;
 
     /// <summary>
     /// Represents a remote command, sent to the server.
     /// </summary>
-    public struct RemoteCommand
+    public class RemoteCommand
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RemoteCommand"/> struct.
+        /// Initializes a new instance of the <see cref="RemoteCommand"/> class.
         /// </summary>
         /// <param name="action"><inheritdoc cref="Action"/></param>
         /// <param name="parameters"><inheritdoc cref="Parameters"/></param>
@@ -29,7 +29,7 @@ namespace DiscordIntegration.Features.Commands
         // A cosa serve questo costruttore sopra???
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RemoteCommand"/> struct.
+        /// Initializes a new instance of the <see cref="RemoteCommand"/> class.
         /// </summary>
         /// <param name="action"><inheritdoc cref="Action"/></param>
         /// <param name="parameters"><inheritdoc cref="Parameters"/></param>

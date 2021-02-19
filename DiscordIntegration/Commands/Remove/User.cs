@@ -8,9 +8,9 @@
 namespace DiscordIntegration.Commands.Remove
 {
     using System;
+    using API.Commands;
     using CommandSystem;
     using Exiled.Permissions.Extensions;
-    using Features.Commands;
 
     /// <summary>
     /// Removes an userID-discordID pair from the SyncedRole list.
@@ -44,7 +44,7 @@ namespace DiscordIntegration.Commands.Remove
                 return false;
             }
 
-            if (!Network.IsConnected)
+            if (!DiscordIntegration.Network.IsConnected)
             {
                 response = DiscordIntegration.Language.BotIsNotConnectedError;
                 return false;
@@ -58,7 +58,7 @@ namespace DiscordIntegration.Commands.Remove
 
             DiscordIntegration.Instance.SyncedUsersCache.RemoveWhere(syncedUser => syncedUser.Id == arguments.At(0));
 
-            _ = Network.SendAsync(new RemoteCommand("removeUser", arguments.At(0), sender.GetCompatible()));
+            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("removeUser", arguments.At(0), sender.GetCompatible()));
 
             response = DiscordIntegration.Language.RemoveUserCommandSuccess;
             return false;

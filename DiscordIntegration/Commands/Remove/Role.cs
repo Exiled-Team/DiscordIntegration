@@ -8,9 +8,9 @@
 namespace DiscordIntegration.Commands.Remove
 {
     using System;
+    using API.Commands;
     using CommandSystem;
     using Exiled.Permissions.Extensions;
-    using Features.Commands;
 
     /// <summary>
     /// Removes a role-group pair from the SyncedRole list.
@@ -44,7 +44,7 @@ namespace DiscordIntegration.Commands.Remove
                 return false;
             }
 
-            if (!Network.IsConnected)
+            if (!DiscordIntegration.Network.IsConnected)
             {
                 response = DiscordIntegration.Language.BotIsNotConnectedError;
                 return false;
@@ -56,7 +56,7 @@ namespace DiscordIntegration.Commands.Remove
                 return false;
             }
 
-            _ = Network.SendAsync(new RemoteCommand("removeRole", arguments.At(0), sender.GetCompatible()));
+            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("removeRole", arguments.At(0), sender.GetCompatible()));
 
             response = DiscordIntegration.Language.RemoveRoleCommandSuccess;
             return false;

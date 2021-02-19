@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace DiscordIntegration.Features
+namespace DiscordIntegration.API.User
 {
     using Newtonsoft.Json;
 

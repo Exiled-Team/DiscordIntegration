@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace DiscordIntegration.Features
+namespace DiscordIntegration.API
 {
     using System;
     using System.IO;
@@ -200,15 +200,15 @@ namespace DiscordIntegration.Features
 
         public string ReceivingDataError { get; set; } = "An error has occurred while receiving data: {0}";
 
-        public string TryingToConnectError { get; set; } = "An error has occurred while trying to connect: {0}";
+        public string ConnectingError { get; set; } = "An error has occurred while connecting: {0}";
 
-        public string SuccessfullyConnected { get; set; } = "Successfully connected to {0}.";
+        public string SuccessfullyConnected { get; set; } = "Successfully connected to {0}:{1}.";
 
         public string ReceivedData { get; set; } = "Received {0} ({1} bytes) from the server";
 
         public string SentData { get; set; } = "Sent {0} ({1} bytes) to server.";
 
-        public string TryingToConnect { get; set; } = "Trying to connect to {0}:{1}";
+        public string ConnectingTo { get; set; } = "Connecting to {0}:{1}";
 
         public string ReloadLanguageCommandDescription { get; set; } = "Reloads plugin language.";
 
@@ -258,11 +258,15 @@ namespace DiscordIntegration.Features
 
         public string InvalidGroupError { get; set; } = "{0} is not a valid group!";
 
-        public string ServerHasBeenClosed { get; set; } = "The server has been closed.";
+        public string ServerHasBeenTerminated { get; set; } = "The server has been terminated.";
+
+        public string ServerHasBeenTerminatedWithErrors { get; set; } = "The server has been terminated with errors: {0}";
 
         public string WasKicked { get; set; } = "was kicked";
 
-        public string GenericNetworkError { get; set; } = "A network error has occurred: {0}";
+        public string UpdatingConnectionError { get; set; } = "An error has occurred while updating the connection: {0}";
+
+        public string InvalidIPAddress { get; set; } = "{0} is not a valid IP address!";
 
 #pragma warning restore CS1591
 #pragma warning restore SA1600 // Elements should be documented

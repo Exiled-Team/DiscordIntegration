@@ -8,8 +8,8 @@
 namespace DiscordIntegration
 {
     using System.Text.RegularExpressions;
+    using API.Commands;
     using CommandSystem;
-    using Features.Commands;
 
     /// <summary>
     /// Useful Extension methods.

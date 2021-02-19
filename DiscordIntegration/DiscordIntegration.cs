@@ -10,13 +10,12 @@ namespace DiscordIntegration
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using API;
+    using API.Configs;
+    using API.User;
     using Events;
     using Exiled.API.Features;
-    using Features;
-    using Features.Configs;
     using MEC;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
     using Handlers = Exiled.Events.Handlers;
     using Version = System.Version;
 
@@ -25,15 +24,6 @@ namespace DiscordIntegration
     /// </summary>
     public class DiscordIntegration : Plugin<Config>
     {
-        /// <summary>
-        /// The <see cref="JsonSerializer"/> instance.
-        /// </summary>
-        internal static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
-        {
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            TypeNameHandling = TypeNameHandling.Objects,
-        };
-
         private static readonly DiscordIntegration InstanceValue = new DiscordIntegration();
 
         private readonly List<CoroutineHandle> coroutines = new List<CoroutineHandle>();
@@ -44,14 +34,26 @@ namespace DiscordIntegration
 
         private PlayerHandler playerHandler;
 
+        private NetworkHandler networkHandler;
+
         private DiscordIntegration()
         {
         }
 
         /// <summary>
-        /// Gets the plugin <see cref="Language"/> instance.
+        /// Gets the plugin <see cref="API.Language"/> instance.
         /// </summary>
-        public static Language Language { get; } = new Language();
+        public static Language Language { get; private set; }
+
+        /// <summary>
+        /// Gets the <see cref="API.Network"/> instance.
+        /// </summary>
+        public static Network Network { get; private set; }
+
+        /// <summary>
+        /// Gets the network <see cref="CancellationTokenSource"/> instance.
+        /// </summary>
+        public static CancellationTokenSource NetworkCancellationTokenSource { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="DiscordIntegration"/> instance.
@@ -83,21 +85,24 @@ namespace DiscordIntegration
         /// </summary>
         public override async void OnEnabled()
         {
+            Language = new Language();
+            Network = new Network();
+            NetworkCancellationTokenSource = new CancellationTokenSource();
+
             Language.Save();
             Language.Load();
 
             RegisterEvents();
 
-            coroutines.Add(Timing.RunCoroutine(DataQueue.Update()));
             coroutines.Add(Timing.RunCoroutine(CountTicks(), Segment.Update));
-
-            base.OnEnabled();
 
             Bot.UpdateActivityCancellationTokenSource = new CancellationTokenSource();
             Bot.UpdateChannelsTopicCancellationTokenSource = new CancellationTokenSource();
 
+            base.OnEnabled();
+
             await Task.WhenAll(
-                Network.Start(),
+                Network.Start(NetworkCancellationTokenSource.Token),
                 Bot.UpdateActivity(Bot.UpdateActivityCancellationTokenSource.Token).ContinueWith(task => Bot.UpdateActivityCancellationTokenSource.Dispose()),
                 Bot.UpdateChannelsTopic(Bot.UpdateChannelsTopicCancellationTokenSource.Token).ContinueWith(task => Bot.UpdateChannelsTopicCancellationTokenSource.Dispose())).ConfigureAwait(false);
         }
@@ -114,11 +119,15 @@ namespace DiscordIntegration
             Bot.UpdateActivityCancellationTokenSource.Cancel();
             Bot.UpdateChannelsTopicCancellationTokenSource.Cancel();
 
-            Network.Disconnect();
+            NetworkCancellationTokenSource.Cancel();
+            Network.Close();
 
             Ticks = 0;
 
             SyncedUsersCache.Clear();
+
+            Language = null;
+            Network = null;
 
             base.OnDisabled();
         }
@@ -128,6 +137,7 @@ namespace DiscordIntegration
             mapHandler = new MapHandler();
             serverHandler = new ServerHandler();
             playerHandler = new PlayerHandler();
+            networkHandler = new NetworkHandler();
 
             Handlers.Map.Decontaminating += mapHandler.OnDecontaminating;
             Handlers.Map.GeneratorActivated += mapHandler.OnGeneratorActivated;
@@ -181,13 +191,16 @@ namespace DiscordIntegration
             Handlers.Player.ChangingItem += playerHandler.OnChangingItem;
             Handlers.Scp914.Activating += playerHandler.OnActivatingScp914;
             Handlers.Scp106.Containing += playerHandler.OnContaining;
-        }
 
-        private void KillCoroutines()
-        {
-            Timing.KillCoroutines(coroutines.ToArray());
-
-            coroutines.Clear();
+            Network.SendingError += networkHandler.OnSendingError;
+            Network.ReceivingError += networkHandler.OnReceivingError;
+            Network.UpdatingConnectionError += networkHandler.OnUpdatingConnectionError;
+            Network.ConnectingError += networkHandler.OnConnectingError;
+            Network.Connected += networkHandler.OnConnected;
+            Network.Connecting += networkHandler.OnConnecting;
+            Network.ReceivedFull += networkHandler.OnReceivedFull;
+            Network.Sent += networkHandler.OnSent;
+            Network.Terminated += networkHandler.OnTerminated;
         }
 
         private void UnregisterEvents()
@@ -245,9 +258,27 @@ namespace DiscordIntegration
             Handlers.Scp914.Activating -= playerHandler.OnActivatingScp914;
             Handlers.Scp106.Containing -= playerHandler.OnContaining;
 
+            Network.SendingError -= networkHandler.OnSendingError;
+            Network.ReceivingError -= networkHandler.OnReceivingError;
+            Network.UpdatingConnectionError -= networkHandler.OnUpdatingConnectionError;
+            Network.ConnectingError -= networkHandler.OnConnectingError;
+            Network.Connected -= networkHandler.OnConnected;
+            Network.Connecting -= networkHandler.OnConnecting;
+            Network.ReceivedFull -= networkHandler.OnReceivedFull;
+            Network.Sent -= networkHandler.OnSent;
+            Network.Terminated -= networkHandler.OnTerminated;
+
             playerHandler = null;
             mapHandler = null;
             serverHandler = null;
+            networkHandler = null;
+        }
+
+        private void KillCoroutines()
+        {
+            Timing.KillCoroutines(coroutines.ToArray());
+
+            coroutines.Clear();
         }
 
         private IEnumerator<float> CountTicks()

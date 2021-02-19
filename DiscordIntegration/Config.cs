@@ -8,8 +8,8 @@
 namespace DiscordIntegration
 {
     using System.ComponentModel;
+    using API.Configs;
     using Exiled.API.Interfaces;
-    using Features.Configs;
 
     /// <summary>
     /// Handles plugin configs.

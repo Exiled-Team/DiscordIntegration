@@ -7,9 +7,9 @@
 
 namespace DiscordIntegration.Events
 {
+    using API.Commands;
     using Exiled.API.Features;
     using Exiled.Events.EventArgs;
-    using Features.Commands;
     using Respawning;
     using static DiscordIntegration;
 

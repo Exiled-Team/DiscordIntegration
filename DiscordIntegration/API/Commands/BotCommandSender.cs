@@ -5,9 +5,10 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace DiscordIntegration.Features.Commands
+namespace DiscordIntegration.API.Commands
 {
     using Newtonsoft.Json;
+    using static DiscordIntegration;
 
     /// <summary>
     /// Represents the bot command sender.

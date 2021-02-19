@@ -5,15 +5,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace DiscordIntegration.Features.Configs
+namespace DiscordIntegration.API.Configs
 {
     using System;
     using System.ComponentModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using API.Commands;
     using Exiled.API.Features;
-    using Features.Commands;
     using Mirror;
     using static DiscordIntegration;
 

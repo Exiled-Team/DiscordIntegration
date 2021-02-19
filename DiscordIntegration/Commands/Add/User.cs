@@ -8,9 +8,9 @@
 namespace DiscordIntegration.Commands.Add
 {
     using System;
+    using API.Commands;
     using CommandSystem;
     using Exiled.Permissions.Extensions;
-    using Features.Commands;
 
     /// <summary>
     /// Adds an userID-discordID pair to the SyncedRole list.
@@ -44,7 +44,7 @@ namespace DiscordIntegration.Commands.Add
                 return false;
             }
 
-            if (!Network.IsConnected)
+            if (!DiscordIntegration.Network.IsConnected)
             {
                 response = DiscordIntegration.Language.BotIsNotConnectedError;
                 return false;
@@ -62,7 +62,7 @@ namespace DiscordIntegration.Commands.Add
                 return false;
             }
 
-            _ = Network.SendAsync(new RemoteCommand("addUser", arguments.At(0), arguments.At(1), sender.GetCompatible()));
+            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("addUser", arguments.At(0), arguments.At(1), sender.GetCompatible()));
 
             response = DiscordIntegration.Language.AddUserCommandSuccess;
             return false;

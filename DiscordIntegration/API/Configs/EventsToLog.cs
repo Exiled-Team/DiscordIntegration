@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace DiscordIntegration.Features.Configs
+namespace DiscordIntegration.API.Configs
 {
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable CS1591

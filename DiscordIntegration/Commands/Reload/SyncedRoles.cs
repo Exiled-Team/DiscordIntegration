@@ -8,9 +8,9 @@
 namespace DiscordIntegration.Commands.Reload
 {
     using System;
+    using API.Commands;
     using CommandSystem;
     using Exiled.Permissions.Extensions;
-    using Features.Commands;
 
     /// <summary>
     /// Reloads bot synced roles if connected.
@@ -44,7 +44,7 @@ namespace DiscordIntegration.Commands.Reload
                 return false;
             }
 
-            if (!Network.IsConnected)
+            if (!DiscordIntegration.Network.IsConnected)
             {
                 response = DiscordIntegration.Language.BotIsNotConnectedError;
                 return false;
@@ -52,7 +52,7 @@ namespace DiscordIntegration.Commands.Reload
 
             DiscordIntegration.Instance.SyncedUsersCache.Clear();
 
-            _ = Network.SendAsync(new RemoteCommand("loadSyncedRoles"));
+            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("loadSyncedRoles", sender.GetCompatible()));
 
             response = DiscordIntegration.Language.ReloadSyncedRolesSuccess;
             return true;
