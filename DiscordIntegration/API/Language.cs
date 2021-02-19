@@ -194,8 +194,6 @@ namespace DiscordIntegration.API
 
         public string ServerConnected { get; set; } = "```diff\n+ Server connected.\n```";
 
-        public string DisconnectedFromTheBot { get; set; } = "Disconnected from the Bot.";
-
         public string SendingDataError { get; set; } = "An error has occurred while sending data: {0}";
 
         public string ReceivingDataError { get; set; } = "An error has occurred while receiving data: {0}";
@@ -218,15 +216,15 @@ namespace DiscordIntegration.API
 
         public string CouldNotUpdateChannelTopicError { get; set; } = "Error! Couldn't update channel topic: {0}";
 
-        public string InvalidUserGroupError { get; set; } = "Attempted to assign invalid user group \"{0}\" to {1}";
+        public string InvalidUserGroupError { get; set; } = "Attempted to assign invalid user group \"{0}\" to {1}.";
 
         public string AssigningUserGroupError { get; set; } = "Error assigning user group to {0}, player not found.";
 
         public string AssingingSyncedGroup { get; set; } = "Assigning synced group \"{0}\" to {1}.";
 
-        public string HandlingQueueError { get; set; } = "Error handling queue: {0}";
+        public string HandlingRemoteCommand { get; set; } = "Handling remote command \"{0}\" with parameters: {1} from {2}";
 
-        public string HandlingQueueItem { get; set; } = "Handling \"{0}\" with parameters: {1} from {2}";
+        public string HandlingRemoteCommandError { get; set; } = "An error has occurred while handling a remote command: {0}";
 
         public string None { get; set; } = "None";
 

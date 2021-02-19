@@ -31,7 +31,7 @@ namespace DiscordIntegration.Events
 
                 RemoteCommand remoteCommand = JsonConvert.DeserializeObject<RemoteCommand>(ev.Data, Network.JsonSerializerSettings);
 
-                Log.Debug($"[NET] {string.Format(Language.HandlingQueueItem, remoteCommand.Action, remoteCommand.Parameters[0], Network.TcpClient?.Client?.RemoteEndPoint)}", Instance.Config.IsDebugEnabled);
+                Log.Debug($"[NET] {string.Format(Language.HandlingRemoteCommand, remoteCommand.Action, remoteCommand.Parameters[0], Network.TcpClient?.Client?.RemoteEndPoint)}", Instance.Config.IsDebugEnabled);
 
                 switch (remoteCommand.Action)
                 {
@@ -56,7 +56,7 @@ namespace DiscordIntegration.Events
             }
             catch (Exception exception)
             {
-                Log.Error($"[NET] {string.Format(Language.ReceivingDataError, Instance.Config.IsDebugEnabled ? exception.ToString() : exception.Message)}");
+                Log.Error($"[NET] {string.Format(Language.HandlingRemoteCommandError, Instance.Config.IsDebugEnabled ? exception.ToString() : exception.Message)}");
             }
         }
 
@@ -93,7 +93,7 @@ namespace DiscordIntegration.Events
         /// <inheritdoc cref="API.Network.OnConnected(object, System.EventArgs)"/>
         public async void OnConnected(object _, System.EventArgs ev)
         {
-            Log.Info($"[NET] {string.Format(Language.SuccessfullyConnected, Network.IPEndPoint)}");
+            Log.Info($"[NET] {string.Format(Language.SuccessfullyConnected, Network.IPEndPoint?.Address, Network.IPEndPoint?.Port)}");
 
             await Network.SendAsync(new RemoteCommand("log", "gameEvents", Language.ServerConnected, true));
         }
