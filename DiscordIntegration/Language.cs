@@ -268,6 +268,8 @@ namespace DiscordIntegration
 
         public string InvalidIPAddress { get; set; } = "{0} is not a valid IP address!";
 
+        public string Redacted { get; set; } = "████████";
+
 #pragma warning restore CS1591
 #pragma warning restore SA1600 // Elements should be documented
 

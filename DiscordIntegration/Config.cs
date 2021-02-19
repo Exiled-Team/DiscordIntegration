@@ -35,10 +35,22 @@ namespace DiscordIntegration
         public EventsToLog EventsToLog { get; private set; } = new EventsToLog();
 
         /// <summary>
-        /// Gets a value indicating whether IP addresses should be logged or not.
+        /// Gets a value indicating whether players' IP addresses should be logged or not.
         /// </summary>
-        [Description("Indicates whether players' IP Addresses should be shown or not")]
-        public bool ShouldLogIPAddresses { get; private set; } = true;
+        [Description("Indicates whether players' IP Addresses should be logged or not")]
+        public bool ShouldLogIPAddresses { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether player's user ids should be logged or not.
+        /// </summary>
+        [Description("Indicates whether players' user ids should be logged or not")]
+        public bool ShouldLogUserIds { get; private set; } = true;
+
+        /// <summary>
+        /// Gets a value indicating whether players' with the "Do not track" enabled, should be logged or not.
+        /// </summary>
+        [Description("Indicates whether players' with the \"Do not track\" enabled, should be logged or not")]
+        public bool ShouldRespectDoNotTrack { get; private set; } = true;
 
         /// <summary>
         /// Gets a value indicating whether only friendly fire should be logged or not.

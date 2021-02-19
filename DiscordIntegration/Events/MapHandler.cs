@@ -43,9 +43,11 @@ namespace DiscordIntegration.Events
 
         public async void OnStartingWarhead(StartingEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.StartingWarhead)
+            if (Instance.Config.EventsToLog.StartingWarhead && (ev.Player == null || (ev.Player != null && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))))
             {
-                object[] vars = ev.Player == null ? new object[] { ev.Player.Nickname, ev.Player.UserId, Warhead.DetonationTimer } : new object[] { Warhead.DetonationTimer };
+                object[] vars = ev.Player == null ?
+                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, Warhead.DetonationTimer } :
+                    new object[] { Warhead.DetonationTimer };
 
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.WarheadStarted : Language.PlayerWarheadStarted, vars))).ConfigureAwait(false);
             }
@@ -53,9 +55,11 @@ namespace DiscordIntegration.Events
 
         public async void OnStoppingWarhead(StoppingEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.StoppingWarhead)
+            if (Instance.Config.EventsToLog.StoppingWarhead && (ev.Player == null || (ev.Player != null && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))))
             {
-                object[] vars = ev.Player == null ? new object[] { ev.Player.Nickname, ev.Player.UserId } : Array.Empty<object>();
+                object[] vars = ev.Player == null ?
+                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted } :
+                    Array.Empty<object>();
 
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.CanceledWarhead : Language.PlayerCanceledWarhead, vars))).ConfigureAwait(false);
             }
@@ -69,7 +73,10 @@ namespace DiscordIntegration.Events
                 StringBuilder items = StringBuilderPool.Shared.Rent();
 
                 foreach (Player player in ev.Players)
-                    players.Append(player.Nickname).Append(" - ").Append(player.UserId).Append(" (").Append(player.Role).AppendLine();
+                {
+                    if (!player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack)
+                        players.Append(player.Nickname).Append(" (").Append(Instance.Config.ShouldLogUserIds ? player.UserId : Language.Redacted).Append(") (").Append(player.Role).AppendLine();
+                }
 
                 foreach (Pickup item in ev.Items)
                     items.Append(item.ItemId.ToString()).AppendLine();
