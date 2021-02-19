@@ -34,6 +34,16 @@ namespace DiscordIntegration.API
         /// Initializes a new instance of the <see cref="Network"/> class.
         /// </summary>
         public Network()
+            : this(null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Network"/> class.
+        /// </summary>
+        /// <param name="reconnectionInterval"><inheritdoc cref="ReconnectionInterval"/></param>
+        public Network(TimeSpan reconnectionInterval)
+            : this(null, reconnectionInterval)
         {
         }
 
@@ -71,7 +81,7 @@ namespace DiscordIntegration.API
         /// Initializes a new instance of the <see cref="Network"/> class.
         /// </summary>
         /// <param name="ipEndPoint">The remote server IP address and port.</param>
-        /// <param name="reconnectionInterval">The reconnection interval.</param>
+        /// <param name="reconnectionInterval"><inheritdoc cref="ReconnectionInterval"/></param>
         public Network(IPEndPoint ipEndPoint, TimeSpan reconnectionInterval)
         {
             IPEndPoint = ipEndPoint;
@@ -151,7 +161,7 @@ namespace DiscordIntegration.API
         /// <summary>
         /// Gets the reconnection interval.
         /// </summary>
-        public TimeSpan ReconnectionInterval { get; }
+        public TimeSpan ReconnectionInterval { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="Newtonsoft.Json.JsonSerializerSettings"/> instance.
@@ -368,11 +378,12 @@ namespace DiscordIntegration.API
             {
                 try
                 {
-                    ConnectingEventArgs ev = new ConnectingEventArgs(IPEndPoint);
+                    ConnectingEventArgs ev = new ConnectingEventArgs(IPEndPoint, ReconnectionInterval);
 
                     OnConnecting(this, ev);
 
                     IPEndPoint = ev.IPEndPoint;
+                    ReconnectionInterval = ev.ReconnectionInterval;
 
                     TcpClient = new TcpClient(IPEndPoint);
 

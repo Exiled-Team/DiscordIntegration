@@ -7,6 +7,7 @@
 
 namespace DiscordIntegration
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
@@ -87,6 +88,7 @@ namespace DiscordIntegration
         {
             Language = new Language();
             Network = new Network();
+
             NetworkCancellationTokenSource = new CancellationTokenSource();
 
             Language.Save();

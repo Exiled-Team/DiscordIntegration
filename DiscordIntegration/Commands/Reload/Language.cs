@@ -43,6 +43,7 @@ namespace DiscordIntegration.Commands.Reload
                 return false;
             }
 
+            DiscordIntegration.Language.Save();
             DiscordIntegration.Language.Load();
 
             response = DiscordIntegration.Language.ReloadLanguageCommandSuccess;

@@ -19,11 +19,21 @@ namespace DiscordIntegration.API.EventArgs.Network
         /// Initializes a new instance of the <see cref="ConnectingEventArgs"/> class.
         /// </summary>
         /// <param name="ipEndPoint"><inheritdoc cref="IPEndPoint"/></param>
-        public ConnectingEventArgs(IPEndPoint ipEndPoint) => IPEndPoint = ipEndPoint;
+        /// <param name="reconnectionInterval"><inheritdoc cref="ReconnectionInterval"/></param>
+        public ConnectingEventArgs(IPEndPoint ipEndPoint, TimeSpan reconnectionInterval)
+        {
+            IPEndPoint = ipEndPoint;
+            ReconnectionInterval = reconnectionInterval;
+        }
 
         /// <summary>
         /// Gets or sets the IP endpoint to connect with.
         /// </summary>
         public IPEndPoint IPEndPoint { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reconnection interval.
+        /// </summary>
+        public TimeSpan ReconnectionInterval { get; set; }
     }
 }
