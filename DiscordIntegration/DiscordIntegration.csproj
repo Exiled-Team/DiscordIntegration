@@ -129,7 +129,7 @@
     <Compile Include="API\Commands\PlayerCommandSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Events\ServerHandler.cs" />
-    <Compile Include="API\Language.cs" />
+    <Compile Include="Language.cs" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />

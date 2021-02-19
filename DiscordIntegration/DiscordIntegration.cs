@@ -42,7 +42,7 @@ namespace DiscordIntegration
         }
 
         /// <summary>
-        /// Gets the plugin <see cref="API.Language"/> instance.
+        /// Gets the plugin <see cref="Language"/> instance.
         /// </summary>
         public static Language Language { get; private set; }
 

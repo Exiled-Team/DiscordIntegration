@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace DiscordIntegration.API
+namespace DiscordIntegration
 {
     using System;
     using System.IO;

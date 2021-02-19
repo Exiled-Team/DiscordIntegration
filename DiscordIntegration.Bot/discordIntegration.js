@@ -286,7 +286,7 @@ exports.sendMessage = function (channelId, content, shouldLogTimestamp = false) 
 
   const channel = discordServer.channels.cache.find(channel => channel.id === channelId);
 
-  channel?.send(content, {split: true})
+  channel?.send(discord.Util.removeMentions(content), {split: true})
     .then(result => {
 
       if (config.isDebugEnabled)
