@@ -22,8 +22,7 @@ channels:
   # Channels in which commands are allowed to be executed.
   command:
     - "channel-id-5"
-  
-
+ 
 # List of roles and commands they can use.
 commands:
   "role-1":
