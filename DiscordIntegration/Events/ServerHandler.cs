@@ -22,19 +22,19 @@ namespace DiscordIntegration.Events
         public async void OnSendingRemoteAdminCommand(SendingRemoteAdminCommandEventArgs ev)
         {
             if (Instance.Config.EventsToLog.SendingRemoteAdminCommands)
-                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.UsedCommand, ev.Sender.Nickname, ev.Sender.UserId, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.UsedCommand, ev?.Sender.Nickname, ev?.Sender.UserId, ev?.Sender.Role, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
         }
 
         public async void OnSendingConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
             if (Instance.Config.EventsToLog.SendingConsoleCommands)
-                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.HasRunClientConsoleCommand, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.HasRunClientConsoleCommand, ev?.Player.Nickname, ev?.Player.UserId, ev?.Player.Role, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
         }
 
         public async void OnReportingCheater(ReportingCheaterEventArgs ev)
         {
             if (Instance.Config.EventsToLog.ReportingCheater)
-                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.CheaterReportFilled, ev.Reporter.Nickname, ev.Reporter.UserId, ev.Reported.Nickname, ev.Reported.UserId, ev.Reason))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.CheaterReportFilled, ev.Reporter.Nickname, ev.Reporter.UserId, ev.Reporter.Role, ev.Reported.Nickname, ev.Reported.UserId, ev.Reported.Role, ev.Reason))).ConfigureAwait(false);
         }
 
         public async void OnWaitingForPlayers()
@@ -46,7 +46,7 @@ namespace DiscordIntegration.Events
         public async void OnRoundStarted()
         {
             if (Instance.Config.EventsToLog.RoundStarted)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.RoundStarting, Player.Dictionary.Count, Language.PlayersInRound))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.RoundStarting, Player.Dictionary.Count))).ConfigureAwait(false);
         }
 
         public async void OnRoundEnded(RoundEndedEventArgs ev)
@@ -58,11 +58,7 @@ namespace DiscordIntegration.Events
         public async void OnRespawningTeam(RespawningTeamEventArgs ev)
         {
             if (Instance.Config.EventsToLog.RespawningTeam)
-            {
-                string message = string.Format(ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? Language.ChaosInsurgencyHaveSpawned : Language.NineTailedFoxHaveSpawned, ev.Players.Count);
-
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", message)).ConfigureAwait(false);
-            }
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? Language.ChaosInsurgencyHaveSpawned : Language.NineTailedFoxHaveSpawned, ev.Players.Count))).ConfigureAwait(false);
         }
     }
 }

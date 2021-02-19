@@ -42,9 +42,9 @@ namespace DiscordIntegration
 
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable CS1591
-        public string UsedCommand { get; set; } = ":keyboard: {0} ({1}) used command: {2} {3}";
+        public string UsedCommand { get; set; } = ":keyboard: {0} ({1}) [{2}] used command: {2} {3}";
 
-        public string HasRunClientConsoleCommand { get; set; } = ":keyboard: {0} ({1}) as {2} has run a client-console command: {3} {4}";
+        public string HasRunClientConsoleCommand { get; set; } = ":keyboard: {0} ({1}) [{2}] has run a client-console command: {3} {4}";
 
         public string NoPlayersOnline { get; set; } = "No players online.";
 
@@ -52,9 +52,7 @@ namespace DiscordIntegration
 
         public string WaitingForPlayers { get; set; } = $":hourglass: Waiting for players...";
 
-        public string RoundStarting { get; set; } = ":arrow_forward: Round starting: {0} {1}.";
-
-        public string PlayersInRound { get; set; } = "players in round";
+        public string RoundStarting { get; set; } = ":arrow_forward: Round starting: {0} players in round.";
 
         public string RoundEnded { get; set; } = ":stop_button: Round ended: {0} - Players online {1}/{2}.";
 
@@ -66,67 +64,57 @@ namespace DiscordIntegration
 
         public string AliveScps { get; set; } = "Alive SCPs: {0}";
 
-        public string CheaterReportFilled { get; set; } = "**Cheater report filled: {0} ({1}) reported {2}({3}) for {4}.**";
+        public string CheaterReportFilled { get; set; } = "**Cheater report filled: {0} ({1}) [{2}] reported {3} ({4}) [{5}] for {6}.**";
 
-        public string Reported { get; set; } = "reported";
+        public string HasDamagedForWith { get; set; } = ":crossed_swords: **{0} ({1}) [{2}] has damaged {3} ({4}) [{5}] for {6} with {7}**";
 
-        public string For { get; set; } = "for";
+        public string HasKilledWith { get; set; } = ":skull_crossbones: **{0} ({1}) [{2}] killed {3} ({4}) [{5}] with {6}**";
 
-        public string With { get; set; } = "with";
+        public string ThrewAGrenade { get; set; } = ":bomb: {0} ({1}) [{2}] threw a {3}.";
 
-        public string Damaged { get; set; } = "damaged";
+        public string UsedMedicalItem { get; set; } = ":medical_symbol: {0} ({1}) [{2}] healed with {3}.";
 
-        public string Killed { get; set; } = "killed";
-
-        public string ThrewAGrenade { get; set; } = "threw a grenade";
-
-        public string UsedA { get; set; } = "used a";
-
-        public string HasBenChangedToA { get; set; } = "has been changed to a";
+        public string ChangedRole { get; set; } = ":mens: {0} ({1}) [{2}] has been changed to a {3}";
 
         public string ChaosInsurgencyHaveSpawned { get; set; } = ":spy: Chaos Insurgency has spawned with {0} players.";
 
         public string NineTailedFoxHaveSpawned { get; set; } = ":cop: Nine-Tailed Fox has spawned with {0} players.";
 
-        public string HasSpawnedWith { get; set; } = "has spawned with";
+        public string HasJoinedTheGame { get; set; } = ":arrow_right: **{0} ({1}) [{2}] has joined the game**";
 
-        public string Players { get; set; } = "players";
+        public string HasBeenFreedBy { get; set; } = ":unlock: {0} ({1}) [{2}] has been freed by {3} ({4}) [{5}]";
 
-        public string HasJoinedTheGame { get; set; } = "has joined the game";
+        public string HasBeenHandcuffedBy { get; set; } = ":lock: {0} ({1}) [{2}] has been handcuffed by {3} ({4}) [{5}]";
 
-        public string HasBeenFreedBy { get; set; } = "has been freed by";
+        public string WasKicked { get; set; } = ":no_entry: {0} ({1}) was kicked for {2}";
 
-        public string HasBeenHandcuffedBy { get; set; } = "has been handcuffed by";
+        public string WasBannedBy { get; set; } = ":no_entry: {0} ({1}) was banned by {2} for {3} expire {4}.";
 
-        public string WasBannedBy { get; set; } = "was banned by";
+        public string HasStartedUsingTheIntercom { get; set; } = ":loud_sound: {0} ({1}} [{2}] has started using the intercom.";
 
-        public string HasStartedUsingTheIntercom { get; set; } = "has started using the intercom";
+        public string HasPickedUp { get; set; } = "{0} ({1}} [{2}] has picked up **{3}**.";
 
-        public string HasPickedUp { get; set; } = "has picked up";
+        public string HasDropped { get; set; } = "{0} ({1}} [{2}] has dropped **{3}**.";
 
-        public string HasDropped { get; set; } = "has dropped";
+        public string DecontaminationHasBegun { get; set; } = ":biohazard: **Deconamination has begun.**";
 
-        public string DecontaminationHasBegun { get; set; } = $":biohazard: **Deconamination has begun.**";
+        public string HasEnteredPocketDimension { get; set; } = ":door: {0} ({1}} [{2}] has entered the pocket dimension.";
 
-        public string HasEnteredPocketDimension { get; set; } = "has entered the pocket dimension";
+        public string HasEscapedPocketDimension { get; set; } = ":high_brightness: {0} ({1}} [{2}] has escaped the pocket dimension.";
 
-        public string HasEscapedPocketDimension { get; set; } = "has escaped the pocket dimension";
-
-        public string HasTriggeredATeslaGate { get; set; } = "has triggered a tesla gate";
+        public string HasTriggeredATeslaGate { get; set; } = ":zap: {0} ({1}} [{2}] has triggered a tesla gate.";
 
         public string Scp914HasProcessedTheFollowingPlayers { get; set; } = "SCP-914 has processed the following players: {0}\nand items: {1}.";
 
-        public string AndItems { get; set; } = "and items";
+        public string HasClosedADoor { get; set; } = "{0} ({1}} [{2}] has closed {3} door.";
 
-        public string HasClosedADoor { get; set; } = "has closed a door";
+        public string HasOpenedADoor { get; set; } = "{0} ({1}} [{2}] has opened {3} door.";
 
-        public string HasOpenedADoor { get; set; } = "has opened a door";
+        public string Scp914HasBeenActivated { get; set; } = "{0} ({1}} [{2}] has activated SCP-914 on setting {3}.";
 
-        public string Scp914HasBeenActivated { get; set; } = "has activated SCP-914 on setting";
+        public string Scp914KnobSettingChanged { get; set; } = "{0} ({1}} [{2}] has changed the SCP-914 knob to {3}.";
 
-        public string Scp914KnobSettingChanged { get; set; } = "has changed the SCP-914 knob to";
-
-        public string PlayerCanceledWarhead { get; set; } = ":no_entry: **{0} ({1}) canceled warhead detonation sequence.**";
+        public string PlayerCanceledWarhead { get; set; } = ":no_entry: **{0} ({1}) [{2}] canceled warhead detonation sequence.**";
 
         public string CanceledWarhead { get; set; } = ":no_entry: **Warhead detonation sequence canceled.**";
 
@@ -138,45 +126,47 @@ namespace DiscordIntegration
 
         public string WarheadHasntBeenDetonated { get; set; } = "Warhead has not been detonated.";
 
-        public string PlayerWarheadStarted { get; set; } = ":radioactive: **{0} ({1}) started the alpha-warhead countdown, detonation in: {2}**";
+        public string PlayerWarheadStarted { get; set; } = ":radioactive: **{0} ({1}) [{2}] started the alpha-warhead countdown, detonation in: {3}**";
 
         public string WarheadStarted { get; set; } = ":radioactive: **Alpha-warhead countdown initiated, detonation in: {0}**";
 
-        public string AccessedWarhead { get; set; } = "has accessed the Alpha-warhead detonation button cover";
+        public string AccessedWarhead { get; set; } = "{0} ({1}) [{2}] has accessed the Alpha-warhead detonation button cover.";
 
-        public string CalledElevator { get; set; } = "has called an elevator";
+        public string CalledElevator { get; set; } = "{0} ({1}) [{2}] has called an elevator";
 
-        public string UsedLocker { get; set; } = "has opened a locker";
+        public string UsedLocker { get; set; } = "{0} ({1}) [{2}] has opened a locker";
 
-        public string TriggeredTesla { get; set; } = "has triggered a tesla gate";
+        public string TriggeredTesla { get; set; } = "{0} ({1}) [{2}] has triggered a tesla gate.";
 
-        public string GeneratorClosed { get; set; } = "has closed a generator";
+        public string GeneratorClosed { get; set; } = "{0} ({1}) [{2}] has closed a generator.";
 
-        public string GeneratorOpened { get; set; } = "has opened a generator";
+        public string GeneratorOpened { get; set; } = "{0} ({1}) [{2}] has opened a generator.";
 
-        public string GeneratorEjected { get; set; } = "has ejected a tablet from a generator";
+        public string GeneratorEjected { get; set; } = "{0} ({1}) [{2}] has ejected a tablet from a generator.";
 
-        public string GeneratorFinished { get; set; } = "Generator in {0} has finished it's charge up, {1} generators have been activated";
+        public string GeneratorFinished { get; set; } = "Generator in {0} has finished it's charge up, {1} generators have been activated.";
 
-        public string GeneratorInserted { get; set; } = "has inserted a tablet into a generator";
+        public string GeneratorInserted { get; set; } = "{0} ({1}) [{2}] has inserted a tablet into a generator.";
 
-        public string GeneratorUnlocked { get; set; } = "has unlocked a generator door";
+        public string GeneratorUnlocked { get; set; } = "{0} ({1}) [{2}] has unlocked a generator door.";
 
-        public string WasContained { get; set; } = "has been contained by the Femur Breaker";
+        public string Scp106WasContained { get; set; } = "{0} ({1}) has been contained by the Femur Breaker.";
 
-        public string CreatedPortal { get; set; } = "has created a portal";
+        public string Scp106CreatedPortal { get; set; } = "{0} ({1}) has created a portal.";
 
-        public string GainedExperience { get; set; } = "has gained experience";
+        public string Scp106Teleported { get; set; } = "{0} ({1}) has teleported to a portal.";
 
-        public string GainedLevel { get; set; } = "has gained a level";
+        public string GainedExperience { get; set; } = "{0} ({1}) has gained {2} XP ({3})";
 
-        public string LeftServer { get; set; } = "has left the server";
+        public string GainedLevel { get; set; } = "{0} ({1}) has gained a level: {2} :arrow_right: {3}";
 
-        public string Reloaded { get; set; } = "has reloaded their weapon";
+        public string LeftServer { get; set; } = ":arrow_left: **{0} ({1}) [{2}] has left the server**";
 
-        public string GroupSet { get; set; } = "has been assigned a group";
+        public string Reloaded { get; set; } = "{0} ({1}) [{2}] has reloaded their {3} weapon.";
 
-        public string ItemChanged { get; set; } = "changed the item in their hand";
+        public string GroupSet { get; set; } = "{0} ({1}) [{2}] has been assigned to the **{3} ({4})** group";
+
+        public string ItemChanged { get; set; } = "{0} ({1}) [{2}] changed the item in their hand: {2} :arrow_right: {3}";
 
         public string InvalidSubcommand { get; set; } = "Invalid subcommand!";
 
@@ -262,13 +252,13 @@ namespace DiscordIntegration
 
         public string ServerHasBeenTerminatedWithErrors { get; set; } = "The server has been terminated with errors: {0}";
 
-        public string WasKicked { get; set; } = "was kicked";
-
         public string UpdatingConnectionError { get; set; } = "An error has occurred while updating the connection: {0}";
 
         public string InvalidIPAddress { get; set; } = "{0} is not a valid IP address!";
 
         public string Redacted { get; set; } = "████████";
+
+        public string NotAuthenticated { get; set; } = "Not authenticated";
 
 #pragma warning restore CS1591
 #pragma warning restore SA1600 // Elements should be documented

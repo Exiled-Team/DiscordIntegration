@@ -46,7 +46,7 @@ namespace DiscordIntegration.Events
             if (Instance.Config.EventsToLog.StartingWarhead && (ev.Player == null || (ev.Player != null && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))))
             {
                 object[] vars = ev.Player == null ?
-                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, Warhead.DetonationTimer } :
+                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, Warhead.DetonationTimer } :
                     new object[] { Warhead.DetonationTimer };
 
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.WarheadStarted : Language.PlayerWarheadStarted, vars))).ConfigureAwait(false);
@@ -58,7 +58,7 @@ namespace DiscordIntegration.Events
             if (Instance.Config.EventsToLog.StoppingWarhead && (ev.Player == null || (ev.Player != null && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))))
             {
                 object[] vars = ev.Player == null ?
-                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted } :
+                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role } :
                     Array.Empty<object>();
 
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.CanceledWarhead : Language.PlayerCanceledWarhead, vars))).ConfigureAwait(false);
@@ -75,7 +75,7 @@ namespace DiscordIntegration.Events
                 foreach (Player player in ev.Players)
                 {
                     if (!player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack)
-                        players.Append(player.Nickname).Append(" (").Append(Instance.Config.ShouldLogUserIds ? player.UserId : Language.Redacted).Append(") (").Append(player.Role).AppendLine();
+                        players.Append(player.Nickname).Append(" (").Append(Instance.Config.ShouldLogUserIds ? player.UserId : Language.Redacted).Append(") [").Append(player.Role).Append(']').AppendLine();
                 }
 
                 foreach (Pickup item in ev.Items)
