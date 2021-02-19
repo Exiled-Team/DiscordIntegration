@@ -7,6 +7,7 @@
 
 namespace DiscordIntegration.Events
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Text;
     using API.Commands;
@@ -24,7 +25,7 @@ namespace DiscordIntegration.Events
         public async void OnWarheadDetonated()
         {
             if (Instance.Config.EventsToLog.WarheadDetonated)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":radioactive: {Language.WarheadHasDetonated}")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", Language.WarheadHasDetonated)).ConfigureAwait(false);
         }
 
         public async void OnGeneratorActivated(GeneratorActivatedEventArgs ev)
@@ -37,19 +38,27 @@ namespace DiscordIntegration.Events
         public async void OnDecontaminating(DecontaminatingEventArgs _)
         {
             if (Instance.Config.EventsToLog.Decontaminating)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":biohazard: **{Language.DecontaminationHasBegun}.**")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", Language.DecontaminationHasBegun)).ConfigureAwait(false);
         }
 
         public async void OnStartingWarhead(StartingEventArgs ev)
         {
             if (Instance.Config.EventsToLog.StartingWarhead)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":radioactive: **{(ev.Player == null ? Language.WarheadStarted : string.Format(Language.PlayerWarheadStarted, ev.Player.Nickname, ev.Player.UserId))} {Warhead.Controller.NetworktimeToDetonation} seconds.**")).ConfigureAwait(false);
+            {
+                object[] vars = ev.Player == null ? new object[] { ev.Player.Nickname, ev.Player.UserId, Warhead.DetonationTimer } : new object[] { Warhead.DetonationTimer };
+
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.WarheadStarted : Language.PlayerWarheadStarted, vars))).ConfigureAwait(false);
+            }
         }
 
         public async void OnStoppingWarhead(StoppingEventArgs ev)
         {
             if (Instance.Config.EventsToLog.StoppingWarhead)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $"***{ev.Player.Nickname} - {ev.Player.UserId} {Language.CancelledWarhead}.***")).ConfigureAwait(false);
+            {
+                object[] vars = ev.Player == null ? new object[] { ev.Player.Nickname, ev.Player.UserId } : Array.Empty<object>();
+
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.CanceledWarhead : Language.PlayerCanceledWarhead, vars))).ConfigureAwait(false);
+            }
         }
 
         public async void OnUpgradingItems(UpgradingItemsEventArgs ev)
@@ -65,7 +74,7 @@ namespace DiscordIntegration.Events
                 foreach (Pickup item in ev.Items)
                     items.Append(item.ItemId.ToString()).AppendLine();
 
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $"{Language.Scp914HasProcessedTheFollowingPlayers}: {players} {Language.AndItems}: {items}."));
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.Scp914HasProcessedTheFollowingPlayers, players, items)));
 
                 StringBuilderPool.Shared.Return(players);
                 StringBuilderPool.Shared.Return(items);

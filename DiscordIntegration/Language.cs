@@ -106,7 +106,7 @@ namespace DiscordIntegration
 
         public string HasDropped { get; set; } = "has dropped";
 
-        public string DecontaminationHasBegun { get; set; } = "Deconamination has begun";
+        public string DecontaminationHasBegun { get; set; } = $":biohazard: **Deconamination has begun.**";
 
         public string HasEnteredPocketDimension { get; set; } = "has entered the pocket dimension";
 
@@ -114,7 +114,7 @@ namespace DiscordIntegration
 
         public string HasTriggeredATeslaGate { get; set; } = "has triggered a tesla gate";
 
-        public string Scp914HasProcessedTheFollowingPlayers { get; set; } = "SCP-914 has processed the following players";
+        public string Scp914HasProcessedTheFollowingPlayers { get; set; } = "SCP-914 has processed the following players: {0}\nand items: {1}.";
 
         public string AndItems { get; set; } = "and items";
 
@@ -126,9 +126,11 @@ namespace DiscordIntegration
 
         public string Scp914KnobSettingChanged { get; set; } = "has changed the SCP-914 knob to";
 
-        public string CancelledWarhead { get; set; } = "has cancelled the warhead";
+        public string PlayerCanceledWarhead { get; set; } = ":no_entry: **{0} ({1}) canceled warhead detonation sequence.**";
 
-        public string WarheadHasDetonated { get; set; } = "**The Alpha-warhead has detonated**.";
+        public string CanceledWarhead { get; set; } = ":no_entry: **Warhead detonation sequence canceled.**";
+
+        public string WarheadHasDetonated { get; set; } = ":radioactive: **The Alpha-warhead has detonated**.";
 
         public string WarheadHasBeenDetonated { get; set; } = "Warhead has been detonated.";
 
@@ -136,9 +138,9 @@ namespace DiscordIntegration
 
         public string WarheadHasntBeenDetonated { get; set; } = "Warhead has not been detonated.";
 
-        public string PlayerWarheadStarted { get; set; } = "{0} ({1}) started the alpha-warhead countdown, detonation in:";
+        public string PlayerWarheadStarted { get; set; } = ":radioactive: **{0} ({1}) started the alpha-warhead countdown, detonation in: {2}**";
 
-        public string WarheadStarted { get; set; } = "Alpha-warhead countdown initiated, detonation in:";
+        public string WarheadStarted { get; set; } = ":radioactive: **Alpha-warhead countdown initiated, detonation in: {0}**";
 
         public string AccessedWarhead { get; set; } = "has accessed the Alpha-warhead detonation button cover";
 
