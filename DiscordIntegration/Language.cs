@@ -42,19 +42,21 @@ namespace DiscordIntegration
 
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable CS1591
-        public string UsedCommand { get; set; } = "used command";
+        public string UsedCommand { get; set; } = ":keyboard: {0} ({1}) used command: {2} {3}";
+
+        public string HasRunClientConsoleCommand { get; set; } = ":keyboard: {0} ({1}) as {2} has run a client-console command: {3} {4}";
 
         public string NoPlayersOnline { get; set; } = "No players online.";
 
         public string NoStaffOnline { get; set; } = "No staff online.";
 
-        public string WaitingForPlayers { get; set; } = "Waiting for players...";
+        public string WaitingForPlayers { get; set; } = $":hourglass: Waiting for players...";
 
-        public string RoundStarting { get; set; } = "Round starting";
+        public string RoundStarting { get; set; } = ":arrow_forward: Round starting: {0} {1}.";
 
         public string PlayersInRound { get; set; } = "players in round";
 
-        public string RoundEnded { get; set; } = "Round ended";
+        public string RoundEnded { get; set; } = ":stop_button: Round ended: {0} - Players online {1}/{2}.";
 
         public string PlayersOnline { get; set; } = "Players online: {0}/{1}";
 
@@ -64,7 +66,7 @@ namespace DiscordIntegration
 
         public string AliveScps { get; set; } = "Alive SCPs: {0}";
 
-        public string CheaterReportFilled { get; set; } = "Cheater report filled";
+        public string CheaterReportFilled { get; set; } = "**Cheater report filled: {0} ({1}) reported {2}({3}) for {4}.**";
 
         public string Reported { get; set; } = "reported";
 
@@ -82,9 +84,9 @@ namespace DiscordIntegration
 
         public string HasBenChangedToA { get; set; } = "has been changed to a";
 
-        public string ChaosInsurgency { get; set; } = "Chaos Insurgency";
+        public string ChaosInsurgencyHaveSpawned { get; set; } = ":spy: Chaos Insurgency has spawned with {0} players.";
 
-        public string NineTailedFox { get; set; } = "Nine-Tailed Fox";
+        public string NineTailedFoxHaveSpawned { get; set; } = ":cop: Nine-Tailed Fox has spawned with {0} players.";
 
         public string HasSpawnedWith { get; set; } = "has spawned with";
 
@@ -105,8 +107,6 @@ namespace DiscordIntegration
         public string HasDropped { get; set; } = "has dropped";
 
         public string DecontaminationHasBegun { get; set; } = "Deconamination has begun";
-
-        public string HasRunClientConsoleCommand { get; set; } = "has run a client-console command";
 
         public string HasEnteredPocketDimension { get; set; } = "has entered the pocket dimension";
 

@@ -22,43 +22,47 @@ namespace DiscordIntegration.Events
         public async void OnSendingRemoteAdminCommand(SendingRemoteAdminCommandEventArgs ev)
         {
             if (Instance.Config.EventsToLog.SendingRemoteAdminCommands)
-                await Network.SendAsync(new RemoteCommand("log", "commands", $":keyboard: {ev.Sender.Nickname}({ev.Sender.UserId}) {Language.UsedCommand}: {ev.Name} {string.Join(" ", ev.Arguments)}")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.UsedCommand, ev.Sender.Nickname, ev.Sender.UserId, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
         }
 
         public async void OnSendingConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
             if (Instance.Config.EventsToLog.SendingConsoleCommands)
-                await Network.SendAsync(new RemoteCommand("log", "commands", $"{ev.Player.Nickname} - {ev.Player.UserId} ({ev.Player.Role}) {Language.HasRunClientConsoleCommand}: {ev.Name} {string.Join(" ", ev.Arguments)}")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.HasRunClientConsoleCommand, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
         }
 
         public async void OnReportingCheater(ReportingCheaterEventArgs ev)
         {
             if (Instance.Config.EventsToLog.ReportingCheater)
-                await Network.SendAsync(new RemoteCommand("log", "commands", $"**{Language.CheaterReportFilled}: {ev.Reporter.UserId} {Language.Reported} {ev.Reported.UserId} {Language.For} {ev.Reason}.**")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.CheaterReportFilled, ev.Reporter.Nickname, ev.Reporter.UserId, ev.Reported.Nickname, ev.Reported.UserId, ev.Reason))).ConfigureAwait(false);
         }
 
         public async void OnWaitingForPlayers()
         {
             if (Instance.Config.EventsToLog.WaitingForPlayers)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":hourglass: {Language.WaitingForPlayers}")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", Language.WaitingForPlayers)).ConfigureAwait(false);
         }
 
         public async void OnRoundStarted()
         {
             if (Instance.Config.EventsToLog.RoundStarted)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":arrow_forward: {Language.RoundStarting}: {Player.Dictionary.Count} {Language.PlayersInRound}.")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.RoundStarting, Player.Dictionary.Count, Language.PlayersInRound))).ConfigureAwait(false);
         }
 
         public async void OnRoundEnded(RoundEndedEventArgs ev)
         {
             if (Instance.Config.EventsToLog.RoundEnded)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $":stop_button: {Language.RoundEnded}: {ev.LeadingTeam} - {string.Format(Language.PlayersOnline, Player.Dictionary.Count, Instance.Slots)}.")).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.RoundEnded, ev.LeadingTeam, Player.Dictionary.Count, Instance.Slots))).ConfigureAwait(false);
         }
 
         public async void OnRespawningTeam(RespawningTeamEventArgs ev)
         {
             if (Instance.Config.EventsToLog.RespawningTeam)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $"{(ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? $":spy: {Language.ChaosInsurgency}" : $":cop: {Language.NineTailedFox}")} {Language.HasSpawnedWith} {ev.Players.Count} {Language.Players}.")).ConfigureAwait(false);
+            {
+                string message = string.Format(ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? Language.ChaosInsurgencyHaveSpawned : Language.NineTailedFoxHaveSpawned, ev.Players.Count);
+
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", message)).ConfigureAwait(false);
+            }
         }
     }
 }
