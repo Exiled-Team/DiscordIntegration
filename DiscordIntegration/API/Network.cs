@@ -357,12 +357,14 @@ namespace DiscordIntegration.API
                             }
                             else if (!string.IsNullOrEmpty(splittedData))
                             {
-                                OnReceivedPartial(this, new ReceivedPartialEventArgs(splittedData, bytesRead));
+                                OnReceivedFull(this, new ReceivedFullEventArgs(splittedData, bytesRead));
                             }
                         }
                     }
                     else
                     {
+                        OnReceivedPartial(this, new ReceivedPartialEventArgs(receivedData, bytesRead));
+
                         totalReceivedData.Append(receivedData);
                     }
                 }
