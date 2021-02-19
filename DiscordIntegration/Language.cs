@@ -64,7 +64,7 @@ namespace DiscordIntegration
 
         public string AliveScps { get; set; } = "Alive SCPs: {0}";
 
-        public string CheaterReportFilled { get; set; } = "**Cheater report filled: {0} ({1}) [{2}] reported {3} ({4}) [{5}] for {6}.**";
+        public string CheaterReportFilled { get; set; } = ":incoming_envelope: **Cheater report filled: {0} ({1}) [{2}] reported {3} ({4}) [{5}] for {6}.**";
 
         public string HasDamagedForWith { get; set; } = ":crossed_swords: **{0} ({1}) [{2}] has damaged {3} ({4}) [{5}] for {6} with {7}**";
 
