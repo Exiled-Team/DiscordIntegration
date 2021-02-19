@@ -105,8 +105,8 @@ namespace DiscordIntegration
 
             await Task.WhenAll(
                 Network.Start(NetworkCancellationTokenSource.Token),
-                Bot.UpdateActivity(Bot.UpdateActivityCancellationTokenSource.Token).ContinueWith(task => Bot.UpdateActivityCancellationTokenSource.Dispose()),
-                Bot.UpdateChannelsTopic(Bot.UpdateChannelsTopicCancellationTokenSource.Token).ContinueWith(task => Bot.UpdateChannelsTopicCancellationTokenSource.Dispose())).ConfigureAwait(false);
+                Bot.UpdateActivity(Bot.UpdateActivityCancellationTokenSource.Token),
+                Bot.UpdateChannelsTopic(Bot.UpdateChannelsTopicCancellationTokenSource.Token)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -119,9 +119,14 @@ namespace DiscordIntegration
             KillCoroutines();
 
             Bot.UpdateActivityCancellationTokenSource.Cancel();
+            Bot.UpdateActivityCancellationTokenSource.Dispose();
+
             Bot.UpdateChannelsTopicCancellationTokenSource.Cancel();
+            Bot.UpdateChannelsTopicCancellationTokenSource.Dispose();
 
             NetworkCancellationTokenSource.Cancel();
+            NetworkCancellationTokenSource.Dispose();
+
             Network.Close();
 
             Ticks = 0;

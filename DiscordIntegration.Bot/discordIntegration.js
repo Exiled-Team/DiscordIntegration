@@ -5,7 +5,7 @@ const camelCaseKeys = require('camelcase-keys');
 const snakeCaseKeys = require('snakecase-keys');
 const sleep = require('util').promisify(setTimeout)
 
-const configPath = './config.yml';
+const configPath = './config.dev.yml';
 const syncedRolesPath = './synced-roles.yml';
 const discordClient = new discord.Client();
 const tcpServer = require('net').createServer();

@@ -385,16 +385,13 @@ namespace DiscordIntegration.API
                     IPEndPoint = ev.IPEndPoint;
                     ReconnectionInterval = ev.ReconnectionInterval;
 
-                    TcpClient = new TcpClient(IPEndPoint);
+                    TcpClient = new TcpClient();
 
                     await TcpClient.ConnectAsync(IPEndPoint.Address, IPEndPoint.Port);
 
-                    if (IsConnected)
-                    {
-                        OnConnected(this, System.EventArgs.Empty);
+                    OnConnected(this, System.EventArgs.Empty);
 
-                        await ReceiveAsync(cancellationToken);
-                    }
+                    await ReceiveAsync(cancellationToken);
                 }
                 catch (IOException ioException)
                 {
