@@ -114,20 +114,20 @@ namespace DiscordIntegration
         /// </summary>
         public override void OnDisabled()
         {
-            UnregisterEvents();
-
             KillCoroutines();
+
+            NetworkCancellationTokenSource.Cancel();
+            NetworkCancellationTokenSource.Dispose();
+
+            Network.Close();
+
+            UnregisterEvents();
 
             Bot.UpdateActivityCancellationTokenSource.Cancel();
             Bot.UpdateActivityCancellationTokenSource.Dispose();
 
             Bot.UpdateChannelsTopicCancellationTokenSource.Cancel();
             Bot.UpdateChannelsTopicCancellationTokenSource.Dispose();
-
-            NetworkCancellationTokenSource.Cancel();
-            NetworkCancellationTokenSource.Dispose();
-
-            Network.Close();
 
             Ticks = 0;
 
