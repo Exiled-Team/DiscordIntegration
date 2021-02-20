@@ -84,7 +84,7 @@ namespace DiscordIntegration
         /// <summary>
         /// Fired when the plugin is enabled.
         /// </summary>
-        public override async void OnEnabled()
+        public override void OnEnabled()
         {
             Language = new Language();
             Network = new Network();
@@ -101,12 +101,12 @@ namespace DiscordIntegration
             Bot.UpdateActivityCancellationTokenSource = new CancellationTokenSource();
             Bot.UpdateChannelsTopicCancellationTokenSource = new CancellationTokenSource();
 
-            base.OnEnabled();
+            _ = Network.Start(NetworkCancellationTokenSource.Token);
 
-            await Task.WhenAll(
-                Network.Start(NetworkCancellationTokenSource.Token),
-                Bot.UpdateActivity(Bot.UpdateActivityCancellationTokenSource.Token),
-                Bot.UpdateChannelsTopic(Bot.UpdateChannelsTopicCancellationTokenSource.Token)).ConfigureAwait(false);
+            _ = Bot.UpdateActivity(Bot.UpdateActivityCancellationTokenSource.Token);
+            _ = Bot.UpdateChannelsTopic(Bot.UpdateChannelsTopicCancellationTokenSource.Token);
+
+            base.OnEnabled();
         }
 
         /// <summary>

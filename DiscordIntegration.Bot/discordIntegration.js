@@ -154,8 +154,8 @@ tcpServer.on('connection', socket => {
 
 /**
  * Check whether a command can be executed or not.
- * @param {any} member The user that executed the command
- * @param {any} command The command to be executed
+ * @param {discord.GuildMember} member The user that executed the command
+ * @param {string} command The command to be executed
  */
 function canExecuteCommand(member, command) {
   if (!config.commands)
@@ -238,7 +238,7 @@ function saveSyncedRoles() {
 /**
  * Gets the user's group from its user id.
  * 
- * @param {any} id The user id.
+ * @param {string} id The user id.
  */
 async function getGroupFromId(id) {
   let obtainedId = id.substring(0, id.lastIndexOf('@'));
@@ -278,8 +278,8 @@ async function getGroupFromId(id) {
 
 /**
  * Queues a message to in a specific Discord channel.
- * @param {any} channelId The channel id.
- * @param {any} content The content to be sent.
+ * @param {string} channelId The channel id.
+ * @param {string} content The content to be sent.
  */
 function queueMessage(channelId, content, shouldLogTimestamp = true) {
   if (shouldLogTimestamp)
@@ -293,8 +293,8 @@ function queueMessage(channelId, content, shouldLogTimestamp = true) {
 
 /**
  * Sends a message in a specific Discord channel.
- * @param {any} channelId
- * @param {any} content
+ * @param {string} channelId
+ * @param {string} content
  */
 function sendMessage(channelId, content, shouldLogTimestamp = false) {
   if (shouldLogTimestamp)
@@ -302,7 +302,7 @@ function sendMessage(channelId, content, shouldLogTimestamp = false) {
 
   const channel = discordServer.channels.cache.find(channel => channel.id === channelId);
 
-  channel?.send(discord.Util.removeMentions(content), {split: true})
+  channel?.send(content.replace(/(@here)|(@everyone)|(<@[0-9]*>)/gm, '`$&`'), {split: true})
     .then(result => {
 
       if (config.isDebugEnabled)
@@ -314,7 +314,7 @@ function sendMessage(channelId, content, shouldLogTimestamp = false) {
 /**
  * Logs an event, command or ban in every configurated Discord channel.
  *
- * @param {any} content The content to be logged.
+ * @param {string} content The content to be logged.
  */
 function log(type, content, isInstant = false) {
   if (!config.channels.log[type])
@@ -326,8 +326,8 @@ function log(type, content, isInstant = false) {
 /**
  * Changes the topic of a specific Discord channel.
  * 
- * @param {any} channelId The channel id
- * @param {any} newTopic The new topic to be set.
+ * @param {string} channelId The channel id
+ * @param {string} newTopic The new topic to be set.
  */
 function updateChannelTopic(channelId, newTopic) {
   const channel = discordServer.channels.cache.find(channel => channel.id === channelId);
@@ -343,7 +343,7 @@ function updateChannelTopic(channelId, newTopic) {
 /**
  * Changes the topic of specific Discord channels.
  *
- * @param {any} newTopic The new topic to be set.
+ * @param {string} newTopic The new topic to be set.
  */
 function updateChannelsTopic(newTopic) {
   if (!config.channels.topic)
@@ -354,7 +354,7 @@ function updateChannelsTopic(newTopic) {
 
 /**
  * Updates the bot activity.
- * @param {any} newActivity The new activity.
+ * @param {string} newActivity The new activity.
  */
 function updateActivity(newActivity) {
   discordClient.user.setActivity(newActivity)
@@ -369,8 +369,9 @@ function updateActivity(newActivity) {
 
 /**
  * Adds an userID-discordID pair to the SyncedRole list.
- * @param {any} userId The user ID.
- * @param {any} discordId The discord ID.
+ * @param {string} userId The user ID.
+ * @param {string} discordId The discord ID.
+ * @param {object} sender The command sender.
  */
 function addUser(userId, discordId, sender) {
   syncedRoles.userIdToDiscordId[userId] = discordId;
@@ -382,7 +383,8 @@ function addUser(userId, discordId, sender) {
 
 /**
  * Removes an userID-discordID pair from the SyncedRole list.
- * @param {any} userId The user ID.
+ * @param {string} userId The user ID.
+ * @param {object} sender The command sender.
  */
 function removeUser(userId, sender) {
   if (!syncedRoles || !(userId in syncedRoles.userIdToDiscordId))
@@ -397,8 +399,9 @@ function removeUser(userId, sender) {
 
 /**
  * Adds a role-group pair to the SyncedRole list.
- * @param {any} roleId The role ID.
- * @param {any} groupName The group name.
+ * @param {string} roleId The role ID.
+ * @param {string} groupName The group name.
+ * @param {object} sender The command sender.
  */
 function addRole(roleId, group, sender) {
   if (!discordServer.roles.cache.has(roleId)) {
@@ -414,7 +417,8 @@ function addRole(roleId, group, sender) {
 
 /**
  * Removes a role-group pair from the SyncedRole list.
- * @param {any} roleId The role ID.
+ * @param {string} roleId The role ID.
+ * @param {object} sender The command sender.
  */
 function removeRole(roleId, sender) {
   if (!syncedRoles || !(roleId in syncedRoles.roleToGroup))
