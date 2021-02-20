@@ -9,6 +9,7 @@ namespace DiscordIntegration.API.Commands
 {
     using API.User;
     using Newtonsoft.Json;
+    using RemoteAdmin;
 
     /// <summary>
     /// Represents a command sent by a Discord user from the linked server.
@@ -54,6 +55,6 @@ namespace DiscordIntegration.API.Commands
         /// <summary>
         /// Executes the command.
         /// </summary>
-        public void Execute() => GameCore.Console.singleton.TypeCommand($"/{Content}", Sender);
+        public void Execute() => CommandProcessor.ProcessQuery(Content, Sender);
     }
 }

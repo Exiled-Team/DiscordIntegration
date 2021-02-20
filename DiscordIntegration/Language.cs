@@ -42,7 +42,7 @@ namespace DiscordIntegration
 
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable CS1591
-        public string UsedCommand { get; set; } = ":keyboard: {0} ({1}) [{2}] used command: {2} {3}";
+        public string UsedCommand { get; set; } = ":keyboard: {0} ({1}) [{2}] used command: {3} {4}";
 
         public string HasRunClientConsoleCommand { get; set; } = ":keyboard: {0} ({1}) [{2}] has run a client-console command: {3} {4}";
 
@@ -259,6 +259,8 @@ namespace DiscordIntegration
         public string Redacted { get; set; } = "████████";
 
         public string NotAuthenticated { get; set; } = "Not authenticated";
+
+        public string DedicatedServer { get; set; } = "Dedicated server";
 
 #pragma warning restore CS1591
 #pragma warning restore SA1600 // Elements should be documented

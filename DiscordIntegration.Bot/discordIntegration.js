@@ -54,9 +54,9 @@ discordClient.on('message', message => {
     return;
   }
 
-  const command = message.content.substring(config.prefix.length, message.content.length).toLowerCase();
+  const command = message.content.substring(config.prefix.length, message.content.length);
 
-  if (command.length === 0 || !this.canExecuteCommand(message.member, command)) {
+  if (command.length === 0 || !this.canExecuteCommand(message.member, command.toLowerCase())) {
     message.channel.send('Permission denied or invalid command.');
     return;
   }
@@ -146,7 +146,7 @@ exports.canExecuteCommand = function(member, command) {
     return false;
 
   for (const roleId in config.commands) {
-    if (member.roles.cache.has(roleId) && config.commands[roleId].some(tempCommand => command.startsWith(tempCommand)))
+    if (member.roles.cache.has(roleId) && config.commands[roleId].some(tempCommand => command.startsWith(tempCommand.toLowerCase())))
       return true;
   }
 

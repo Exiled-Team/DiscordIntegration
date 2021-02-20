@@ -22,13 +22,13 @@ namespace DiscordIntegration.Events
         public async void OnSendingRemoteAdminCommand(SendingRemoteAdminCommandEventArgs ev)
         {
             if (Instance.Config.EventsToLog.SendingRemoteAdminCommands)
-                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.UsedCommand, ev?.Sender.Nickname, ev?.Sender.UserId, ev?.Sender.Role, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.UsedCommand, ev.CommandSender.Nickname, ev.CommandSender.SenderId ?? Language.DedicatedServer, ev.Sender.Role, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
         }
 
         public async void OnSendingConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
             if (Instance.Config.EventsToLog.SendingConsoleCommands)
-                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.HasRunClientConsoleCommand, ev?.Player.Nickname, ev?.Player.UserId, ev?.Player.Role, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.HasRunClientConsoleCommand, ev.Player.Nickname, ev.Player.UserId ?? Language.DedicatedServer, ev.Player.Role, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
         }
 
         public async void OnReportingCheater(ReportingCheaterEventArgs ev)
