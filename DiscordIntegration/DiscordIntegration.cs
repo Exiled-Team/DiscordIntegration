@@ -121,8 +121,6 @@ namespace DiscordIntegration
 
             Network.Close();
 
-            UnregisterEvents();
-
             Bot.UpdateActivityCancellationTokenSource.Cancel();
             Bot.UpdateActivityCancellationTokenSource.Dispose();
 
@@ -132,6 +130,8 @@ namespace DiscordIntegration
             Ticks = 0;
 
             SyncedUsersCache.Clear();
+
+            UnregisterEvents();
 
             Language = null;
             Network = null;
