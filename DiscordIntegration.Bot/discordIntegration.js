@@ -64,7 +64,7 @@ discordClient.on('message', message => {
   if (config.isDebugEnabled)
     console.debug(`[DISCORD][DEBUG] ${message.author.tag} (${message.author.id}) executed a command: [${command}]`);
 
-  sockets.forEach(socket => socket.write(JSON.stringify({action: 'executeCommand', parameters: {channelId: message.channel.id, content: command, user: {id: message.author.id, name: message.author.tag}}}) + '\0'));
+  sockets.forEach(socket => socket.write(JSON.stringify({action: 'executeCommand', parameters: {channelId: message.channel.id, content: command, user: {id: message.author.id + '@discord', name: message.author.tag}}}) + '\0'));
 });
 
 /**
