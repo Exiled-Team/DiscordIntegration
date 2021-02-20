@@ -116,7 +116,7 @@ namespace DiscordIntegration.Events
             if (ev.Task.IsFaulted)
                 Log.Error($"[NET] {string.Format(Language.ServerHasBeenTerminatedWithErrors, Instance.Config.IsDebugEnabled ? ev.Task.Exception.ToString() : ev.Task.Exception.Message)}");
             else
-                Log.Error($"[NET] {Language.ServerHasBeenTerminated}");
+                Log.Warn($"[NET] {Language.ServerHasBeenTerminated}");
         }
     }
 }
