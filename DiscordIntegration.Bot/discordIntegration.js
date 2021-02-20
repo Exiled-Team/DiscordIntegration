@@ -3,7 +3,7 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const camelCaseKeys = require('camelcase-keys');
 const snakeCaseKeys = require('snakecase-keys');
-const sleep = require('util').promisify(setTimeout)
+const sleep = require('util').promisify(setTimeout);
 
 const configPath = './config.yml';
 const syncedRolesPath = './synced-roles.yml';
@@ -15,9 +15,25 @@ let config = null;
 let syncedRoles = {
   roleToGroup: {},
   userIdToDiscordId: {}
-}
+};
 let messagesQueue = {};
 let sockets = [];
+let remoteCommands = {
+  "loadConfigs": loadConfigs,
+  "loadSyncedRoles": loadSyncedRoles,
+  "saveSyncedRoles": saveSyncedRoles,
+  "getGroupFromId": getGroupFromId,
+  "queueMessage": queueMessage,
+  "sendMessage": sendMessage,
+  "log": log,
+  "updateChannelTopic": updateChannelTopic,
+  "updateChannelsTopic": updateChannelsTopic,
+  "updateActivity": updateActivity,
+  "addUser": addUser,
+  "removeUser": removeUser,
+  "addRole": addRole,
+  "removeRole": removeRole
+};
 
 /**
  * Logs in the bot and starts a TCP server.
@@ -26,8 +42,8 @@ discordClient.on('ready', async () => {
   await discordClient.user.setActivity('for connections.', {type: "LISTENING"});
   await discordClient.user.setStatus('dnd');
 
-  console.log(`[DISCORD][INFO] Successfully logged in as ${discordClient.user.tag}.`)
-  console.log(`[NET][INFO] Starting server at ${config.tcpServer.ipAddress}:${config.tcpServer.port}...`)
+  console.log(`[DISCORD][INFO] Successfully logged in as ${discordClient.user.tag}.`);
+  console.log(`[NET][INFO] Starting server at ${config.tcpServer.ipAddress}:${config.tcpServer.port}...`);
 
   tcpServer.listen(config.tcpServer.port, config.tcpServer.ipAddress);
   tcpServer.ref();
@@ -39,7 +55,7 @@ discordClient.on('ready', async () => {
       process.exit(0);
     });
 
-  await this.handleMessagesQueue();
+  await handleMessagesQueue();
 });
 
 /**
@@ -56,7 +72,7 @@ discordClient.on('message', message => {
 
   const command = message.content.substring(config.prefix.length, message.content.length);
 
-  if (command.length === 0 || !this.canExecuteCommand(message.member, command.toLowerCase())) {
+  if (command.length === 0 || !canExecuteCommand(message.member, command.toLowerCase())) {
     message.channel.send('Permission denied or invalid command.');
     return;
   }
@@ -110,8 +126,8 @@ tcpServer.on('connection', socket => {
       try {
         remoteCommand = JSON.parse(remoteCommand);
 
-        if (typeof remoteCommand.action !== 'undefined' && remoteCommand.action in this) {
-          const returnedValue = await this[remoteCommand.action](...remoteCommand.parameters);
+        if (typeof remoteCommand.action !== 'undefined' && remoteCommand.action in remoteCommands) {
+          const returnedValue = await remoteCommands[remoteCommand.action](...remoteCommand.parameters);
 
           if (returnedValue)
             socket.write(returnedValue + '\0');
@@ -126,10 +142,10 @@ tcpServer.on('connection', socket => {
   socket.on('error', error => {
     if (error.message.includes('ECONNRESET')) {
       console.info('[SOCKET][INFO] Server closed connection.');
-      this.log('gameEvents', '```diff\n- Server closed connection.\n```', true);
+      log('gameEvents', '```diff\n- Server closed connection.\n```', true);
     } else {
       console.error(`[SOCKET][ERROR] Server closed connection: ${error}.`);
-      this.log('gameEvents', `\`\`\`diff\n - Server closed connection: ${error}.\n\`\`\``, true);
+      log('gameEvents', `\`\`\`diff\n - Server closed connection: ${error}.\n\`\`\``, true);
     }
   });
 
@@ -141,7 +157,7 @@ tcpServer.on('connection', socket => {
  * @param {any} member The user that executed the command
  * @param {any} command The command to be executed
  */
-exports.canExecuteCommand = function(member, command) {
+function canExecuteCommand(member, command) {
   if (!config.commands)
     return false;
 
@@ -156,7 +172,7 @@ exports.canExecuteCommand = function(member, command) {
 /**
  * Loads bot configs.
  */
-exports.loadConfigs = function () {
+function loadConfigs() {
   let rawConfig;
 
   console.log('[BOT][INFO] Loading configs...');
@@ -181,7 +197,7 @@ exports.loadConfigs = function () {
 /**
  * Loads synced roles.
  */
-exports.loadSyncedRoles = function () {
+function loadSyncedRoles() {
   console.log('[BOT][INFO] Loading synced roles...');
 
   try {
@@ -207,7 +223,7 @@ exports.loadSyncedRoles = function () {
 /**
  * Saves synced roles.
  */
-exports.saveSyncedRoles = function () {
+function saveSyncedRoles() {
   console.log('[BOT][INFO] Saving synced roles...');
 
   try {
@@ -224,7 +240,7 @@ exports.saveSyncedRoles = function () {
  * 
  * @param {any} id The user id.
  */
-exports.getGroupFromId = async function (id) {
+async function getGroupFromId(id) {
   let obtainedId = id.substring(0, id.lastIndexOf('@'));
 
   if (obtainedId.length === 17) {
@@ -237,7 +253,7 @@ exports.getGroupFromId = async function (id) {
   let user;
 
   try {
-    user = await discordServer.members.fetch(obtainedId)
+    user = await discordServer.members.fetch(obtainedId);
   } catch (exception) {
     console.error(`[BOT][ERROR] Cannot sync ${id} (${obtainedId}) user ID, user not found! ${exception}`);
     return;
@@ -250,7 +266,7 @@ exports.getGroupFromId = async function (id) {
 
     if (group)
       break;
-  };
+  }
 
   if (!group) {
     console.error(`[BOT][ERROR] Cannot find group of ${id} (${obtainedId}) in synced roles.`);
@@ -265,7 +281,7 @@ exports.getGroupFromId = async function (id) {
  * @param {any} channelId The channel id.
  * @param {any} content The content to be sent.
  */
-exports.queueMessage = function (channelId, content, shouldLogTimestamp = true) {
+function queueMessage(channelId, content, shouldLogTimestamp = true) {
   if (shouldLogTimestamp)
     content = `[${(new Date()).toLocaleTimeString()}] ${content}`;
 
@@ -280,7 +296,7 @@ exports.queueMessage = function (channelId, content, shouldLogTimestamp = true) 
  * @param {any} channelId
  * @param {any} content
  */
-exports.sendMessage = function (channelId, content, shouldLogTimestamp = false) {
+function sendMessage(channelId, content, shouldLogTimestamp = false) {
   if (shouldLogTimestamp)
     content = `[${(new Date()).toLocaleTimeString()}] ${content}`;
 
@@ -300,11 +316,11 @@ exports.sendMessage = function (channelId, content, shouldLogTimestamp = false) 
  *
  * @param {any} content The content to be logged.
  */
-exports.log = function (type, content, isInstant = false) {
+function log(type, content, isInstant = false) {
   if (!config.channels.log[type])
     return;
 
-  config.channels.log[type].forEach(channelId => isInstant ? this.sendMessage(channelId, content, true) : this.queueMessage(channelId, content));
+  config.channels.log[type].forEach(channelId => isInstant ? sendMessage(channelId, content, true) : queueMessage(channelId, content));
 }
 
 /**
@@ -313,7 +329,7 @@ exports.log = function (type, content, isInstant = false) {
  * @param {any} channelId The channel id
  * @param {any} newTopic The new topic to be set.
  */
-exports.updateChannelTopic = function (channelId, newTopic) {
+function updateChannelTopic(channelId, newTopic) {
   const channel = discordServer.channels.cache.find(channel => channel.id === channelId);
 
   channel?.setTopic(newTopic)
@@ -329,18 +345,18 @@ exports.updateChannelTopic = function (channelId, newTopic) {
  *
  * @param {any} newTopic The new topic to be set.
  */
-exports.updateChannelsTopic = function (newTopic) {
+function updateChannelsTopic(newTopic) {
   if (!config.channels.topic)
     return;
 
-  config.channels.topic.forEach(channelId => this.updateChannelTopic(channelId, newTopic));
+  config.channels.topic.forEach(channelId => updateChannelTopic(channelId, newTopic));
 }
 
 /**
  * Updates the bot activity.
  * @param {any} newActivity The new activity.
  */
-exports.updateActivity = function (newActivity) {
+function updateActivity(newActivity) {
   discordClient.user.setActivity(newActivity)
     .then(async presence => {
       if (config.isDebugEnabled)
@@ -356,10 +372,10 @@ exports.updateActivity = function (newActivity) {
  * @param {any} userId The user ID.
  * @param {any} discordId The discord ID.
  */
-exports.addUser = function (userId, discordId, sender) {
+function addUser(userId, discordId, sender) {
   syncedRoles.userIdToDiscordId[userId] = discordId;
 
-  this.saveSyncedRoles();
+  saveSyncedRoles();
 
   return JSON.stringify({action: 'commandReply', parameters: {sender, response: `${userId}: ${discordId} user ID - Discord ID pair has been added to synced roles.`, isSucceeded: true}});
 }
@@ -368,13 +384,13 @@ exports.addUser = function (userId, discordId, sender) {
  * Removes an userID-discordID pair from the SyncedRole list.
  * @param {any} userId The user ID.
  */
-exports.removeUser = function (userId, sender) {
+function removeUser(userId, sender) {
   if (!syncedRoles || !(userId in syncedRoles.userIdToDiscordId))
     return JSON.stringify({action: 'commandReply', parameters: {sender, response: `${userId} user ID wasn't present in synced roles!`, isSucceeded: false}});
 
   delete syncedRoles.userIdToDiscordId[userId];
 
-  this.saveSyncedRoles();
+  saveSyncedRoles();
 
   return JSON.stringify({action: 'commandReply', parameters: {sender, response: `${userId} user ID has been removed from synced roles.`, isSucceeded: true}});
 }
@@ -384,14 +400,14 @@ exports.removeUser = function (userId, sender) {
  * @param {any} roleId The role ID.
  * @param {any} groupName The group name.
  */
-exports.addRole = function (roleId, group, sender) {
+function addRole(roleId, group, sender) {
   if (!discordServer.roles.cache.has(roleId)) {
     return JSON.stringify({action: 'commandReply', parameters: {sender, response: `${roleId} role ID wasn't found!`, isSucceeded: false}});
   }
 
   syncedRoles.roleToGroup[roleId] = group;
 
-  this.saveSyncedRoles();
+  saveSyncedRoles();
 
   return JSON.stringify({action: 'commandReply', parameters: {sender, response: `${roleId}: ${group} role ID - group pair has been added to synced roles.`, isSucceeded: true}});
 }
@@ -400,13 +416,13 @@ exports.addRole = function (roleId, group, sender) {
  * Removes a role-group pair from the SyncedRole list.
  * @param {any} roleId The role ID.
  */
-exports.removeRole = function (roleId, sender) {
+function removeRole(roleId, sender) {
   if (!syncedRoles || !(roleId in syncedRoles.roleToGroup))
     return JSON.stringify({action: 'commandReply', parameters: {sender, response: `${roleId} role ID wasn't present in synced roles!`, isSucceeded: false}});
 
   delete syncedRoles.roleToGroup[roleId];
 
-  this.saveSyncedRoles();
+  saveSyncedRoles();
 
   return JSON.stringify({action: 'commandReply', parameters: {sender, response: `${roleId} role ID has been removed from synced roles.`, isSucceeded: true}});
 }
@@ -414,11 +430,11 @@ exports.removeRole = function (roleId, sender) {
 /**
  * Closes the bot.
  */
-exports.close = async function () {
+async function close() {
   await discordClient.user.setStatus('invisible');
   await discordClient.user.setActivity('');
 
-  this.log('gameEvents', '```diff\n- Bot closed.\n```', true);
+  log('gameEvents', '```diff\n- Bot closed.\n```', true);
 
   sockets.forEach(socket => socket.destroy());
 
@@ -431,10 +447,10 @@ exports.close = async function () {
 /**
  * Handles queued messages sent from clients to the Discord server.
  */
-exports.handleMessagesQueue = async function handleMessagesQueue() {
+async function handleMessagesQueue() {
   for (; ;) {
     for (const channelId in messagesQueue)
-      this.sendMessage(channelId, messagesQueue[channelId]);
+      sendMessage(channelId, messagesQueue[channelId]);
 
     messagesQueue = {};
 
@@ -442,8 +458,8 @@ exports.handleMessagesQueue = async function handleMessagesQueue() {
   }
 }
 
-this.loadConfigs();
-this.loadSyncedRoles();
+loadConfigs();
+loadSyncedRoles();
 
 console.log('[DISCORD][INFO] Logging in...');
 
@@ -454,5 +470,5 @@ discordClient.login(config.token)
   });
 
 ['exit', 'SIGINT', 'SIGTERM', 'SIGHUP', 'SIGUSR1', 'SIGUSR2'].forEach(event => {
-  process.on(event, () => this.close());
+  process.on(event, () => close());
 });

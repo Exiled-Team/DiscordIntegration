@@ -33,7 +33,6 @@
     <Content Include="config.yml" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Content Include="synced-roles.yml" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
 </Project>

@@ -70,7 +70,7 @@ namespace DiscordIntegration
 
         public string HasKilledWith { get; set; } = ":skull_crossbones: **{0} ({1}) [{2}] killed {3} ({4}) [{5}] with {6}.**";
 
-        public string ThrewAGrenade { get; set; } = ":bomb: {0} ({1}) [{2}] threw a {3}.";
+        public string ThrewAGrenade { get; set; } = ":boom: {0} ({1}) [{2}] threw a {3}.";
 
         public string UsedMedicalItem { get; set; } = ":medical_symbol: {0} ({1}) [{2}] healed with {3}.";
 
@@ -104,15 +104,15 @@ namespace DiscordIntegration
 
         public string HasTriggeredATeslaGate { get; set; } = ":zap: {0} ({1}} [{2}] has triggered a tesla gate.";
 
-        public string Scp914HasProcessedTheFollowingPlayers { get; set; } = "SCP-914 has processed the following players: {0}\nand items: {1}.";
+        public string Scp914HasProcessedTheFollowingPlayers { get; set; } = ":gear: SCP-914 has processed the following players:\n **{0}**\nand items:\n **{1}**";
 
-        public string HasClosedADoor { get; set; } = "{0} ({1}} [{2}] has closed {3} door.";
+        public string HasClosedADoor { get; set; } = ":door: {0} ({1}} [{2}] has closed {3} door.";
 
-        public string HasOpenedADoor { get; set; } = "{0} ({1}} [{2}] has opened {3} door.";
+        public string HasOpenedADoor { get; set; } = ":door: {0} ({1}} [{2}] has opened {3} door.";
 
-        public string Scp914HasBeenActivated { get; set; } = "{0} ({1}} [{2}] has activated SCP-914 on setting {3}.";
+        public string Scp914HasBeenActivated { get; set; } = ":gear: {0} ({1}} [{2}] has activated SCP-914 on setting {3}.";
 
-        public string Scp914KnobSettingChanged { get; set; } = "{0} ({1}} [{2}] has changed the SCP-914 knob to {3}.";
+        public string Scp914KnobSettingChanged { get; set; } = ":gear: {0} ({1}} [{2}] has changed the SCP-914 knob to {3}.";
 
         public string PlayerCanceledWarhead { get; set; } = ":no_entry: **{0} ({1}) [{2}] canceled warhead detonation sequence.**";
 
@@ -130,13 +130,13 @@ namespace DiscordIntegration
 
         public string WarheadStarted { get; set; } = ":radioactive: **Alpha-warhead countdown initiated, detonation in: {0}.**";
 
-        public string AccessedWarhead { get; set; } = "{0} ({1}) [{2}] has accessed the Alpha-warhead detonation button cover.";
+        public string AccessedWarhead { get; set; } = ":key: {0} ({1}) [{2}] has accessed the Alpha-warhead detonation button cover.";
 
-        public string CalledElevator { get; set; } = "{0} ({1}) [{2}] has called an elevator.";
+        public string CalledElevator { get; set; } = ":elevator: {0} ({1}) [{2}] has called an elevator.";
 
         public string UsedLocker { get; set; } = "{0} ({1}) [{2}] has opened a locker.";
 
-        public string TriggeredTesla { get; set; } = "{0} ({1}) [{2}] has triggered a tesla gate.";
+        public string TriggeredTesla { get; set; } = ":zap: {0} ({1}) [{2}] has triggered a tesla gate.";
 
         public string GeneratorClosed { get; set; } = "{0} ({1}) [{2}] has closed a generator.";
 
@@ -146,9 +146,9 @@ namespace DiscordIntegration
 
         public string GeneratorFinished { get; set; } = "Generator in {0} has finished it's charge up, {1} generators have been activated.";
 
-        public string GeneratorInserted { get; set; } = "{0} ({1}) [{2}] has inserted a tablet into a generator.";
+        public string GeneratorInserted { get; set; } = ":calling: {0} ({1}) [{2}] has inserted a tablet into a generator.";
 
-        public string GeneratorUnlocked { get; set; } = "{0} ({1}) [{2}] has unlocked a generator door.";
+        public string GeneratorUnlocked { get; set; } = ":unlock: {0} ({1}) [{2}] has unlocked a generator door.";
 
         public string Scp106WasContained { get; set; } = "{0} ({1}) has been contained by the Femur Breaker.";
 
@@ -162,7 +162,7 @@ namespace DiscordIntegration
 
         public string LeftServer { get; set; } = ":arrow_left: **{0} ({1}) [{2}] has left the server.**";
 
-        public string Reloaded { get; set; } = "{0} ({1}) [{2}] has reloaded their {3} weapon.";
+        public string Reloaded { get; set; } = ":arrows_counterclockwise: {0} ({1}) [{2}] has reloaded their {3} weapon.";
 
         public string GroupSet { get; set; } = "{0} ({1}) [{2}] has been assigned to the **{3} ({4})** group.";
 
