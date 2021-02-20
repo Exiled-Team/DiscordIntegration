@@ -33,7 +33,7 @@ namespace DiscordIntegration
         /// <summary>
         /// Gets the language folder.
         /// </summary>
-        public static string Folder { get; } = Path.Combine(Paths.Plugins, Instance.Name, "Language");
+        public static string Folder { get; } = Path.Combine(Paths.Plugins, Instance.Name, "Languages");
 
         /// <summary>
         /// Gets the language fullpath.
