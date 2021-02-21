@@ -1,0 +1,4 @@
+# Discord role ID - group pair
+role_to_group: {}
+# user ID - Discord ID pair
+user_id_to_discord_id: {}

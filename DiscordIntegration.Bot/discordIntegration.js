@@ -10,8 +10,46 @@ const syncedRolesPath = './synced-roles.yml';
 const discordClient = new discord.Client();
 const tcpServer = require('net').createServer();
 
+/**
+ * @type {discord.Guild}
+ * */
 let discordServer = null;
-let config = null;
+let config = {
+  token: '',
+  prefix: '+',
+  channels: {
+    log: {
+      commands: [
+        'channel-id-1'
+      ],
+      gameEvents: [
+        'channel-id-2'
+      ],
+      bans: [
+        'channel-id-3'
+      ],
+    },
+    topic: [
+      'channel-id-4'
+    ],
+    command: [
+      'channel-id-5'
+    ],
+  },
+  commands: {
+    'role-id-1': [ 'di', 'discordintegration' ]
+  },
+  discordServer: {
+    id: ''
+  },
+  tcpServer: {
+    port: 9000,
+    ipAddress: '127.0.0.1'
+  },
+  keepAliveInterval: 2000,
+  messagesDelay: 1000,
+  isDebugEnabled: false
+};
 let syncedRoles = {
   roleToGroup: {},
   userIdToDiscordId: {}
@@ -72,8 +110,19 @@ discordClient.on('message', message => {
 
   const command = message.content.substring(config.prefix.length, message.content.length);
 
-  if (command.length === 0 || !canExecuteCommand(message.member, command.toLowerCase())) {
-    message.channel.send('Permission denied or invalid command.');
+  if (command.length === 0) {
+    message.channel.send('Command cannot be empty.');
+    return;
+  }
+
+  let commandInfo = canExecuteCommand(message.member, command.toLowerCase());
+
+  if (!commandInfo.exists) {
+    message.channel.send('Invalid command.');
+    return;
+  }
+  else if (!commandInfo.hasRole) {
+    message.channel.send('Permission denied.');
     return;
   }
 
@@ -158,34 +207,54 @@ tcpServer.on('connection', socket => {
  * @param {string} command The command to be executed
  */
 function canExecuteCommand(member, command) {
-  if (!config.commands)
-    return false;
+  const commandInfo = {
+    hasRole: false,
+    exists: false
+  };
+
+  if (!config.commands || !member)
+    return commandInfo;
 
   for (const roleId in config.commands) {
-    if (member.roles.cache.has(roleId) && config.commands[roleId].some(tempCommand => command.startsWith(tempCommand.toLowerCase())))
-      return true;
+    const tempHasRole = member.roles.cache.has(roleId);
+
+    commandInfo.exists = config.commands[roleId].some(tempCommand => typeof command === 'string' && (command.startsWith(tempCommand.toLowerCase()) || (tempHasRole && tempCommand === '.*')));
+
+    if (commandInfo.exists) {
+      const role = discordServer.roles.cache.get(roleId)
+      
+      commandInfo.hasRole = role && member.roles.highest.position >= role.position;
+      break;
+    }
   }
 
-  return false;
+  return commandInfo;
 }
 
 /**
  * Loads bot configs.
  */
 function loadConfigs() {
-  let rawConfig;
-
   console.log('[BOT][INFO] Loading configs...');
 
   try {
-    if (fs.existsSync(configPath)) {
-      rawConfig = fs.readFileSync(configPath);
-    } else {
-      console.error('[BOT][ERROR] Config file wasn\'t found! Closing...');
+    if (!fs.existsSync(configPath)) {
+      console.error('[BOT][ERROR] Config file wasn\'t found! Generating...');
+
+      fs.writeFileSync(configPath, yaml.dump(snakeCaseKeys(config)));
+
+      console.error('[BOT][ERROR] Config generated! Closing...');
       process.exit(0);
     }
 
-    config = camelCaseKeys(yaml.load(rawConfig), { deep: true });
+    const tempConfig = camelCaseKeys(yaml.load(fs.readFileSync(configPath)), {deep: true});
+
+    if (tempConfig)
+      config = tempConfig;
+    else {
+      console.error('[BOT][ERROR] Config file is empty! Closing...');
+      process.exit(0);
+    }
   } catch (exception) {
     console.error(`[BOT][ERROR] Error while loading configs: ${exception}`);
     process.exit(0);
@@ -442,6 +511,8 @@ async function close() {
 
   sockets.forEach(socket => socket.destroy());
 
+  sockets = [];
+  
   tcpServer.close(() => {
     console.info('[NET][INFO] Server closed.');
     tcpServer.unref();
@@ -474,5 +545,5 @@ discordClient.login(config.token)
   });
 
 ['exit', 'SIGINT', 'SIGTERM', 'SIGHUP', 'SIGUSR1', 'SIGUSR2'].forEach(event => {
-  process.on(event, () => close());
+  process.on(event, async () => await close());
 });

@@ -29,10 +29,11 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="discordIntegration.js" />
     <Content Include="config.yml" />
+    <Content Include="discordIntegration.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="synced-roles.yml" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
 </Project>

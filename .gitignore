@@ -260,4 +260,3 @@ paket-files/
 __pycache__/
 *.pyc
 /DiscordIntegration.Bot/config.dev.yml
-/DiscordIntegration.Bot/synced-roles.yml
