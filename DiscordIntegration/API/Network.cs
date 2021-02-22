@@ -380,11 +380,12 @@ namespace DiscordIntegration.API
             {
                 try
                 {
-                    ConnectingEventArgs ev = new ConnectingEventArgs(IPEndPoint, ReconnectionInterval);
+                    ConnectingEventArgs ev = new ConnectingEventArgs(IPEndPoint.Address, (ushort)IPEndPoint.Port, ReconnectionInterval);
 
                     OnConnecting(this, ev);
 
-                    IPEndPoint = ev.IPEndPoint;
+                    IPEndPoint.Address = ev.IPAddress;
+                    IPEndPoint.Port = ev.Port;
                     ReconnectionInterval = ev.ReconnectionInterval;
 
                     TcpClient = new TcpClient();

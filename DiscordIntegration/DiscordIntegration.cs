@@ -87,7 +87,7 @@ namespace DiscordIntegration
         public override void OnEnabled()
         {
             Language = new Language();
-            Network = new Network();
+            Network = new Network(Instance.Config.Bot.IPAddress, Instance.Config.Bot.Port, TimeSpan.FromSeconds(Instance.Config.Bot.ReconnectionInterval));
 
             NetworkCancellationTokenSource = new CancellationTokenSource();
 

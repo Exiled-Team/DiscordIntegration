@@ -84,10 +84,11 @@ namespace DiscordIntegration.Events
                 return;
             }
 
-            ev.IPEndPoint = new IPEndPoint(ipAddress, Instance.Config?.Bot?.Port ?? 0);
+            ev.IPAddress = ipAddress;
+            ev.Port = Instance.Config.Bot.Port;
             ev.ReconnectionInterval = TimeSpan.FromSeconds(Instance.Config.Bot.ReconnectionInterval);
 
-            Log.Warn($"[NET] {string.Format(Language.ConnectingTo, ev.IPEndPoint?.Address, ev.IPEndPoint?.Port)}");
+            Log.Warn($"[NET] {string.Format(Language.ConnectingTo, ev.IPAddress, ev.Port)}");
         }
 
         /// <inheritdoc cref="API.Network.OnConnected(object, System.EventArgs)"/>
