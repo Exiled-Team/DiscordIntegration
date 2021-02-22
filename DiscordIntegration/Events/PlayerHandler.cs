@@ -107,7 +107,7 @@ namespace DiscordIntegration.Events
         public async void OnTriggeringTesla(TriggeringTeslaEventArgs ev)
         {
             if (Instance.Config.EventsToLog.PlayerTriggeringTesla && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.TriggeredTesla, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasTriggeredATeslaGate, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role))).ConfigureAwait(false);
         }
 
         public async void OnClosingGenerator(ClosingGeneratorEventArgs ev)

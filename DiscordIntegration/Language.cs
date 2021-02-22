@@ -136,8 +136,6 @@ namespace DiscordIntegration
 
         public string UsedLocker { get; set; } = "{0} ({1}) [{2}] has opened a locker.";
 
-        public string TriggeredTesla { get; set; } = ":zap: {0} ({1}) [{2}] has triggered a tesla gate.";
-
         public string GeneratorClosed { get; set; } = "{0} ({1}) [{2}] has closed a generator.";
 
         public string GeneratorOpened { get; set; } = "{0} ({1}) [{2}] has opened a generator.";
