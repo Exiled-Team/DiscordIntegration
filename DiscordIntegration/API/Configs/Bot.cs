@@ -99,7 +99,7 @@ namespace DiscordIntegration.API.Configs
                     int aliveHumans = Player.List.Where(player => player.IsAlive && player.IsHuman).Count();
                     int aliveScps = Player.Get(Team.SCP).Count();
 
-                    string warheadText = Warhead.IsDetonated ? Language.WarheadHasBeenDetonated : Warhead.IsInProgress ? Language.WarheadIsCoutingToDetonation : Language.WarheadHasntBeenDetonated;
+                    string warheadText = Warhead.IsDetonated ? Language.WarheadHasBeenDetonated : Warhead.IsInProgress ? Language.WarheadIsCountingToDetonation : Language.WarheadHasntBeenDetonated;
 
                     await Network.SendAsync(new RemoteCommand("updateChannelsTopic", $"{string.Format(Language.PlayersOnline, Player.Dictionary.Count, Instance.Slots)}. {string.Format(Language.RoundDuration, Round.ElapsedTime)}. {string.Format(Language.AliveHumans, aliveHumans)}. {string.Format(Language.AliveScps, aliveScps)}. {warheadText} IP: {Server.IpAddress}:{Server.Port} TPS: {Instance.Ticks / Instance.Config.Bot.ChannelTopicUpdateInterval}"));
 

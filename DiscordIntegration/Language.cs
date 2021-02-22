@@ -122,7 +122,7 @@ namespace DiscordIntegration
 
         public string WarheadHasBeenDetonated { get; set; } = "Warhead has been detonated.";
 
-        public string WarheadIsCoutingToDetonation { get; set; } = "Warhead is counting down to detonation.";
+        public string WarheadIsCountingToDetonation { get; set; } = "Warhead is counting down to detonation.";
 
         public string WarheadHasntBeenDetonated { get; set; } = "Warhead has not been detonated.";
 
