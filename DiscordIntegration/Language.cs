@@ -148,15 +148,15 @@ namespace DiscordIntegration
 
         public string GeneratorUnlocked { get; set; } = ":unlock: {0} ({1}) [{2}] has unlocked a generator door.";
 
-        public string Scp106WasContained { get; set; } = "{0} ({1}) has been contained by the Femur Breaker.";
+        public string Scp106WasContained { get; set; } = "{0} ({1}) [{2}] has been contained by the Femur Breaker.";
 
-        public string Scp106CreatedPortal { get; set; } = "{0} ({1}) has created a portal.";
+        public string Scp106CreatedPortal { get; set; } = "{0} ({1}) [{2}] has created a portal.";
 
-        public string Scp106Teleported { get; set; } = "{0} ({1}) has teleported to a portal.";
+        public string Scp106Teleported { get; set; } = "{0} ({1}) [{2}] has teleported to a portal.";
 
-        public string GainedExperience { get; set; } = "{0} ({1}) has gained {2} XP ({3}).";
+        public string GainedExperience { get; set; } = "{0} ({1}) [{2}] has gained {3} XP ({4}).";
 
-        public string GainedLevel { get; set; } = "{0} ({1}) has gained a level: {2} :arrow_right: {3}.";
+        public string GainedLevel { get; set; } = "{0} ({1}) [{2}] has gained a level: {3} :arrow_right: {4}.";
 
         public string LeftServer { get; set; } = ":arrow_left: **{0} ({1}) [{2}] has left the server.**";
 
