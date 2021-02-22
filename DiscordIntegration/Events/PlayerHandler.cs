@@ -213,12 +213,9 @@ namespace DiscordIntegration.Events
                 SyncedUser syncedUser = Instance.SyncedUsersCache.Where(tempSyncedUser => tempSyncedUser?.Id == ev.Player.UserId).FirstOrDefault();
 
                 if (syncedUser == null)
-                {
                     await Network.SendAsync(new RemoteCommand("getGroupFromId", ev.Player.UserId)).ConfigureAwait(false);
-                    return;
-                }
-
-                syncedUser?.SetGroup();
+                else
+                    syncedUser?.SetGroup();
             }
 
             if (Instance.Config.EventsToLog.PlayerJoined && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
