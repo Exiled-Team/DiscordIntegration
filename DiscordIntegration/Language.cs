@@ -90,29 +90,29 @@ namespace DiscordIntegration
 
         public string WasBannedBy { get; set; } = ":no_entry: {0} ({1}) was banned by {2} for {3} expire {4}.";
 
-        public string HasStartedUsingTheIntercom { get; set; } = ":loud_sound: {0} ({1}} [{2}] has started using the intercom.";
+        public string HasStartedUsingTheIntercom { get; set; } = ":loud_sound: {0} ({1}) [{2}] has started using the intercom.";
 
-        public string HasPickedUp { get; set; } = "{0} ({1}} [{2}] has picked up **{3}**.";
+        public string HasPickedUp { get; set; } = "{0} ({1}) [{2}] has picked up **{3}**.";
 
-        public string HasDropped { get; set; } = "{0} ({1}} [{2}] has dropped **{3}**.";
+        public string HasDropped { get; set; } = "{0} ({1}) [{2}] has dropped **{3}**.";
 
         public string DecontaminationHasBegun { get; set; } = ":biohazard: **Deconamination has begun.**";
 
-        public string HasEnteredPocketDimension { get; set; } = ":door: {0} ({1}} [{2}] has entered the pocket dimension.";
+        public string HasEnteredPocketDimension { get; set; } = ":door: {0} ({1}) [{2}] has entered the pocket dimension.";
 
-        public string HasEscapedPocketDimension { get; set; } = ":high_brightness: {0} ({1}} [{2}] has escaped the pocket dimension.";
+        public string HasEscapedPocketDimension { get; set; } = ":high_brightness: {0} ({1}) [{2}] has escaped the pocket dimension.";
 
-        public string HasTriggeredATeslaGate { get; set; } = ":zap: {0} ({1}} [{2}] has triggered a tesla gate.";
+        public string HasTriggeredATeslaGate { get; set; } = ":zap: {0} ({1}) [{2}] has triggered a tesla gate.";
 
         public string Scp914HasProcessedTheFollowingPlayers { get; set; } = ":gear: SCP-914 has processed the following players:\n **{0}**\nand items:\n **{1}**";
 
-        public string HasClosedADoor { get; set; } = ":door: {0} ({1}} [{2}] has closed {3} door.";
+        public string HasClosedADoor { get; set; } = ":door: {0} ({1}) [{2}] has closed {3} door.";
 
-        public string HasOpenedADoor { get; set; } = ":door: {0} ({1}} [{2}] has opened {3} door.";
+        public string HasOpenedADoor { get; set; } = ":door: {0} ({1}) [{2}] has opened {3} door.";
 
-        public string Scp914HasBeenActivated { get; set; } = ":gear: {0} ({1}} [{2}] has activated SCP-914 on setting {3}.";
+        public string Scp914HasBeenActivated { get; set; } = ":gear: {0} ({1}) [{2}] has activated SCP-914 on setting {3}.";
 
-        public string Scp914KnobSettingChanged { get; set; } = ":gear: {0} ({1}} [{2}] has changed the SCP-914 knob to {3}.";
+        public string Scp914KnobSettingChanged { get; set; } = ":gear: {0} ({1}) [{2}] has changed the SCP-914 knob to {3}.";
 
         public string PlayerCanceledWarhead { get; set; } = ":no_entry: **{0} ({1}) [{2}] canceled warhead detonation sequence.**";
 
