@@ -1,0 +1,51 @@
+# Bot token
+token: your-bot-token
+
+# Bot commands prefix
+prefix: +
+
+channels:
+  # Channels to log various kind of messages in.
+  log:
+    # List of channels to log commands in.
+    commands:
+      - "channel-id-1"
+    # List of channels to log game events in.
+    game_events:
+      - "channel-id-2"
+    # List of channels to log bans in.
+    bans:
+      - "channel-id-3"
+  # Channel to which the topic will be changed.
+  topic:
+    - "channel-id-4"
+  # Channels in which commands are allowed to be executed.
+  command:
+    - "channel-id-5"
+ 
+# List of roles and commands they can use.
+commands:
+  "role-1":
+    - di
+    - discordintegration
+
+# Discord server configs.
+discord_server:
+  # Discord server ID.
+  id: "your-discord-server-id"
+
+# TCP server configs.
+tcp_server:
+  # TCP server port.
+  port: 9000
+  # TCP server IP address.
+  ip_address: 127.0.0.1
+
+# Internal keep alive of a connected client, in milliseconds.
+keep_alive_interval: 2000
+
+# Messages delay, in milliseconds
+messages_delay: 100
+
+# Indicates whether the debug is enabled or not.
+is_debug_enabled: false

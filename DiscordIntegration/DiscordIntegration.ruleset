@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Copia di Regole consigliate gestite Microsoft" Description="Queste regole sono orientate alla segnalazione dei problemi critici del codice, quali problemi di sicurezza, arresti anomali dell'applicazione e altri errori di logica e di progettazione rilevanti. È necessario includere questo set di regole nei set di regole personalizzati creati per i progetti." ToolsVersion="16.0">
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1135" Action="None" />
+    <Rule Id="SA1101" Action="None" />
+    <Rule Id="SA1503" Action="None" />
+  </Rules>
+</RuleSet>

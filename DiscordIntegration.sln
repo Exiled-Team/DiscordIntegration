@@ -1,12 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordIntegration_Plugin", "DiscordIntegration\DiscordIntegration_Plugin.csproj", "{56A08520-835E-4D09-BB5C-6EF47E2313FB}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordIntegration", "DiscordIntegration\DiscordIntegration.csproj", "{56A08520-835E-4D09-BB5C-6EF47E2313FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializedData", "SerializedData\SerializedData.csproj", "{AD758434-672C-4BBE-8D17-8A19FC91845F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordIntegration_Bot", "DiscordIntegration_Bot\DiscordIntegration_Bot.csproj", "{B6C5E945-4B3F-42A8-A559-06644AD5D64A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordIntegration_Bot-Win7", "DiscordIntegration_Bot-Win7\DiscordIntegration_Bot-Win7.csproj", "{69B839DC-86D2-426D-94BD-AADF24852272}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "DiscordIntegration.Bot", "DiscordIntegration.Bot\DiscordIntegration.Bot.njsproj", "{1E4C58E5-0FB2-4AB1-BAE6-753CBE11FBC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,17 +17,15 @@ Global
 		{56A08520-835E-4D09-BB5C-6EF47E2313FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56A08520-835E-4D09-BB5C-6EF47E2313FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56A08520-835E-4D09-BB5C-6EF47E2313FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD758434-672C-4BBE-8D17-8A19FC91845F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD758434-672C-4BBE-8D17-8A19FC91845F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD758434-672C-4BBE-8D17-8A19FC91845F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD758434-672C-4BBE-8D17-8A19FC91845F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6C5E945-4B3F-42A8-A559-06644AD5D64A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{69B839DC-86D2-426D-94BD-AADF24852272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{69B839DC-86D2-426D-94BD-AADF24852272}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{69B839DC-86D2-426D-94BD-AADF24852272}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{69B839DC-86D2-426D-94BD-AADF24852272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E4C58E5-0FB2-4AB1-BAE6-753CBE11FBC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E4C58E5-0FB2-4AB1-BAE6-753CBE11FBC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E4C58E5-0FB2-4AB1-BAE6-753CBE11FBC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E4C58E5-0FB2-4AB1-BAE6-753CBE11FBC8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B120A290-DC5B-4DB7-8EB2-C81EB929ED22}
 	EndGlobalSection
 EndGlobal
