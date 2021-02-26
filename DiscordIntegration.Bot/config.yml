@@ -2,7 +2,7 @@
 token: your-bot-token
 
 # Bot commands prefix
-prefix: +
+prefix: "+"
 
 channels:
   # Channels to log various kind of messages in.
