@@ -12,9 +12,7 @@ namespace DiscordIntegration.Events
     using API.Commands;
     using API.User;
     using Exiled.API.Extensions;
-    using Exiled.API.Features;
     using Exiled.Events.EventArgs;
-    using Interactables.Interobjects.DoorUtils;
     using Scp914;
     using static DiscordIntegration;
 
