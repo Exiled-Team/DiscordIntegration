@@ -38,6 +38,9 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 
 ## How to run the bot
 
+Open the bot once to let it automatically generate config.yml and synced-roles.yml files.
+Remember to always wrap configs with quotation marks, even if it's not necessary for strings.
+
 ### Windows
 
 1. Open PowerShell or command prompt.
@@ -54,3 +57,28 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 1. Run `npm install -g n`.
 2. Run `n stable` to install the stable version.
 3. Run `n latest` to install the latest version.
+
+## How configure the execution of game commands through Discord
+
+1. Add to the `command` config, channel IDs in which commands are allowed to be used.
+
+```yaml
+channels:
+  command:
+    - "channel-id-1"
+    - "channel-id-2"
+    - "channel-id-3"
+```
+
+2. Add role IDs and list every command they can run. You can use `.*` to permit to that role ID to use all game commands without restrictions.
+
+```yaml
+commands:
+  "role-1":
+    - "di"
+    - "discordintegration"
+  "role-2:
+    - ".*"
+ ```
+
+3. **Never duplicate commands.** Higher roles on your Discord server will be able to use lower roles commands as well.
