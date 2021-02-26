@@ -34,7 +34,7 @@ namespace DiscordIntegration.Events
         public async void OnReportingCheater(ReportingCheaterEventArgs ev)
         {
             if (Instance.Config.EventsToLog.ReportingCheater)
-                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.CheaterReportFilled, ev.Reporter.Nickname, ev.Reporter.UserId, ev.Reporter.Role.Translate(), ev.Reported.Nickname, ev.Reported.UserId, ev.Reported.Role.Translate(), ev.Reason))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.CheaterReportFilled, ev.Reporter.Nickname, ev.Reporter.Id.ToString(), ev.Reporter.Role.Translate(), ev.Reported.Nickname, ev.Reported.Id.ToString(), ev.Reported.Role.Translate(), ev.Reason))).ConfigureAwait(false);
         }
 
         public async void OnWaitingForPlayers()
