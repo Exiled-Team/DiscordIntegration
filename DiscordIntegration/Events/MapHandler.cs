@@ -75,7 +75,7 @@ namespace DiscordIntegration.Events
                 foreach (Player player in ev.Players)
                 {
                     if (!player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack)
-                        players.Append(player.Nickname).Append(" (").Append(Instance.Config.ShouldLogUserIds ? player.Id.ToString() : Language.Redacted).Append(") [").Append(player.Role.Translate()).Append(']').AppendLine();
+                        players.Append(player.Nickname).Append(" (").Append(Instance.Config.ShouldLogUserIds ? "ID: " + player.Id.ToString() : Language.Redacted).Append(") [").Append("Rol: " + player.Role.Translate()).Append(']').AppendLine();
                 }
 
                 foreach (Pickup item in ev.Items)
