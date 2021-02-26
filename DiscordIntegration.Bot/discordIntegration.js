@@ -5,7 +5,7 @@ const camelCaseKeys = require('camelcase-keys');
 const snakeCaseKeys = require('snakecase-keys');
 const sleep = require('util').promisify(setTimeout);
 
-const configPath = './config.yml';
+const configPath = './config.dev.yml';
 const syncedRolesPath = './synced-roles.yml';
 const discordClient = new discord.Client();
 const tcpServer = require('net').createServer();
@@ -503,7 +503,7 @@ function removeRole(roleId, sender) {
 /**
  * Closes the bot.
  */
-async function close() {
+async function close(exit = false) {
   await discordClient.user.setStatus('invisible');
   await discordClient.user.setActivity('');
 
@@ -517,6 +517,11 @@ async function close() {
     console.info('[NET][INFO] Server closed.');
     tcpServer.unref();
   });
+
+  await sleep(1000);
+
+  if (exit)
+    process.exit(0);
 }
 
 /**
@@ -544,6 +549,8 @@ discordClient.login(config.token)
     process.exit(0);
   });
 
-['exit', 'SIGINT', 'SIGTERM', 'SIGHUP', 'SIGUSR1', 'SIGUSR2'].forEach(event => {
-  process.on(event, async () => await close());
+['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGUSR1', 'SIGUSR2'].forEach(event => {
+  process.on(event, async () => await close(true));
 });
+
+process.on('exit', async () => await close());
