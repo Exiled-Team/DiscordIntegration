@@ -203,7 +203,7 @@ namespace DiscordIntegration.Events
         public async void OnChangingRole(ChangingRoleEventArgs ev)
         {
             if (ev.Player != null && Instance.Config.EventsToLog.ChangingPlayerRole && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.ChangedRole, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate(), ev.NewRole))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.ChangedRole, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate(), ev.NewRole.Translate()))).ConfigureAwait(false);
         }
 
         public async void OnVerified(VerifiedEventArgs ev)

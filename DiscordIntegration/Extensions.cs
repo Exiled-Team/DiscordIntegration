@@ -69,7 +69,7 @@ namespace DiscordIntegration
             switch (type)
             {
                 case RoleType.None:
-                    return "No tiene, estan en el lobby";
+                    return "No tiene";
                 case RoleType.Scp173:
                     return "SCP-173";
                 case RoleType.ClassD:
