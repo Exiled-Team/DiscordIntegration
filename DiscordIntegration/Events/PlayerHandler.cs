@@ -67,9 +67,9 @@ namespace DiscordIntegration.Events
         public async void OnGainingLevel(GainingLevelEventArgs ev)
         {
             if (Instance.Config.EventsToLog.GainingScp079Level && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-#pragma warning disable CS0618 // Il tipo o il membro è obsoleto
+#pragma warning disable CS0618 // Type or member is obsolete
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GainedLevel, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.OldLevel, ev.NewLevel))).ConfigureAwait(false);
-#pragma warning restore CS0618 // Il tipo o il membro è obsoleto
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         public async void OnDestroying(DestroyingEventArgs ev)
