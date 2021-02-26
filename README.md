@@ -8,7 +8,7 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 [EXILED](https://github.com/Exiled-Team/EXILED/releases/latest) **2.1.30+**
 
 ## Installation
-1. Extract `DiscordIntegration.dll` and its dependencies from `DiscordIntegration.Bot.tar.gz`, then extract `Plugin.tar.gz` in any folder you want.
+1. Extract `DiscordIntegration.dll` and its dependencies from `Plugin.tar.gz`, then extract `DiscordIntegration.Bot.tar.gz` in any folder you want.
 2. Place `DiscordIntegration.dll` inside the EXILED `Plugins` folder like any other plugin and its dependencies in the `Plugins/dependencies` folder.
 
 ## How to install Node.js and npm
