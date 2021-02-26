@@ -1,0 +1,16 @@
+{
+  "name": "discord-integration.bot",
+  "version": "3.0.0",
+  "description": "A Discord integration for SCP:SL game servers",
+  "main": "discordIntegration.js",
+  "author": {
+    "name": "Exiled Team"
+  },
+  "dependencies": {
+    "camelcase-keys": "^6.2.2",
+    "discord.js": "^12.5.1",
+    "js-yaml": "^4.0.0",
+    "snakecase-keys": "^3.2.1"
+  },
+  "devDependencies": {}
+}
