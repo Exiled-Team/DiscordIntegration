@@ -28,12 +28,15 @@ let config = {
       bans: [
         'channel-id-3'
       ],
+      reports: [
+        'channel-id-4'
+      ],
     },
     topic: [
-      'channel-id-4'
+      'channel-id-5'
     ],
     command: [
-      'channel-id-5'
+      'channel-id-6'
     ],
   },
   commands: {
