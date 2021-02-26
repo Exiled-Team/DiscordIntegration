@@ -78,7 +78,7 @@ commands:
   "role-1":
     - "di"
     - "discordintegration"
-  "role-2:
+  "role-2":
     - ".*"
  ```
 
