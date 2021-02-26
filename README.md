@@ -16,7 +16,7 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 ### Windows
 1. Download Node.js from https://nodejs.org/en/.
 2. Open the executable file you just downloaded and install it.
-3. Check your Node.js and npm versions with PowerShell or command prompt with the command `node -v` and `npm -v`, to check if you installed them correctly.
+3. Check your Node.js and npm versions with PowerShell or command prompt with `node -v` and `npm -v` commands to check if you installed both of them correctly.
 
 ### Linux
 1. Open this [link](https://nodejs.org/en/download/package-manager/).
