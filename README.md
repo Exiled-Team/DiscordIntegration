@@ -4,6 +4,7 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 
 ## Minimum requirements
 [Node.js](https://nodejs.org/en/) **14.16.0+**
+
 [EXILED](https://github.com/Exiled-Team/EXILED/releases/latest) **2.1.30+**
 
 ## Installation
