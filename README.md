@@ -61,7 +61,7 @@ Remember to always wrap configs with quotation marks, even if it's not necessary
 ## How configure the execution of game commands through Discord
 
 1. Open your bot `config.yml` file.
-2. Add to the `command` config, channel IDs in which commands are allowed to be used.
+2. Add to the `command` config, channel IDs in which commands are allowed to be executed.
 
 ```yaml
 channels:
@@ -71,7 +71,7 @@ channels:
     - "channel-id-3"
 ```
 
-3. Add role IDs and list every command they can run. You can use `.*` to permit to that role ID to use all game commands without restrictions.
+3. Add role IDs and list every command they can exeute. You can use `.*` to permit to that role ID to use all game commands without restrictions.
 
 ```yaml
 commands:
@@ -82,4 +82,4 @@ commands:
     - ".*"
  ```
 
-4. **Never duplicate commands.** Higher roles on your Discord server will be able to use lower roles commands as well.
+4. **Never duplicate commands.** Higher roles on your Discord server will be able to use lower roles commands as well, based on the position of the roles.
