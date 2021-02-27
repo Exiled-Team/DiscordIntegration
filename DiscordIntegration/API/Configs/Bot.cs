@@ -54,7 +54,7 @@ namespace DiscordIntegration.API.Configs
         /// Gets the channel topic update interval.
         /// </summary>
         [Description("Channel topic update interval, in seconds")]
-        public float ChannelTopicUpdateInterval { get; private set; } = 10;
+        public float ChannelTopicUpdateInterval { get; private set; } = 300;
 
         /// <summary>
         /// Gets the bot reconnection update interval.
