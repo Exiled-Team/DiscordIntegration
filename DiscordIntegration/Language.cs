@@ -164,7 +164,7 @@ namespace DiscordIntegration
 
         public string GroupSet { get; set; } = "{0} ({1}) [{2}] has been assigned to the **{3} ({4})** group.";
 
-        public string ItemChanged { get; set; } = "{0} ({1}) [{2}] changed the item in their hand: {2} :arrow_right: {3}.";
+        public string ItemChanged { get; set; } = "{0} ({1}) [{2}] changed the item in their hand: {3} :arrow_right: {4}.";
 
         public string InvalidSubcommand { get; set; } = "Invalid subcommand!";
 
