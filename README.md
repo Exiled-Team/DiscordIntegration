@@ -55,8 +55,7 @@ Remember to always wrap configs with quotation marks, even if it's not necessary
 ## How to forcefully update Node.js and npm on linux
 
 1. Run `npm install -g n`.
-2. Run `n stable` to install the stable version.
-3. Run `n latest` to install the latest version.
+2. Run `n latest` to install the latest version or `n stable` to install the stable version.
 
 ## How configure the execution of game commands through Discord
 
