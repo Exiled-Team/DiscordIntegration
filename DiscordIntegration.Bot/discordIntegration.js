@@ -250,11 +250,9 @@ function loadConfigs() {
       process.exit(0);
     }
 
-    const tempConfig = camelCaseKeys(yaml.load(fs.readFileSync(configPath)), {deep: true});
+    config = camelCaseKeys(yaml.load(fs.readFileSync(configPath)), {deep: true});
 
-    if (tempConfig)
-      config = tempConfig;
-    else {
+    if (!config) {
       console.error('[BOT][ERROR] Config file is empty! Closing...');
       process.exit(0);
     }
