@@ -38,7 +38,7 @@ namespace DiscordIntegration
         /// Gets a value indicating whether players' IP addresses should be logged or not.
         /// </summary>
         [Description("Indicates whether players' IP Addresses should be logged or not")]
-        public bool ShouldLogIPAddresses { get; private set; }
+        public bool ShouldLogIPAddresses { get; private set; } = true;
 
         /// <summary>
         /// Gets a value indicating whether player's user ids should be logged or not.
@@ -56,7 +56,7 @@ namespace DiscordIntegration
         /// Gets a value indicating whether only friendly fire should be logged or not.
         /// </summary>
         [Description("Indicates whether the plugin should only log friendly fire for damage or not")]
-        public bool ShouldLogFriendlyFireOnly { get; private set; } = true;
+        public bool ShouldLogFriendlyFireOnly { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether roles should be synced or not.
