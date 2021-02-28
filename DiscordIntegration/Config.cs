@@ -53,10 +53,16 @@ namespace DiscordIntegration
         public bool ShouldRespectDoNotTrack { get; private set; } = true;
 
         /// <summary>
-        /// Gets a value indicating whether only friendly fire should be logged or not.
+        /// Gets a value indicating whether only friendly fire for damage should be logged or not.
         /// </summary>
-        [Description("Indicates whether the plugin should only log friendly fire for damage or not")]
-        public bool ShouldLogFriendlyFireOnly { get; private set; }
+        [Description("Indicates whether only friendly fire for damage should be logged or not")]
+        public bool ShouldLogFriendlyFireDamageOnly { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether only friendly fire for kills should be logged or not.
+        /// </summary>
+        [Description("Indicates whether only friendly fire for kills should be logged or not")]
+        public bool ShouldLogFriendlyFireKillsOnly { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether roles should be synced or not.

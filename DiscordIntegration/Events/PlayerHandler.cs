@@ -168,7 +168,7 @@ namespace DiscordIntegration.Events
                 ev.Attacker != null &&
                 ev.Target != null &&
                 (!ev.Attacker.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
-                (!Instance.Config.ShouldLogFriendlyFireOnly || (Instance.Config.ShouldLogFriendlyFireOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)))
+                (!Instance.Config.ShouldLogFriendlyFireDamageOnly || (Instance.Config.ShouldLogFriendlyFireDamageOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)))
             {
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasDamagedForWith, ev.Attacker.Nickname, Instance.Config.ShouldLogUserIds ? ev.Attacker.UserId : Language.Redacted, ev.Attacker.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Amount, DamageTypes.FromIndex(ev.Tool).name))).ConfigureAwait(false);
             }
@@ -180,7 +180,7 @@ namespace DiscordIntegration.Events
                 ev.Killer != null &&
                 ev.Target != null &&
                 (!ev.Killer.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
-                (!Instance.Config.ShouldLogFriendlyFireOnly || (Instance.Config.ShouldLogFriendlyFireOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target)))
+                (!Instance.Config.ShouldLogFriendlyFireKillsOnly || (Instance.Config.ShouldLogFriendlyFireKillsOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target)))
             {
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKilledWith, ev.Killer.Nickname, ev.Killer.UserId, ev.Killer.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, DamageTypes.FromIndex(ev.HitInformation.Tool).name))).ConfigureAwait(false);
             }
