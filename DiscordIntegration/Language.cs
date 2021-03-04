@@ -176,7 +176,7 @@ namespace DiscordIntegration
 
         public string StaffListCommandDescription { get; set; } = "Gets the list of staffers in the server.";
 
-        public string ReloadConfigsCommandDescription { get; set; } = "Reloads bot configs.";
+        public string ReloadConfigsCommandDescription { get; set; } = "Reloads bot configs if connected.";
 
         public string ReloadConfigsCommandSuccess { get; set; } = "Bot configs reload request sent successfully.";
 
