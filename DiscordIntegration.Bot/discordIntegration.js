@@ -118,13 +118,7 @@ discordClient.on('message', message => {
     return;
   }
 
-  let commandInfo = canExecuteCommand(message.member, command.toLowerCase());
-
-  if (!commandInfo.exists) {
-    message.channel.send('Invalid command.');
-    return;
-  }
-  else if (!commandInfo.hasRole) {
+  if (!canExecuteCommand(message.member, command.toLowerCase())) {
     message.channel.send('Permission denied.');
     return;
   }
@@ -210,28 +204,21 @@ tcpServer.on('connection', socket => {
  * @param {string} command The command to be executed
  */
 function canExecuteCommand(member, command) {
-  const commandInfo = {
-    hasRole: false,
-    exists: false
-  };
-
-  if (!config.commands || !member)
-    return commandInfo;
+  if (!config.commands || !member || typeof command !== 'string' )
+    return false;
 
   for (const roleId in config.commands) {
-    const tempHasRole = member.roles.cache.has(roleId);
+    const exists = config.commands[roleId].some(configCommand => command.startsWith(configCommand.toLowerCase()) || (configCommand === '.*' && member.roles.cache.has(roleId)));
 
-    commandInfo.exists = config.commands[roleId].some(tempCommand => typeof command === 'string' && (command.startsWith(tempCommand.toLowerCase()) || (tempHasRole && tempCommand === '.*')));
-
-    if (commandInfo.exists) {
+    if (exists) {
       const role = discordServer.roles.cache.get(roleId)
-      
-      commandInfo.hasRole = role && member.roles.highest.position >= role.position;
-      break;
+
+      if (role && member.roles.highest.position >= role.position)
+        return true;
     }
   }
 
-  return commandInfo;
+  return false;
 }
 
 /**
