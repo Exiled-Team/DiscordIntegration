@@ -82,3 +82,18 @@ commands:
  ```
 
 4. **Never duplicate commands.** Higher roles on your Discord server will be able to use lower roles commands as well, based on the position of the roles.
+
+## Available commands
+
+| Command | Description | Arguments | Permission | Example |
+| --- | --- | --- | --- | --- |
+| di add role | Adds a role-group pair to the SyncedRole list. | **[DiscordID] [Group name]** | di.add.role | **di add role 219862538844635136 helper** |
+| di add user | Adds an userID-discordID pair to the SyncedRole list. | **[UserID] [DiscordID]** | di.add.user | **di add user 76561198023272004@steam 219862538844635136** |
+| di remove role | Removes a role-group pair from the SyncedRole list. | **[DiscordID]** | di.remove.role | **di remove role 219862538844635136** |
+| di remove user | Removes an userID-discordID pair from the SyncedRole list. | **[UserID]** | di.remove.user | **di remove user 76561198023272004@steam** |
+| di reload | Reloads bot syncedroles and configs if connected, reloads plugin language. | | di.reload | **di reload** |
+| di reload configs | Reloads bot configs if connected. | | di.reload.configs | **di reload configs** |
+| di reload language | Reloads plugin language. | | di.reload.language | **di reload language** |
+| di reload syncedroles | Reloads bot syncedroles if connected. | | di.reload.syncedroles | **di reload syncedroles** |
+| di playerlist | Gets the list of players in the server. | | di.playerlist | **di playerlist** |
+| di stafflist | Gets the list of staffers in the server. | | di.stafflist | **di stafflist** |
