@@ -11,6 +11,7 @@ namespace DiscordIntegration.Events
     using System.Linq;
     using API.Commands;
     using API.User;
+    using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.Events.EventArgs;
     using Scp914;
@@ -189,7 +190,27 @@ namespace DiscordIntegration.Events
         public async void OnThrowingGrenade(ThrowingGrenadeEventArgs ev)
         {
             if (ev.Player != null && Instance.Config.EventsToLog.PlayerThrowingGrenade && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.ThrewAGrenade, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate(), ev.Type))).ConfigureAwait(false);
+            {
+                string t = string.Empty;
+                string emoji = string.Empty;
+                switch (ev.Type)
+                {
+                    case GrenadeType.FragGrenade:
+                        t = "Granada de Fragmentación";
+                        emoji = "<:Grenade:816748774838763521> ";
+                        break;
+                    case GrenadeType.Flashbang:
+                        t = "Granada Cegadora";
+                        emoji = ":flashlight:";
+                        break;
+                    case GrenadeType.Scp018:
+                        t = "Bola (SCP-018)";
+                        emoji = ":red_circle:";
+                        break;
+                }
+
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(emoji + Language.ThrewAGrenade, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate(), t))).ConfigureAwait(false);
+            }
         }
 
         public async void OnUsedMedicalItem(UsedMedicalItemEventArgs ev)
