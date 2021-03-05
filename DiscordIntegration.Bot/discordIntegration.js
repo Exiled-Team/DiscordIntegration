@@ -28,12 +28,15 @@ let config = {
       bans: [
         'channel-id-3'
       ],
+      reports: [
+        'channel-id-4'
+      ],
     },
     topic: [
-      'channel-id-4'
+      'channel-id-5'
     ],
     command: [
-      'channel-id-5'
+      'channel-id-6'
     ],
   },
   commands: {
@@ -77,7 +80,7 @@ let remoteCommands = {
  * Logs in the bot and starts a TCP server.
  */
 discordClient.on('ready', async () => {
-  await discordClient.user.setActivity('for connections.', {type: "LISTENING"});
+  await discordClient.user.setActivity('conexion con el servidor...', {type: "LISTENING"});
   await discordClient.user.setStatus('dnd');
 
   console.log(`[DISCORD][INFO] Successfully logged in as ${discordClient.user.tag}.`);
@@ -104,25 +107,19 @@ discordClient.on('message', message => {
     return;
 
   if (sockets.length === 0) {
-    message.channel.send('Server is not connected.');
+    message.channel.send('El Servidor no esta conectado al Bot.');
     return;
   }
 
   const command = message.content.substring(config.prefix.length, message.content.length);
 
   if (command.length === 0) {
-    message.channel.send('Command cannot be empty.');
+    message.channel.send('Los comandos no pueden estar vacios.');
     return;
   }
 
-  let commandInfo = canExecuteCommand(message.member, command.toLowerCase());
-
-  if (!commandInfo.exists) {
-    message.channel.send('Invalid command.');
-    return;
-  }
-  else if (!commandInfo.hasRole) {
-    message.channel.send('Permission denied.');
+  if (!canExecuteCommand(message.member, command.toLowerCase())) {
+    message.channel.send('Te faltan permisos.');
     return;
   }
 
@@ -191,10 +188,10 @@ tcpServer.on('connection', socket => {
   socket.on('error', error => {
     if (error.message.includes('ECONNRESET')) {
       console.info('[SOCKET][INFO] Server closed connection.');
-      log('gameEvents', '```diff\n- Server closed connection.\n```', true);
+      log('gameEvents', '```diff\n- El Servidor corto la conexion.\n```', true);
     } else {
       console.error(`[SOCKET][ERROR] Server closed connection: ${error}.`);
-      log('gameEvents', `\`\`\`diff\n - Server closed connection: ${error}.\n\`\`\``, true);
+      log('gameEvents', `\`\`\`diff\n - El Servidor corto la conexion: ${error}.\n\`\`\``, true);
     }
   });
 
@@ -207,28 +204,21 @@ tcpServer.on('connection', socket => {
  * @param {string} command The command to be executed
  */
 function canExecuteCommand(member, command) {
-  const commandInfo = {
-    hasRole: false,
-    exists: false
-  };
-
-  if (!config.commands || !member)
-    return commandInfo;
+  if (!config.commands || !member || typeof command !== 'string' )
+    return false;
 
   for (const roleId in config.commands) {
-    const tempHasRole = member.roles.cache.has(roleId);
+    const exists = config.commands[roleId].some(configCommand => command.startsWith(configCommand.toLowerCase()) || (configCommand === '.*' && member.roles.cache.has(roleId)));
 
-    commandInfo.exists = config.commands[roleId].some(tempCommand => typeof command === 'string' && (command.startsWith(tempCommand.toLowerCase()) || (tempHasRole && tempCommand === '.*')));
-
-    if (commandInfo.exists) {
+    if (exists) {
       const role = discordServer.roles.cache.get(roleId)
-      
-      commandInfo.hasRole = role && member.roles.highest.position >= role.position;
-      break;
+
+      if (role && member.roles.highest.position >= role.position)
+        return true;
     }
   }
 
-  return commandInfo;
+  return false;
 }
 
 /**
@@ -247,11 +237,9 @@ function loadConfigs() {
       process.exit(0);
     }
 
-    const tempConfig = camelCaseKeys(yaml.load(fs.readFileSync(configPath)), {deep: true});
+    config = camelCaseKeys(yaml.load(fs.readFileSync(configPath)), {deep: true});
 
-    if (tempConfig)
-      config = tempConfig;
-    else {
+    if (!config) {
       console.error('[BOT][ERROR] Config file is empty! Closing...');
       process.exit(0);
     }

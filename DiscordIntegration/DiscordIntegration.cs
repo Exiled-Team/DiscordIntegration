@@ -10,7 +10,6 @@ namespace DiscordIntegration
     using System;
     using System.Collections.Generic;
     using System.Threading;
-    using System.Threading.Tasks;
     using API;
     using API.Configs;
     using API.User;
@@ -160,6 +159,7 @@ namespace DiscordIntegration
             Handlers.Server.RoundEnded += serverHandler.OnRoundEnded;
             Handlers.Server.RespawningTeam += serverHandler.OnRespawningTeam;
             Handlers.Server.ReportingCheater += serverHandler.OnReportingCheater;
+            Handlers.Server.LocalReporting += serverHandler.OnLocalReporting;
 
             Handlers.Scp914.ChangingKnobSetting += playerHandler.OnChangingScp914KnobSetting;
             Handlers.Player.MedicalItemUsed += playerHandler.OnUsedMedicalItem;
@@ -226,6 +226,7 @@ namespace DiscordIntegration
             Handlers.Server.RoundEnded -= serverHandler.OnRoundEnded;
             Handlers.Server.RespawningTeam -= serverHandler.OnRespawningTeam;
             Handlers.Server.ReportingCheater -= serverHandler.OnReportingCheater;
+            Handlers.Server.LocalReporting -= serverHandler.OnLocalReporting;
 
             Handlers.Scp914.ChangingKnobSetting -= playerHandler.OnChangingScp914KnobSetting;
             Handlers.Player.UsingMedicalItem -= playerHandler.OnUsedMedicalItem;

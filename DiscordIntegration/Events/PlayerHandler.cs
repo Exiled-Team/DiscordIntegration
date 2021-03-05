@@ -12,9 +12,7 @@ namespace DiscordIntegration.Events
     using API.Commands;
     using API.User;
     using Exiled.API.Extensions;
-    using Exiled.API.Features;
     using Exiled.Events.EventArgs;
-    using Interactables.Interobjects.DoorUtils;
     using Scp914;
     using static DiscordIntegration;
 
@@ -39,7 +37,7 @@ namespace DiscordIntegration.Events
         public async void OnUnlockingGenerator(UnlockingGeneratorEventArgs ev)
         {
             if (Instance.Config.EventsToLog.PlayerUnlockingGenerator && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorUnlocked, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate()))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorUnlocked, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role))).ConfigureAwait(false);
         }
 
         public async void OnContaining(ContainingEventArgs ev)
@@ -69,9 +67,9 @@ namespace DiscordIntegration.Events
         public async void OnGainingLevel(GainingLevelEventArgs ev)
         {
             if (Instance.Config.EventsToLog.GainingScp079Level && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-#pragma warning disable CS0618 // Il tipo o il membro è obsoleto
+#pragma warning disable CS0618 // Type or member is obsolete
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GainedLevel, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate(), ev.OldLevel, ev.NewLevel))).ConfigureAwait(false);
-#pragma warning restore CS0618 // Il tipo o il membro è obsoleto
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         public async void OnDestroying(DestroyingEventArgs ev)
@@ -113,7 +111,7 @@ namespace DiscordIntegration.Events
         public async void OnClosingGenerator(ClosingGeneratorEventArgs ev)
         {
             if (Instance.Config.EventsToLog.PlayerClosingGenerator && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorClosed, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorClosed, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate()))).ConfigureAwait(false);
         }
 
         public async void OnEjectingGeneratorTablet(EjectingGeneratorTabletEventArgs ev)
@@ -170,7 +168,7 @@ namespace DiscordIntegration.Events
                 ev.Attacker != null &&
                 ev.Target != null &&
                 (!ev.Attacker.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
-                (!Instance.Config.ShouldLogFriendlyFireOnly || (Instance.Config.ShouldLogFriendlyFireOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)))
+                (!Instance.Config.ShouldLogFriendlyFireDamageOnly || (Instance.Config.ShouldLogFriendlyFireDamageOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)))
             {
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasDamagedForWith, ev.Attacker.Nickname, Instance.Config.ShouldLogUserIds ? ev.Attacker.Id.ToString() : Language.Redacted, ev.Attacker.Role.Translate(), ev.Target.Nickname, ev.Target.Id.ToString(), ev.Target.Role.Translate(), ev.Amount, DamageTypes.FromIndex(ev.Tool).name))).ConfigureAwait(false);
             }
@@ -182,7 +180,7 @@ namespace DiscordIntegration.Events
                 ev.Killer != null &&
                 ev.Target != null &&
                 (!ev.Killer.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
-                (!Instance.Config.ShouldLogFriendlyFireOnly || (Instance.Config.ShouldLogFriendlyFireOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target)))
+                (!Instance.Config.ShouldLogFriendlyFireKillsOnly || (Instance.Config.ShouldLogFriendlyFireKillsOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target)))
             {
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKilledWith, ev.Killer.Nickname, ev.Killer.Id.ToString(), ev.Killer.Role.Translate(), ev.Target.Nickname, ev.Target.Id.ToString(), ev.Target.Role.Translate(), DamageTypes.FromIndex(ev.HitInformation.Tool).name))).ConfigureAwait(false);
             }
@@ -203,7 +201,7 @@ namespace DiscordIntegration.Events
         public async void OnChangingRole(ChangingRoleEventArgs ev)
         {
             if (ev.Player != null && Instance.Config.EventsToLog.ChangingPlayerRole && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.ChangedRole, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate(), ev.NewRole.Translate()))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.ChangedRole, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate(), ev.NewRole))).ConfigureAwait(false);
         }
 
         public async void OnVerified(VerifiedEventArgs ev)
@@ -213,7 +211,7 @@ namespace DiscordIntegration.Events
                 SyncedUser syncedUser = Instance.SyncedUsersCache.Where(tempSyncedUser => tempSyncedUser?.Id == ev.Player.UserId).FirstOrDefault();
 
                 if (syncedUser == null)
-                    await Network.SendAsync(new RemoteCommand("getGroupFromId", ev.Player.UserId)).ConfigureAwait(false);
+                    await Network.SendAsync(new RemoteCommand("getGroupFromId", ev.Player.Id.ToString())).ConfigureAwait(false);
                 else
                     syncedUser?.SetGroup();
             }
@@ -255,7 +253,7 @@ namespace DiscordIntegration.Events
         public async void OnPickingUpItem(PickingUpItemEventArgs ev)
         {
             if (Instance.Config.EventsToLog.PlayerPickingupItem && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasPickedUp, ev.Pickup.ItemId))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasPickedUp, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate(), ev.Pickup.ItemId))).ConfigureAwait(false);
         }
 
         public async void OnItemDropped(ItemDroppedEventArgs ev)

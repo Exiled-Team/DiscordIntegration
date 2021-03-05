@@ -10,6 +10,7 @@ namespace DiscordIntegration
     using System.Text.RegularExpressions;
     using API.Commands;
     using CommandSystem;
+    using Exiled.API.Features;
 
     /// <summary>
     /// Useful Extension methods.
@@ -57,14 +58,17 @@ namespace DiscordIntegration
             return new PlayerCommandSender(sender.SenderId, sender.Nickname, sender.Permissions, sender.KickPower, sender.FullPermissions);
         }
 
+#pragma warning disable SA1614 // Element parameter documentation should have text
+
+#pragma warning disable SA1616 // Element return value documentation should have text
         /// <summary>
         /// Traduce los roles a Español.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-#pragma warning disable SA1600 // Elements should be documented
         public static string Translate(this RoleType type)
-#pragma warning restore SA1600 // Elements should be documented
+#pragma warning restore SA1616 // Element return value documentation should have text
+#pragma warning restore SA1614 // Element parameter documentation should have text
         {
             switch (type)
             {
@@ -109,6 +113,20 @@ namespace DiscordIntegration
                 default:
                     return "Ninguno";
             }
+        }
+        /// <summary>
+        /// Retorna si un jugador tiene VIP o no.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static bool HaveVIP(this Player player)
+        {
+            if (player.GroupName == "vip" || player.GroupName == "donador")
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
