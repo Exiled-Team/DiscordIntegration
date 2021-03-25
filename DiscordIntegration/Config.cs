@@ -65,6 +65,18 @@ namespace DiscordIntegration
         public bool ShouldLogFriendlyFireKillsOnly { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether the plugin should or shouldn't log SCP-207 damage when the damage log is enabled.
+        /// </summary>
+        [Description("Indicates whether the plugin should or shouldn't log SCP-207 damage when the damage log is enabled")]
+        public bool ShouldLogScp207Damage { get; private set; } = true;
+
+        /// <summary>
+        /// Gets the date format that will be used throughout the plugin.
+        /// </summary>
+        [Description("The date format that will be used throughout the plugin (es. dd/MM/yy HH:mm:ss or MM/dd/yy HH:mm:ss)")]
+        public string DateFormat { get; private set; } = "dd/MM/yy HH:mm:ss";
+
+        /// <summary>
         /// Gets a value indicating whether roles should be synced or not.
         /// </summary>
         [Description("Indicates whether the plugin should try and set player's roles when they join based on the Discord Bot's discord sync feature or not")]

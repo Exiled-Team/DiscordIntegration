@@ -168,7 +168,8 @@ namespace DiscordIntegration.Events
                 ev.Attacker != null &&
                 ev.Target != null &&
                 (!ev.Attacker.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
-                (!Instance.Config.ShouldLogFriendlyFireDamageOnly || (Instance.Config.ShouldLogFriendlyFireDamageOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)))
+                (!Instance.Config.ShouldLogFriendlyFireDamageOnly || (Instance.Config.ShouldLogFriendlyFireDamageOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)) &&
+                (ev.DamageType != DamageTypes.Scp207 || (ev.DamageType == DamageTypes.Scp207 && Instance.Config.ShouldLogScp207Damage)))
             {
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasDamagedForWith, ev.Attacker.Nickname, Instance.Config.ShouldLogUserIds ? ev.Attacker.UserId : Language.Redacted, ev.Attacker.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Amount, DamageTypes.FromIndex(ev.Tool).name))).ConfigureAwait(false);
             }
@@ -241,7 +242,7 @@ namespace DiscordIntegration.Events
         public async void OnBanned(BannedEventArgs ev)
         {
             if (Instance.Config.EventsToLog.PlayerBanned)
-                await Network.SendAsync(new RemoteCommand("log", "bans", string.Format(Language.WasBannedBy, ev.Details.OriginalName, ev.Details.Id, ev.Details.Issuer, ev.Details.Reason, new DateTime(ev.Details.Expires)))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "bans", string.Format(Language.WasBannedBy, ev.Details.OriginalName, ev.Details.Id, ev.Details.Issuer, ev.Details.Reason, new DateTime(ev.Details.Expires).ToString(Instance.Config.DateFormat)))).ConfigureAwait(false);
         }
 
         public async void OnIntercomSpeaking(IntercomSpeakingEventArgs ev)
