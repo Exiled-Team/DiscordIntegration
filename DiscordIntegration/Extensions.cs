@@ -114,12 +114,18 @@ namespace DiscordIntegration
                     return "Ninguno";
             }
         }
+
+#pragma warning disable SA1616 // Element return value documentation should have text
+
+#pragma warning disable SA1614 // Element parameter documentation should have text
         /// <summary>
         /// Retorna si un jugador tiene VIP o no.
         /// </summary>
         /// <param name="player"></param>
         /// <returns></returns>
         public static bool HaveVIP(this Player player)
+#pragma warning restore SA1614 // Element parameter documentation should have text
+#pragma warning restore SA1616 // Element return value documentation should have text
         {
             if (player.GroupName == "vip" || player.GroupName == "donador")
             {
