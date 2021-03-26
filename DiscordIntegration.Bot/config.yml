@@ -43,6 +43,11 @@ tcp_server:
   # TCP server IP address.
   ip_address: "127.0.0.1"
 
+alias:
+  "playerList":
+      - caca
+      - jugadores
+      - players
 # Internal keep alive of a connected client, in milliseconds.
 keep_alive_interval: 2000
 
