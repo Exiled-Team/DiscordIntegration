@@ -9,6 +9,7 @@ namespace DiscordIntegration.Events
 {
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
     using System;
+    using System.Collections.Generic;
     using System.Net;
     using API.Commands;
     using API.EventArgs.Network;
@@ -37,6 +38,20 @@ namespace DiscordIntegration.Events
                 {
                     case "executeCommand":
                         JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
+                        break;
+                    case "playerList":
+                        IList<Field> fields = new List<Field>();
+                        TimeSpan duration = Round.ElapsedTime;
+                        string seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
+                        string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
+                        foreach (Player ply in Player.List)
+                        {
+                            fields.Add(new Field($"{ply.Id} - {ply.Nickname}", ply.Role.Translate(), true));
+                        }
+                        Network.SendAsync(new RemoteCommand("sendEmbed",
+                                JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
+                                $"-- Jugadores {Player.Dictionary.Count}/{Instance.Slots} -- Tiempo de la ronda {minutes}:{seconds}", null, fields
+                        ));
                         break;
                     case "setGroupFromId":
                         SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);

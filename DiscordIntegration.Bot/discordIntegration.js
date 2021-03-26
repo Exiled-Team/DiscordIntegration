@@ -49,6 +49,9 @@ let config = {
     port: 9000,
     ipAddress: '127.0.0.1'
   },
+  alias: {
+    "playerList": ["jugadores", "players"]
+  },
   keepAliveInterval: 2000,
   messagesDelay: 1000,
   isDebugEnabled: false
@@ -73,7 +76,8 @@ let remoteCommands = {
   "addUser": addUser,
   "removeUser": removeUser,
   "addRole": addRole,
-  "removeRole": removeRole
+  "removeRole": removeRole,
+  "sendEmbed": sendEmbed
 };
 
 /**
@@ -114,18 +118,23 @@ discordClient.on('message', message => {
   const command = message.content.substring(config.prefix.length, message.content.length);
 
   if (command.length === 0) {
-    message.channel.send('Los comandos no pueden estar vacios.');
+    //message.channel.send('Los comandos no pueden estar vacios.');
     return;
   }
 
   if (!canExecuteCommand(message.member, command.toLowerCase())) {
-    message.channel.send('Te faltan permisos.');
+    //message.channel.send('Te faltan permisos.');
     return;
   }
 
   if (config.isDebugEnabled)
     console.debug(`[DISCORD][DEBUG] ${message.author.tag} (${message.author.id}) executed a command: [${command}]`);
 
+  for(const alias in config.alias) {
+    if(alias.toLowerCase() === command || config.alias[alias].includes(command)) {
+      sockets.forEach(socket => socket.write(JSON.stringify({action: alias, parameters: {channelId: message.channel.id, content: command, user: {id: message.author.id + '@discord', name: message.author.tag}}}) + '\0'));
+    } 
+  }
   sockets.forEach(socket => socket.write(JSON.stringify({action: 'executeCommand', parameters: {channelId: message.channel.id, content: command, user: {id: message.author.id + '@discord', name: message.author.tag}}}) + '\0'));
 });
 
@@ -366,6 +375,17 @@ function sendMessage(channelId, content, shouldLogTimestamp = false) {
         console.debug(`[DISCORD][DEBUG] "${result}" message has been sent in "${channel.name}" (${channel.id}).`);
     })
     .catch(error => console.error(`[DISCORD][ERROR] Cannot send message in "${channel.name}" (${channel.id}): ${error}`));
+}
+
+function sendEmbed(channelId, title, description, fields = [], color = "#36393f") {
+  const embed = new discord.MessageEmbed();
+  if(title) embed.setTitle(title);
+  if(description) embed.setDescription(description);
+  for(const field of fields) {
+    embed.addField(field.name, field.value, field.inline);
+  }
+  embed.setColor(color);
+  discordServer.channels.cache.get(channelId)?.send(embed);
 }
 
 /**
