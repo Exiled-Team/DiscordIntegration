@@ -202,7 +202,7 @@ namespace DiscordIntegration
 
         public string ReloadLanguageCommandSuccess { get; set; } = "Language reloaded successfully!";
 
-        public string ReloadSyncedRolesSuccess { get; internal set; } = "Bot synced roles reload request sent successfully.";
+        public string ReloadSyncedRolesSuccess { get; set; } = "Bot synced roles reload request sent successfully.";
 
         public string CouldNotUpdateChannelTopicError { get; set; } = "Error! Couldn't update channel topic: {0}";
 
@@ -240,7 +240,7 @@ namespace DiscordIntegration
 
         public string InvalidDiscordIdError { get; set; } = "{0} is not a valid Discord ID!";
 
-        public string InvalidUserdIdError { get; internal set; } = "{0} is not a valid user ID!";
+        public string InvalidUserdIdError { get; set; } = "{0} is not a valid user ID!";
 
         public string InvalidDiscordRoleIdError { get; set; } = "{0} is not a valid Discord role ID!";
 
