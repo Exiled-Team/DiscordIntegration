@@ -167,11 +167,11 @@ namespace DiscordIntegration.Events
             if (Instance.Config.EventsToLog.HurtingPlayer &&
                 ev.Attacker != null &&
                 ev.Target != null &&
-                (!ev.Attacker.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
+                ((!ev.Attacker.DoNotTrack && !ev.Target.DoNotTrack) || !Instance.Config.ShouldRespectDoNotTrack) &&
                 (!Instance.Config.ShouldLogFriendlyFireDamageOnly || (Instance.Config.ShouldLogFriendlyFireDamageOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)) &&
                 (ev.DamageType != DamageTypes.Scp207 || (ev.DamageType == DamageTypes.Scp207 && Instance.Config.ShouldLogScp207Damage)))
             {
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasDamagedForWith, ev.Attacker.Nickname, Instance.Config.ShouldLogUserIds ? ev.Attacker.UserId : Language.Redacted, ev.Attacker.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Amount, DamageTypes.FromIndex(ev.Tool).name))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasDamagedForWith, ev.Attacker.Nickname, Instance.Config.ShouldLogUserIds ? ev.Attacker.UserId : Language.Redacted, ev.Attacker.Role, ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role, ev.Amount, DamageTypes.FromIndex(ev.Tool).name))).ConfigureAwait(false);
             }
         }
 
@@ -180,10 +180,10 @@ namespace DiscordIntegration.Events
             if (Instance.Config.EventsToLog.PlayerDying &&
                 ev.Killer != null &&
                 ev.Target != null &&
-                (!ev.Killer.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
+                ((!ev.Killer.DoNotTrack && !ev.Target.DoNotTrack) || !Instance.Config.ShouldRespectDoNotTrack) &&
                 (!Instance.Config.ShouldLogFriendlyFireKillsOnly || (Instance.Config.ShouldLogFriendlyFireKillsOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target)))
             {
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKilledWith, ev.Killer.Nickname, ev.Killer.UserId, ev.Killer.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, DamageTypes.FromIndex(ev.HitInformation.Tool).name))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKilledWith, ev.Killer.Nickname, Instance.Config.ShouldLogUserIds ? ev.Killer.UserId : Language.Redacted, ev.Killer.Role, ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role, DamageTypes.FromIndex(ev.HitInformation.Tool).name))).ConfigureAwait(false);
             }
         }
 
@@ -223,13 +223,13 @@ namespace DiscordIntegration.Events
 
         public async void OnRemovingHandcuffs(RemovingHandcuffsEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.PlayerRemovingHandcuffs && (!ev.Cuffer.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
+            if (Instance.Config.EventsToLog.PlayerRemovingHandcuffs && ((!ev.Cuffer.DoNotTrack && !ev.Target.DoNotTrack) || !Instance.Config.ShouldRespectDoNotTrack))
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasBeenFreedBy, ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role, ev.Cuffer.Nickname, Instance.Config.ShouldLogUserIds ? ev.Cuffer.UserId : Language.Redacted, ev.Cuffer.Role))).ConfigureAwait(false);
         }
 
         public async void OnHandcuffing(HandcuffingEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.HandcuffingPlayer && (!ev.Cuffer.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
+            if (Instance.Config.EventsToLog.HandcuffingPlayer && ((!ev.Cuffer.DoNotTrack && !ev.Target.DoNotTrack) || !Instance.Config.ShouldRespectDoNotTrack))
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasBeenHandcuffedBy, ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role, ev.Cuffer.Nickname, Instance.Config.ShouldLogUserIds ? ev.Cuffer.UserId : Language.Redacted, ev.Cuffer.Role))).ConfigureAwait(false);
         }
 
