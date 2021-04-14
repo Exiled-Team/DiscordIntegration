@@ -130,7 +130,7 @@ discordClient.on('message', message => {
 
   for(const alias in config.alias) {
     if(alias.toLowerCase() === command || config.alias[alias].includes(command)) {
-      sockets.forEach(socket => socket.write(JSON.stringify({action: alias, parameters: {channelId: message.channel.id, content: command, user: {id: message.author.id + '@discord', name: message.author.username}}}) + '\0'));
+      sockets.forEach(socket => socket.write(JSON.stringify({action: alias, parameters: {channelId: message.channel.id, content: alias, user: {id: message.author.id + '@discord', name: message.author.username}}}) + '\0'));
     } 
   }
   sockets.forEach(socket => socket.write(JSON.stringify({action: 'executeCommand', parameters: {channelId: message.channel.id, content: command, user: {id: message.author.id + '@discord', name: message.author.username}}}) + '\0'));
