@@ -10,6 +10,7 @@ namespace DiscordIntegration.Events
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net;
     using API.Commands;
     using API.EventArgs.Network;
@@ -44,7 +45,7 @@ namespace DiscordIntegration.Events
                         TimeSpan duration = Round.ElapsedTime;
                         string seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
                         string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
-                        foreach (Player ply in Player.List.OrderBy(p => p.Id))
+                        foreach (Player ply in Player.List.OrderBy(pl => pl.Id))
                         {
                             fields.Add(new Field($"{ply.Id} - {ply.Nickname}", ply.Role.Translate(), true));
                         }
