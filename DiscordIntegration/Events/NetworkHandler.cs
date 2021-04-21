@@ -47,7 +47,14 @@ namespace DiscordIntegration.Events
                         string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
                         foreach (Player ply in Player.List.OrderBy(pl => pl.Id))
                         {
-                            fields.Add(new Field($"{ply.Id} - {ply.Nickname}", ply.Role.Translate(), true));
+                            if (ply.RemoteAdminAccess)
+                            {
+                                fields.Add(new Field($"{ply.Id} - {ply.Nickname} - Staff", ply.Role.Translate(), true));
+                            }
+                            else
+                            {
+                                fields.Add(new Field($"{ply.Id} - {ply.Nickname}", ply.Role.Translate(), true));
+                            }
                         }
                         Network.SendAsync(new RemoteCommand("sendEmbed",
                                 JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
