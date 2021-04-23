@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS4014: Dado que no se esperaba esta llamada, la ejecución del método actual continuará antes de que se complete la llamada
+dotnet_diagnostic.CS4014.severity = none

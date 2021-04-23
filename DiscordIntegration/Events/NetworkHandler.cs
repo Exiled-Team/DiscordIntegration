@@ -51,11 +51,16 @@ namespace DiscordIntegration.Events
                             {
                                 fields.Add(new Field($"{ply.Id} - {ply.Nickname} - Staff", ply.Role.Translate(), true));
                             }
+                            else if(ply.GroupName == "vip")
+                            {
+                                fields.Add(new Field($"{ply.Id} - {ply.Nickname} - VIP", ply.Role.Translate(), true));
+                            }
                             else
                             {
                                 fields.Add(new Field($"{ply.Id} - {ply.Nickname}", ply.Role.Translate(), true));
                             }
                         }
+
                         Network.SendAsync(new RemoteCommand("sendEmbed",
                                 JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
                                 $"-- Jugadores {Player.Dictionary.Count}/{Instance.Slots} -- Tiempo de la ronda {minutes}:{seconds}", null, fields
