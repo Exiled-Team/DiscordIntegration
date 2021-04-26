@@ -16,6 +16,7 @@ namespace DiscordIntegration.Events
     using API.EventArgs.Network;
     using API.User;
     using Exiled.API.Features;
+    using Exiled.Permissions.Extensions;
     using Newtonsoft.Json;
     using static DiscordIntegration;
 
@@ -49,22 +50,26 @@ namespace DiscordIntegration.Events
                         {
                             if (ply.RemoteAdminAccess)
                             {
-                                fields.Add(new Field($"{ply.Id} - {ply.Nickname} - Staff", ply.Role.Translate(), true));
+                                fields.Add(new Field($"{ply.Id} - {ply.Nickname} - STAFF", ply.Role.Translate(), false));
                             }
-                            else if(ply.GroupName == "vip")
+                            else if (ply.CheckPermission("cerberus.viplist"))
                             {
-                                fields.Add(new Field($"{ply.Id} - {ply.Nickname} - VIP", ply.Role.Translate(), true));
+                                fields.Add(new Field($"{ply.Id} - {ply.Nickname} - VIP", ply.Role.Translate(), false));
+                            }
+                            else if (ply.CheckPermission("cerberus.donadorlist"))
+                            {
+                                fields.Add(new Field($"{ply.Id} - {ply.Nickname} - DONADOR | Un capo el pibe", ply.Role.Translate(), false));
                             }
                             else
                             {
-                                fields.Add(new Field($"{ply.Id} - {ply.Nickname}", ply.Role.Translate(), true));
+                                fields.Add(new Field($"{ply.Id} - {ply.Nickname}", ply.Role.Translate(), false));
                             }
                         }
 
-                        Network.SendAsync(new RemoteCommand("sendEmbed",
-                                JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
-                                $"-- Jugadores {Player.Dictionary.Count}/{Instance.Slots} -- Tiempo de la ronda {minutes}:{seconds}", null, fields
-                        ));
+                        Network.SendAsync(new RemoteCommand(
+                            "sendEmbed",
+                            JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
+                            $"-- Jugadores {Player.Dictionary.Count}/{Instance.Slots} -- Tiempo de la ronda {minutes}:{seconds}", null, fields));
                         break;
                     case "setGroupFromId":
                         SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
