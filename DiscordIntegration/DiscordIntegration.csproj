@@ -50,6 +50,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Server\SCPSL_Data\Managed\CommandSystem.Core.dll</HintPath>
     </Reference>
+    <Reference Include="CustomItems">
+      <HintPath>..\..\..\..\..\..\AppData\Roaming\EXILED\Plugins\CustomItems.dll</HintPath>
+    </Reference>
     <Reference Include="Exiled.API, Version=2.10.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.2.10.0-beta\lib\net472\Exiled.API.dll</HintPath>
     </Reference>
