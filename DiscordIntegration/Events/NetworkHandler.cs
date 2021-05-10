@@ -42,11 +42,17 @@ namespace DiscordIntegration.Events
                         JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
                         break;
                     case "playerList":
+                        string description = null;
                         IList<Field> fields = new List<Field>();
                         TimeSpan duration = Round.ElapsedTime;
                         string seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
                         string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
-                        foreach (Player ply in Player.List.OrderBy(pl => pl.Id))
+                        var list = Player.List.OrderBy(pl => pl.Id);
+                        if(list.Count > 25) {
+                            list = list.Where((p, i) => i >= (list.Count - 25)); //saltear x cantidad en el comienzo
+                            //cambiar description por lo q vos quieras
+                        }
+                        foreach (Player ply in list)
                         {
                             if (ply.RemoteAdminAccess)
                             {
@@ -65,11 +71,12 @@ namespace DiscordIntegration.Events
                                 fields.Add(new Field($"{ply.Id} - {ply.Nickname}", ply.Role.Translate(), false));
                             }
                         }
+                        
 
                         Network.SendAsync(new RemoteCommand(
                             "sendEmbed",
                             JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
-                            $"-- Jugadores {Player.Dictionary.Count}/{Instance.Slots} -- Tiempo de la ronda {minutes}:{seconds}", null, fields));
+                            $"-- Jugadores {Player.Dictionary.Count}/{Instance.Slots} -- Tiempo de la ronda {minutes}:{seconds}", description, fields));
                         break;
                     case "setGroupFromId":
                         SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
