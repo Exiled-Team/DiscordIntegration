@@ -47,10 +47,11 @@ namespace DiscordIntegration.Events
                         TimeSpan duration = Round.ElapsedTime;
                         string seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
                         string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
-                        var list = Player.List.OrderBy(pl => pl.Id);
-                        if(list.Count > 25) {
-                            list = list.Where((p, i) => i >= (list.Count - 25)); //saltear x cantidad en el comienzo
+                        IEnumerable<Player> list = Player.List.OrderBy(pl => pl.Id);
+                        if (list.Count() > 25) {
+                            list = list.Where((p, i) => i >= (list.Count() - 25)); //saltear x cantidad en el comienzo
                             //cambiar description por lo q vos quieras
+                            description =""
                         }
                         foreach (Player ply in list)
                         {

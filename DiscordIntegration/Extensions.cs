@@ -73,7 +73,7 @@ namespace DiscordIntegration
             switch (type)
             {
                 case RoleType.None:
-                    return "████████";
+                    return "En Lobby";
                 case RoleType.Scp173:
                     return "SCP-173";
                 case RoleType.ClassD:
@@ -111,7 +111,7 @@ namespace DiscordIntegration
                 case RoleType.Scp93989:
                     return "SCP-939-89";
                 default:
-                    return "████████";
+                    return "No tiene";
             }
         }
 
