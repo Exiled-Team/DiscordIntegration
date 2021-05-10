@@ -44,7 +44,7 @@ tcp_server:
   ip_address: "127.0.0.1"
 
 alias:
-  "playerList":
+  playerList:
       - caca
       - jugadores
       - players
