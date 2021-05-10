@@ -114,6 +114,23 @@ namespace DiscordIntegration
                     return "████████";
             }
         }
+
+        /// <summary>
+        /// Get if player have medigun on inventory.
+        /// </summary>
+        /// <param name="customItems"> The item to be checked.</param>
+        /// <returns>bool.</returns>
+        public static bool CheckMediGun(this Exiled.CustomItems.API.Features.CustomItem customItems)
+        {
+            if (customItems.Id == 5 && customItems.Name == "MG-119")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public class Field

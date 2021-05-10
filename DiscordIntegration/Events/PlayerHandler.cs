@@ -168,22 +168,26 @@ namespace DiscordIntegration.Events
 
         public async void OnHurting(HurtingEventArgs ev)
         {
+            // Verifico si el tipo tiene un medigun primero, y si no paso al log normal.
             if (Instance.Config.EventsToLog.HurtingPlayer &&
                 ev.Attacker != null &&
                 ev.Target != null &&
                 (!ev.Attacker.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
-                (!Instance.Config.ShouldLogFriendlyFireDamageOnly || (Instance.Config.ShouldLogFriendlyFireDamageOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)))
+                (!Instance.Config.ShouldLogFriendlyFireDamageOnly || (Instance.Config.ShouldLogFriendlyFireDamageOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)) && CustomItem.TryGet(ev.Attacker.CurrentItem, out CustomItem medigun) && medigun.CheckMediGun())
+            {
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $"<a:MediGun:841062245349720094> | **{ev.Attacker.Nickname}** (ID: {ev.Attacker.Id} - ROL: {ev.Attacker.Role.Translate()}) **esta curando** a **{ev.Target.Nickname}** (ID: {ev.Target.Id} ROL: {ev.Target.Role.Translate()} Con su arma que es {DamageTypes.FromIndex(ev.Tool).name} | Curacion hecha: {ev.Amount}")).ConfigureAwait(false);
+            }
+            else if (Instance.Config.EventsToLog.HurtingPlayer &&
+               ev.Attacker != null &&
+               ev.Target != null &&
+               (!ev.Attacker.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
+               (!Instance.Config.ShouldLogFriendlyFireDamageOnly || (Instance.Config.ShouldLogFriendlyFireDamageOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)))
             {
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasDamagedForWith, ev.Attacker.Nickname, Instance.Config.ShouldLogUserIds ? ev.Attacker.Id.ToString() : Language.Redacted, ev.Attacker.Role.Translate(), ev.Target.Nickname, ev.Target.Id.ToString(), ev.Target.Role.Translate(), ev.Amount, DamageTypes.FromIndex(ev.Tool).name))).ConfigureAwait(false);
             }
-
-            if (Instance.Config.EventsToLog.HurtingPlayer &&
-                ev.Attacker != null &&
-                ev.Target != null &&
-                (!ev.Attacker.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
-                (!Instance.Config.ShouldLogFriendlyFireDamageOnly || (Instance.Config.ShouldLogFriendlyFireDamageOnly && ev.Attacker.Side == ev.Target.Side && ev.Attacker != ev.Target)) && CustomItems.Items.MediGun.TryGet(ev.Attacker.CurrentItem, out CustomItem medi) && medi.Name == "MG-119")
+            else
             {
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $"<a:MediGun:841062245349720094> | **{ev.Attacker.Nickname}** (ID: {ev.Attacker.Id} - ROL: {ev.Attacker.Role.Translate()}) **esta curando** a **{ev.Target.Nickname}** (ID: {ev.Target.Id} ROL: {ev.Target.Role.Translate()} Con su arma que es {DamageTypes.FromIndex(ev.Tool).name}")).ConfigureAwait(false);
+                return;
             }
         }
 
