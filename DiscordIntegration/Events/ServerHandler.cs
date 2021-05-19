@@ -27,8 +27,11 @@ namespace DiscordIntegration.Events
 
         public async void OnSendingConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.SendingConsoleCommands)
+            if (Instance.Config.EventsToLog.SendingConsoleCommands) {
+                if (ev.Name == "sr" || ev.Name.StartsWith("keypress"))
+                    return;
                 await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.HasRunClientConsoleCommand, ev.Player.Nickname, ev.Player.UserId ?? Language.DedicatedServer, ev.Player.Role.Translate(), ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
+            }
         }
 
         public async void OnReportingCheater(ReportingCheaterEventArgs ev)

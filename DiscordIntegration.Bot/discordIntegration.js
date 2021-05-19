@@ -378,7 +378,7 @@ function sendMessage(channelId, content, shouldLogTimestamp = false) {
     .catch(error => console.error(`[DISCORD][ERROR] Cannot send message in "${channel.name}" (${channel.id}): ${error}`));
 }
 
-function sendEmbed(channelId, title, description, fields = [], color = "#36393f") {
+function sendEmbed(channelId, title, description, fields = [], color = "#8154d1") {
   const embed = new discord.MessageEmbed();
   if(title) embed.setTitle(title);
   if(description) embed.setDescription(description);

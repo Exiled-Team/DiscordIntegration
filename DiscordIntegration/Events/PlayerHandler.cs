@@ -201,6 +201,14 @@ namespace DiscordIntegration.Events
             {
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKilledWith, ev.Killer.Nickname, ev.Killer.Id.ToString(), ev.Killer.Role.Translate(), ev.Target.Nickname, ev.Target.Id.ToString(), ev.Target.Role.Translate(), DamageTypes.FromIndex(ev.HitInformation.Tool).name))).ConfigureAwait(false);
             }
+            else if (Instance.Config.EventsToLog.PlayerDying &&
+                ev.Killer != null &&
+                ev.Target != null &&
+                (!ev.Killer.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
+                (!Instance.Config.ShouldLogFriendlyFireKillsOnly || (Instance.Config.ShouldLogFriendlyFireKillsOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target && ev.Target.IsCuffed && ev.Target.Role == RoleType.ClassD && ev.Killer.Team == Team.MTF)))
+            {
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $"<:ClassDShook:817324555654791199> | {ev.Killer.Nickname} (ID:{ev.Killer.Id} - ROL: {ev.Killer.Role.Translate()} ) Mato a {ev.Target.Nickname} (ID: {ev.Target.Id} - ROL: {ev.Target.Role.Translate()} ) que era un Class-D Arrestado. Lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}")).ConfigureAwait(false);
+            }
         }
 
         public async void OnThrowingGrenade(ThrowingGrenadeEventArgs ev)
