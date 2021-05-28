@@ -52,26 +52,26 @@ namespace DiscordIntegration.Events
                         {
                             if (ply.RemoteAdminAccess)
                             {
-                                description += $"```\nID: {ply.Id} - Staff\nNick: {ply.Nickname}\nRol: {ply.Role.Translate()}```";
+                                description += $"```| {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | Staff |\n```";
                             }
                             else if (ply.CheckPermission("cerberus.viplist"))
                             {
-                                description += $"```\nID: {ply.Id} - VIP\nNick: {ply.Nickname}\nRol:{ply.Role.Translate()}```";
+                                description += $"```| {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | VIP |\n```";
                             }
                             else if (ply.CheckPermission("cerberus.donadorlist"))
                             {
-                                description += $"```\nID: {ply.Id} - Donador un capo\nNick: {ply.Nickname}\nRol: {ply.Role.Translate()}```";
+                                description += $"```| {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | Donador |\n```";
                             }
                             else
                             {
-                                description += $"```\nID: {ply.Id}\nNick: {ply.Nickname}\nRol: {ply.Role.Translate()}```";
+                                description += $"```| {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} |\n```";
                             }
                         }
 
                         Network.SendAsync(new RemoteCommand(
                             "sendEmbed",
                             JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
-                            $"|  Jugadores {Player.Dictionary.Count}/{Instance.Slots} | Tiempo de la ronda {minutes}:{seconds} |", description));
+                            $"| Jugadores {Player.Dictionary.Count}/{Instance.Slots} | Tiempo de la ronda {minutes}:{seconds} |\n| ID | Nombre | Clase | Rol en el servidor | ", description));
                         break;
                     case "setGroupFromId":
                         SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
