@@ -48,30 +48,32 @@ namespace DiscordIntegration.Events
                         string seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
                         string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
                         IEnumerable<Player> list = Player.List.OrderBy(pl => pl.Id);
+                        description += "```diff\n";
                         foreach (Player ply in list)
                         {
                             if (ply.RemoteAdminAccess)
                             {
-                                description += $"```| {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | Staff |\n```\n";
+                                description += $"- | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | Staff |\n";
                             }
                             else if (ply.CheckPermission("cerberus.viplist"))
                             {
-                                description += $"```| {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | VIP |\n```\n";
+                                description += $"-+ | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | VIP |\n";
                             }
                             else if (ply.CheckPermission("cerberus.donadorlist"))
                             {
-                                description += $"```| {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | Donador |\n```\n";
+                                description += $"+- | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | Donador |\n";
                             }
                             else
                             {
-                                description += $"```| {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} |\n```\n";
+                                description += $"+ | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} |\n";
                             }
                         }
 
+                        description += "\n```";
                         Network.SendAsync(new RemoteCommand(
                             "sendEmbed",
                             JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
-                            $"| Jugadores {Player.Dictionary.Count}/{Instance.Slots} | Tiempo de la ronda {minutes}:{seconds} |\n| ID | Nombre | Clase | Rol en el servidor | ", description));
+                            $"| Jugadores {Player.Dictionary.Count}/{Instance.Slots} | Tiempo de la ronda {minutes}:{seconds} |\n      |  ID  |  Nombre   |  Clase  |  Rol en el servidor  |", description));
                         break;
                     case "setGroupFromId":
                         SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
