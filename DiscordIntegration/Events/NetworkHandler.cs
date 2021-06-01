@@ -57,11 +57,11 @@ namespace DiscordIntegration.Events
                             }
                             else if (ply.CheckPermission("cerberus.viplist"))
                             {
-                                description += $"-+ | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | VIP |\n";
+                                description += $"+ | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | VIP |\n";
                             }
                             else if (ply.CheckPermission("cerberus.donadorlist"))
                             {
-                                description += $"+- | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | Donador |\n";
+                                description += $"+ | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | Donador |\n";
                             }
                             else
                             {
