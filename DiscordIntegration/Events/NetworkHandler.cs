@@ -70,6 +70,11 @@ namespace DiscordIntegration.Events
                         }
 
                         description += "\n```";
+                        if (Player.List.Count() < 1)
+                        {
+                            description = "```diff\n- No hay jugadores conectados - \n```";
+                        }
+
                         Network.SendAsync(new RemoteCommand(
                             "sendEmbed",
                             JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
