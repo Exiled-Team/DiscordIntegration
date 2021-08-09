@@ -193,21 +193,35 @@ namespace DiscordIntegration.Events
 
         public async void OnDying(DyingEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.PlayerDying &&
-                ev.Killer != null &&
-                ev.Target != null &&
-                (!ev.Killer.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
-                (!Instance.Config.ShouldLogFriendlyFireKillsOnly || (Instance.Config.ShouldLogFriendlyFireKillsOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target)))
+            // Arrestados
+            if (ev.Target.IsCuffed)
             {
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKilledWith, ev.Killer.Nickname, ev.Killer.Id.ToString(), ev.Killer.Role.Translate(), ev.Target.Nickname, ev.Target.Id.ToString(), ev.Target.Role.Translate(), DamageTypes.FromIndex(ev.HitInformation.Tool).name))).ConfigureAwait(false);
+
             }
-            else if (Instance.Config.EventsToLog.PlayerDying &&
-                ev.Killer != null &&
-                ev.Target != null &&
-                (!ev.Killer.DoNotTrack || !ev.Target.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack) &&
-                (!Instance.Config.ShouldLogFriendlyFireKillsOnly || (Instance.Config.ShouldLogFriendlyFireKillsOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target && ev.Target.IsCuffed && ev.Target.Role == RoleType.ClassD && ev.Killer.Team == Team.MTF)))
+            // FF
+            if (Instance.Config.ShouldLogFriendlyFireKillsOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target)
             {
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", $"<:ClassDShook:817324555654791199> | {ev.Killer.Nickname} (ID:{ev.Killer.Id} - ROL: {ev.Killer.Role.Translate()} ) Mato a {ev.Target.Nickname} (ID: {ev.Target.Id} - ROL: {ev.Target.Role.Translate()} ) que era un Class-D Arrestado. Lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}")).ConfigureAwait(false);
+                if (ev.Target == null || ev.Killer == null)
+                {
+                    return;
+                }
+
+                // Logs con SteamID
+                if (Instance.Config.EventsToLog.PlayerDying && (!ev.Killer.DoNotTrack || !ev.Target.DoNotTrack || Instance.Config.ShouldLogUserIds))
+                {
+                    var msg = $"<:RIP:816748746876518412> | {ev.Killer.Nickname} {ev.Killer.DisplayNickname} ({ev.Killer.Id} | {(ev.Killer.DoNotTrack ? "DNT" : ev.Killer.UserId)} |{ev.Killer.Role.Translate()}) mato a {ev.Killer.Nickname} ({ev.Target.Id} | {(ev.Target.DoNotTrack ? "DNT" : ev.Killer.UserId)} | {ev.Target.Role.Translate()}). Lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}";
+                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", msg)).ConfigureAwait(false);
+                }
+
+                // Logs sin SteamID
+                else if (Instance.Config.EventsToLog.PlayerDying && (ev.Killer.DoNotTrack || ev.Target.DoNotTrack || Instance.Config.ShouldRespectDoNotTrack))
+                {
+                    var msg = $"<:RIP:816748746876518412> | {ev.Killer.Nickname} {ev.Killer.DisplayNickname} ({ev.Killer.Id} | {(ev.Killer.DoNotTrack ? "DNT" : ev.Killer.UserId)} |{ev.Killer.Role.Translate()}) mato a {ev.Killer.Nickname} ({ev.Target.Id} | {(ev.Target.DoNotTrack ? "DNT" : ev.Killer.UserId)} | {ev.Target.Role.Translate()}). Lo mato con {DamageTypes.FromIndex(ev.HitInformation.Tool).name}";
+                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", msg)).ConfigureAwait(false);
+                }
+            }
+            else
+            {
             }
         }
 
