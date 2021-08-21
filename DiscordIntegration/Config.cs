@@ -35,6 +35,12 @@ namespace DiscordIntegration
         public EventsToLog EventsToLog { get; private set; } = new EventsToLog();
 
         /// <summary>
+        /// Gets events to log to the staff-only channel. These logs will always ignore DNT, and always show the player's UserID.
+        /// </summary>
+        [Description("Indicates events that should be logged to the staff-only channel. These logs always ignore DNT, and will always show the player's UserID.")]
+        public EventsToLog StaffOnlyEventsToLog { get; private set; } = new EventsToLog();
+
+        /// <summary>
         /// Gets a value indicating whether players' IP addresses should be logged or not.
         /// </summary>
         [Description("Indicates whether players' IP Addresses should be logged or not")]

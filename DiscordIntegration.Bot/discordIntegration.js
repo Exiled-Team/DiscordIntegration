@@ -31,6 +31,9 @@ let config = {
       reports: [
         'channel-id-4'
       ],
+      staffCopy: [
+        'channel-id-5'
+      ],
     },
     topic: [
       'channel-id-5'
@@ -182,7 +185,7 @@ tcpServer.on('connection', socket => {
       } catch (exception) {
         console.error(`[NET][ERROR] An error has occurred while receiving data from ${socket?.address()?.address}:${socket?.address()?.port}: ${exception}`);
       }
-    });    
+    });
   });
 
   socket.on('error', error => {
@@ -294,7 +297,7 @@ function saveSyncedRoles() {
 
 /**
  * Gets the user's group from its user id.
- * 
+ *
  * @param {string} id The user id.
  */
 async function getGroupFromId(id) {
@@ -382,7 +385,7 @@ function log(type, content, isInstant = false) {
 
 /**
  * Changes the topic of a specific Discord channel.
- * 
+ *
  * @param {string} channelId The channel id
  * @param {string} newTopic The new topic to be set.
  */
@@ -500,7 +503,7 @@ async function close(exit = false) {
   sockets.forEach(socket => socket.destroy());
 
   sockets = [];
-  
+
   tcpServer.close(() => {
     console.info('[NET][INFO] Server closed.');
     tcpServer.unref();

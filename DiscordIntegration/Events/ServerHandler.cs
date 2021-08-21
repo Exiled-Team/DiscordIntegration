@@ -19,17 +19,6 @@ namespace DiscordIntegration.Events
     internal sealed class ServerHandler
     {
 #pragma warning disable SA1600 // Elements should be documented
-        public async void OnSendingRemoteAdminCommand(SendingRemoteAdminCommandEventArgs ev)
-        {
-            if (Instance.Config.EventsToLog.SendingRemoteAdminCommands)
-                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.UsedCommand, ev.CommandSender.Nickname, ev.CommandSender.SenderId ?? Language.DedicatedServer, ev.Sender.Role, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
-        }
-
-        public async void OnSendingConsoleCommand(SendingConsoleCommandEventArgs ev)
-        {
-            if (Instance.Config.EventsToLog.SendingConsoleCommands)
-                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.HasRunClientConsoleCommand, ev.Player.Nickname, ev.Player.UserId ?? Language.DedicatedServer, ev.Player.Role, ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
-        }
 
         public async void OnReportingCheater(ReportingCheaterEventArgs ev)
         {
@@ -47,6 +36,8 @@ namespace DiscordIntegration.Events
         {
             if (Instance.Config.EventsToLog.WaitingForPlayers)
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", Language.WaitingForPlayers)).ConfigureAwait(false);
+            if (Instance.Config.StaffOnlyEventsToLog.WaitingForPlayers)
+                await Network.SendAsync(new RemoteCommand("log", "staffCopy", Language.WaitingForPlayers)).ConfigureAwait(false);
         }
 
         public async void OnRoundStarted()

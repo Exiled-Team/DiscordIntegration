@@ -104,7 +104,7 @@ namespace DiscordIntegration
 
         public string HasTriggeredATeslaGate { get; set; } = ":zap: {0} ({1}) [{2}] has triggered a tesla gate.";
 
-        public string Scp914HasProcessedTheFollowingPlayers { get; set; } = ":gear: SCP-914 has processed the following players:\n **{0}**\nand items:\n **{1}**";
+        public string Scp914ProcessedItem { get; set; } = ":gear: SCP-914 has processed: **{0}**";
 
         public string HasClosedADoor { get; set; } = ":door: {0} ({1}) [{2}] has closed {3} door.";
 
