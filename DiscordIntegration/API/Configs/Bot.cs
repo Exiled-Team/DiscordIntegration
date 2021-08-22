@@ -87,7 +87,7 @@ namespace DiscordIntegration.API.Configs
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (!ClientScene.ready)
+                if (!NetworkClient.ready)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(Instance.Config.Bot.ChannelTopicUpdateInterval), cancellationToken);
 
@@ -96,7 +96,7 @@ namespace DiscordIntegration.API.Configs
 
                 try
                 {
-                    int aliveHumans = Player.List.Where(player => player.IsAlive && player.IsHuman).Count();
+                    int aliveHumans = Player.List.Count(player => player.IsAlive && player.IsHuman);
                     int aliveScps = Player.Get(Team.SCP).Count();
 
                     string warheadText = Warhead.IsDetonated ? Language.WarheadHasBeenDetonated : Warhead.IsInProgress ? Language.WarheadIsCountingToDetonation : Language.WarheadHasntBeenDetonated;
