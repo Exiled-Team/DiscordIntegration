@@ -260,6 +260,14 @@ namespace DiscordIntegration
 
         public string DedicatedServer { get; set; } = "Dedicated server";
 
+        public string PlayerListEmbedTitle { get; set; } = "| Players: {0}/{1} | Round Time: {2}:{3] |";
+        public string PlayerListTitle { get; set; } = "|   ID    |     Nick     |     Role     |";
+
+        public string PlayerListTextperStaff { get; set; } = "- {0} - {1} - {2}\n";
+        public string PlayerListTextperPlayer { get; set; } = "+ {0} - {1} - {2}\n";
+        public string PlayerListNoPlayerOnline { get; set; } = "```diff\n-- No Players Online --\n```";
+        public string PlayerListCodeBlock { get; set; } = "diff";
+
 #pragma warning restore CS1591
 #pragma warning restore SA1600 // Elements should be documented
 
