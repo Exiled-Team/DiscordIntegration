@@ -57,4 +57,17 @@ namespace DiscordIntegration
             return new PlayerCommandSender(sender.SenderId, sender.Nickname, sender.Permissions, sender.KickPower, sender.FullPermissions);
         }
     }
+    public class Field
+    {
+        public string name;
+        public string value;
+        public bool inline;
+
+        public Field(string name, string value, bool inline = false)
+        {
+            this.name = name;
+            this.value = value;
+            this.inline = inline;
+        }
+    }
 }
