@@ -8,10 +8,13 @@
 namespace DiscordIntegration.Commands
 {
     using System;
+    using System.Collections.Generic;
     using System.Text;
     using CommandSystem;
     using Exiled.API.Features;
     using Exiled.Permissions.Extensions;
+    using global::DiscordIntegration.API.Commands;
+    using Newtonsoft.Json;
     using NorthwoodLib.Pools;
     using static DiscordIntegration;
 
@@ -54,8 +57,6 @@ namespace DiscordIntegration.Commands
             }
 
             response = message.ToString();
-
-            StringBuilderPool.Shared.Return(message);
 
             return true;
         }
