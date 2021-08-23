@@ -15,6 +15,7 @@ namespace DiscordIntegration
     using API.User;
     using Events;
     using Exiled.API.Features;
+    using HarmonyLib;
     using MEC;
     using Handlers = Exiled.Events.Handlers;
     using Version = System.Version;
@@ -35,6 +36,8 @@ namespace DiscordIntegration
         private PlayerHandler playerHandler;
 
         private NetworkHandler networkHandler;
+
+        private Harmony harmony;
 
         private DiscordIntegration()
         {
@@ -85,6 +88,16 @@ namespace DiscordIntegration
         /// </summary>
         public override void OnEnabled()
         {
+            try
+            {
+                harmony = new Harmony($"com.joker.DI-{DateTime.Now.Ticks}");
+                harmony.PatchAll();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+
             Language = new Language();
             Network = new Network(Instance.Config.Bot.IPAddress, Instance.Config.Bot.Port, TimeSpan.FromSeconds(Instance.Config.Bot.ReconnectionInterval));
 
@@ -113,6 +126,7 @@ namespace DiscordIntegration
         /// </summary>
         public override void OnDisabled()
         {
+            harmony?.UnpatchAll();
             KillCoroutines();
 
             NetworkCancellationTokenSource.Cancel();
