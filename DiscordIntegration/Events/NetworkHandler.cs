@@ -9,6 +9,8 @@ namespace DiscordIntegration.Events
 {
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Net;
     using API.Commands;
     using API.EventArgs.Network;
@@ -36,22 +38,71 @@ namespace DiscordIntegration.Events
                 switch (remoteCommand.Action)
                 {
                     case "executeCommand":
-                        JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
-                        break;
-                    case "setGroupFromId":
-                        SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
-
-                        if (syncedUser == null)
+                        {
+                            JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
                             break;
+                        }
+                    case "setGroupFromId":
+                        {
+                            SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
 
-                        if (!Instance.SyncedUsersCache.Contains(syncedUser))
-                            Instance.SyncedUsersCache.Add(syncedUser);
+                            if (syncedUser == null)
+                                break;
 
-                        syncedUser?.SetGroup();
-                        break;
+                            if (!Instance.SyncedUsersCache.Contains(syncedUser))
+                                Instance.SyncedUsersCache.Add(syncedUser);
+
+                            syncedUser?.SetGroup();
+                            break;
+                        }
                     case "commandReply":
-                        JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
-                        break;
+                        {
+                            JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
+                            break;
+                        }
+                    case "playerList":
+                        {
+                            /*#region ugly things
+                            string description = string.Empty;
+                            string plylist = $"```{Language.PlayerListCodeBlock ?? "diff"}\n";
+                            IList<Field> fields = new List<Field>();
+                            TimeSpan duration = Round.ElapsedTime;
+                            string seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
+                            string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
+                            var list = Player.List.OrderBy(pl => pl.Id);
+                            #endregion
+                            foreach (Player ply in list)
+                            {
+
+                                if (ply.RemoteAdminAccess)
+                                {
+                                    plylist += string.Format(Language.PlayerListTextperStaff ?? "- {0} - {1} - {2}\n", ply.Id, ply.Nickname, ply.Role);
+                                }
+                                else
+                                {
+                                    plylist += string.Format(Language.PlayerListTextperPlayer ?? "+ {0} - {1} - {2}\n", ply.Id, ply.Nickname, ply.Role);
+                                }
+                            }
+                            plylist += "\n```";
+
+                            if (list.Count() == 0)
+                            {
+                                plylist = Language.PlayerListNoPlayerOnline ?? "```diff\n-- No Players Online --\n```";
+                            }
+
+                            fields.Add(new Field(Language.PlayerListTitle ?? "|   ID    |     Nick     |     Role     |", plylist, false));
+
+                            var embedtitle = string.Format(Language.PlayerListEmbedTitle ?? "| Players: {0}/{1} | Round Time: {2}:{3] |", Player.Dictionary.Count, Instance.Slots, minutes, seconds);
+                            */
+                            /*_ = Network.SendAsync(new RemoteCommand("sendEmbed", JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
+                               embedtitle, null, fields));*/
+                            IList<Field> fields = new List<Field>();
+                            fields.Add(new Field("This is a Field", "Pss, if you are reading this DI has some method to know from which channel a command was executed ?", false));
+                            _ = Network.SendAsync(new RemoteCommand("sendEmbed", JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
+                               "Yes i work", "si", fields, "#15a3a3"));
+
+                            break;
+                        }
                 }
             }
             catch (Exception exception)
