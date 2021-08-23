@@ -1,3 +1,4 @@
+
 const discord = require('discord.js');
 const fs = require('fs');
 const yaml = require('js-yaml');
@@ -41,9 +42,15 @@ let config = {
     command: [
       'channel-id-6'
     ],
+    commandCategories:[
+      'channel-category-id-7'
+    ]
   },
   commands: {
     'role-id-1': [ 'di', 'discordintegration' ]
+  },
+  alias: {
+    "playerList": ["jugadores", "players"]
   },
   discordServer: {
     id: ''
@@ -76,7 +83,7 @@ let remoteCommands = {
   "addUser": addUser,
   "removeUser": removeUser,
   "addRole": addRole,
-  "removeRole": removeRole
+  "removeRole": removeRole,
   "sendEmbed": sendEmbed
 };
 
@@ -107,7 +114,7 @@ discordClient.on('ready', async () => {
  * Handles commands from Discord.
  */
 discordClient.on('message', message => {
-  if (!config.channels.command || message.author.bot || !message.content.startsWith(config.prefix) || !config.channels.command.includes(message.channel.id))
+  if (!config.channels.command || message.author.bot || !message.content.startsWith(config.prefix) || (!config.channels.command.includes(message.channel.id) && !config.channels.commandCategories.includes(message.channel.parentID)))
     return;
 
   if (sockets.length === 0) {
@@ -129,7 +136,12 @@ discordClient.on('message', message => {
 
   if (config.isDebugEnabled)
     console.debug(`[DISCORD][DEBUG] ${message.author.tag} (${message.author.id}) executed a command: [${command}]`);
-
+    
+    for(const alias in config.alias) {
+      if(alias.toLowerCase() === command || config.alias[alias].includes(command)) {
+        return sockets.forEach(socket => socket.write(JSON.stringify({action: alias, parameters: {channelId: message.channel.id, content: alias, user: {id: message.author.id + '@discord', name: message.author.username}}}) + '\0'));
+      }
+    }
   sockets.forEach(socket => socket.write(JSON.stringify({action: 'executeCommand', parameters: {channelId: message.channel.id, content: command, user: {id: message.author.id + '@discord', name: message.author.tag}}}) + '\0'));
 });
 
@@ -372,7 +384,10 @@ function sendMessage(channelId, content, shouldLogTimestamp = false) {
     .catch(error => console.error(`[DISCORD][ERROR] Cannot send message in "${channel.name}" (${channel.id}): ${error}`));
 }
 
-function sendEmbed(channelId, title, description, fields = [], color = "#8154d1") {
+/**
+ * Send a sexy embed
+ */
+function sendEmbed(channelId, title, description, fields = [], color = "#15a3a3") {
   const embed = new discord.MessageEmbed();
   if(title) embed.setTitle(title);
   if(description) embed.setDescription(description);
