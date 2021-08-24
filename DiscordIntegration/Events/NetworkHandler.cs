@@ -24,6 +24,9 @@ namespace DiscordIntegration.Events
     /// </summary>
     internal sealed class NetworkHandler
     {
+
+        public static string channelId;
+
         /// <inheritdoc cref="API.Network.OnReceivedFull(object, ReceivedFullEventArgs)"/>
         public void OnReceivedFull(object _, ReceivedFullEventArgs ev)
         {
@@ -40,8 +43,10 @@ namespace DiscordIntegration.Events
                     case "executeCommand":
                         {
                             JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
+                            channelId = JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId;
                             break;
                         }
+
                     case "setGroupFromId":
                         {
                             SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
@@ -55,19 +60,10 @@ namespace DiscordIntegration.Events
                             syncedUser?.SetGroup();
                             break;
                         }
+
                     case "commandReply":
                         {
                             JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
-                            break;
-                        }
-                    case "playerList":
-                        {
-
-                            IList<Field> fields = new List<Field>();
-                            fields.Add(new Field("This is a Field", "Pss, if you are reading this DI has some method to know from which channel a command was executed ?", false));
-                            _ = Network.SendAsync(new RemoteCommand("sendEmbed", JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
-                               "Yes i work", "si", fields, "#15a3a3"));
-
                             break;
                         }
                 }

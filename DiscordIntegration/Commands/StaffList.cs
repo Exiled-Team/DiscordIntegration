@@ -11,10 +11,12 @@ namespace DiscordIntegration.Commands
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using CommandSystem;
     using Exiled.API.Features;
     using Exiled.Permissions.Extensions;
     using global::DiscordIntegration.API.Commands;
+    using MEC;
     using NorthwoodLib.Pools;
     using static DiscordIntegration;
 
@@ -32,7 +34,7 @@ namespace DiscordIntegration.Commands
 
         public string Command { get; } = "stafflist";
 
-        public string[] Aliases { get; } = new[] { "sl" };
+        public string[] Aliases { get; } = new[] { "sl", "slist" };
 
         public string Description { get; } = Language.StaffListCommandDescription;
 
@@ -44,6 +46,7 @@ namespace DiscordIntegration.Commands
                 return false;
             }
 
+            Timing.WaitForSeconds(4);
             if (sender is RemoteAdmin.PlayerCommandSender ply)
             {
                 if (Player.Dictionary.Count == 0)
@@ -95,7 +98,7 @@ namespace DiscordIntegration.Commands
                     foreach (Player player in stafflist)
                     {
                         var yes = string.Format(Language.PlayerListTextperStaff, player.Id, player.Nickname, player.Role, player.GroupName);
-                        msg += $"<color=red>{yes}</color>\n";
+                        msg += yes;
                     }
 
                     msg += "\n```";
@@ -105,9 +108,13 @@ namespace DiscordIntegration.Commands
                     msg = $"```diff\n-- {Language.NoStaffOnline} --\n```";
                 }
 
-                IList<Field> fields = new List<Field>();
-                fields.Add(new Field(Language.PlayerListTitle, msg, false));
-                _ = Network.SendAsync(new RemoteCommand("sendEmbed", Events.NetworkHandler.channelId, title, string.Empty, fields));
+                Timing.CallDelayed(1f, () =>
+                {
+                    var channel = Events.NetworkHandler.channelId; // I do this to avoid that it takes too long and that when executing the command in another place it is sent to the previous one.
+                    IList<Field> fields = new List<Field>();
+                    fields.Add(new Field(Language.PlayerListTitle, msg, false));
+                    _ = Network.SendAsync(new RemoteCommand("sendEmbed", channel, title, string.Empty, fields));
+                });
                 response = null;
                 return true;
             }

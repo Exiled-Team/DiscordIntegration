@@ -14,6 +14,7 @@ namespace DiscordIntegration.Commands
     using Exiled.API.Features;
     using Exiled.Permissions.Extensions;
     using global::DiscordIntegration.API.Commands;
+    using MEC;
     using Newtonsoft.Json;
     using NorthwoodLib.Pools;
     using RemoteAdmin;
@@ -33,7 +34,7 @@ namespace DiscordIntegration.Commands
 
         public string Command { get; } = "playerlist";
 
-        public string[] Aliases { get; } = new[] { "pli" };
+        public string[] Aliases { get; } = new[] { "pli", "plys" };
 
         public string Description { get; } = Language.PlayerListCommandDescription;
 
@@ -90,8 +91,13 @@ namespace DiscordIntegration.Commands
                 if (Player.Dictionary.Count == 0)
                 {
                     message = Language.PlayerListNoPlayerOnline;
-                    var title = string.Format(Language.PlayerListEmbedTitle, Player.Dictionary.Count, DiscordIntegration.Instance.Slots, minutes, seconds);
-                    _ = Network.SendAsync(new RemoteCommand("sendEmbed", Events.NetworkHandler.channelId, title, message));
+                    Timing.CallDelayed(1f, () =>
+                    {
+                        var channel = Events.NetworkHandler.channelId; // I do this to avoid that it takes too long and that when executing the command in another place it is sent to the previous one.
+                        var title = string.Format(Language.PlayerListEmbedTitle, Player.Dictionary.Count, DiscordIntegration.Instance.Slots, minutes, seconds);
+                        _ = Network.SendAsync(new RemoteCommand("sendEmbed", channel, title, message));
+                    });
+                   
                     response = Language.NoPlayersOnline;
                     return true;
                 }
@@ -112,19 +118,16 @@ namespace DiscordIntegration.Commands
 
                 message += $"\n```";
 
-                IList<Field> fields = new List<Field>();
-                fields.Add(new Field(Language.PlayerListTitle, message, false));
-                try
+                Timing.CallDelayed(1f, () =>
                 {
+                    var channel = Events.NetworkHandler.channelId; // I do this to avoid that it takes too long and that when executing the command in another place it is sent to the previous one.
+                    IList<Field> fields = new List<Field>();
+                    fields.Add(new Field(Language.PlayerListTitle, message, false));
                     var title = string.Format(Language.PlayerListEmbedTitle, Player.Dictionary.Count, DiscordIntegration.Instance.Slots, minutes, seconds);
-                    _ = Network.SendAsync(new RemoteCommand("sendEmbed", Events.NetworkHandler.channelId, title, string.Empty, fields));
-                }
-                catch (Exception e)
-                {
-                    response = $"Error on sending Embed: {e}";
-                    return false;
-                }
+                    _ = Network.SendAsync(new RemoteCommand("sendEmbed", channel, title, string.Empty, fields));
 
+
+                });
                 response = null;
                 return true;
             }
