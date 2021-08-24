@@ -45,8 +45,6 @@ namespace DiscordIntegration.Commands
                 response = string.Format(Language.NotEnoughPermissions, "di.stafflist");
                 return false;
             }
-
-            Timing.WaitForSeconds(4);
             if (sender is RemoteAdmin.PlayerCommandSender ply)
             {
                 if (Player.Dictionary.Count == 0)

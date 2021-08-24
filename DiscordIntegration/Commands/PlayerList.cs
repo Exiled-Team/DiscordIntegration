@@ -97,7 +97,7 @@ namespace DiscordIntegration.Commands
                         var title = string.Format(Language.PlayerListEmbedTitle, Player.Dictionary.Count, DiscordIntegration.Instance.Slots, minutes, seconds);
                         _ = Network.SendAsync(new RemoteCommand("sendEmbed", channel, title, message));
                     });
-                   
+
                     response = Language.NoPlayersOnline;
                     return true;
                 }
