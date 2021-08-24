@@ -16,6 +16,7 @@ namespace DiscordIntegration.Commands
     using global::DiscordIntegration.API.Commands;
     using Newtonsoft.Json;
     using NorthwoodLib.Pools;
+    using RemoteAdmin;
     using static DiscordIntegration;
 
     /// <summary>
@@ -44,21 +45,89 @@ namespace DiscordIntegration.Commands
                 return false;
             }
 
-            StringBuilder message = StringBuilderPool.Shared.Rent();
-
-            if (Player.Dictionary.Count == 0)
+            if (sender is RemoteAdmin.PlayerCommandSender ply)
             {
-                message.Append(Language.NoPlayersOnline);
+                if (Player.Dictionary.Count == 0)
+                {
+                    response = $"<color=red>{Language.NoPlayersOnline}</color>";
+                    return false;
+                }
+                else
+                {
+                    TimeSpan duration = Round.ElapsedTime;
+                    var seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
+                    var minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
+                    int max = DiscordIntegration.Instance.Slots;
+                    int cur = Player.Dictionary.Count;
+
+                    var title = string.Format(Language.PlayerListEmbedTitle, cur, max, minutes, seconds);
+                    string msg = $"\n<color=green>{title}</color>\n";
+                    foreach (Player player in Player.List)
+                    {
+                        if (player.RemoteAdminAccess)
+                        {
+                            var yes = string.Format(Language.PlayerListTextperStaff, player.Id, player.Nickname, player.Role, player.GroupName);
+                            msg += $"<color=red>{yes}</color>";
+                        }
+                        else
+                        {
+                            var yes = string.Format(Language.PlayerListTextperPlayer, player.Id, player.Nickname, player.Role);
+                            msg += $"<color=green>{yes}</color>";
+                        }
+                    }
+
+                    response = msg;
+                    return true;
+                }
             }
             else
             {
-                foreach (Player player in Player.List)
-                    message.Append(player.Nickname).Append(" - ").Append(player.UserId).AppendLine();
+                TimeSpan duration = Round.ElapsedTime;
+                string seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
+                string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
+                string message = $"```{Language.PlayerListCodeBlock}\n";
+
+                if (Player.Dictionary.Count == 0)
+                {
+                    message = Language.PlayerListNoPlayerOnline;
+                    var title = string.Format(Language.PlayerListEmbedTitle, Player.Dictionary.Count, DiscordIntegration.Instance.Slots, minutes, seconds);
+                    _ = Network.SendAsync(new RemoteCommand("sendEmbed", Events.NetworkHandler.channelId, title, message));
+                    response = Language.NoPlayersOnline;
+                    return true;
+                }
+                else
+                {
+                    foreach (Player player in Player.List)
+                    {
+                        if (player.RemoteAdminAccess)
+                        {
+                            message += string.Format(Language.PlayerListTextperStaff, player.Id, player.Nickname, player.Role, player.GroupName);
+                        }
+                        else
+                        {
+                            message += string.Format(Language.PlayerListTextperPlayer, player.Id, player.Nickname, player.Role);
+                        }
+                    }
+                }
+
+                message += $"\n```";
+
+                IList<Field> fields = new List<Field>();
+                fields.Add(new Field(Language.PlayerListTitle, message, false));
+                try
+                {
+                    var title = string.Format(Language.PlayerListEmbedTitle, Player.Dictionary.Count, DiscordIntegration.Instance.Slots, minutes, seconds);
+                    _ = Network.SendAsync(new RemoteCommand("sendEmbed", Events.NetworkHandler.channelId, title, string.Empty, fields));
+                }
+                catch (Exception e)
+                {
+                    response = $"Error on sending Embed: {e}";
+                    return false;
+                }
+
+                response = null;
+                return true;
             }
-
-            response = message.ToString();
-
-            return true;
         }
     }
 }

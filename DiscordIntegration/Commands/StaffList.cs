@@ -8,10 +8,13 @@
 namespace DiscordIntegration.Commands
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using CommandSystem;
     using Exiled.API.Features;
     using Exiled.Permissions.Extensions;
+    using global::DiscordIntegration.API.Commands;
     using NorthwoodLib.Pools;
     using static DiscordIntegration;
 
@@ -41,22 +44,73 @@ namespace DiscordIntegration.Commands
                 return false;
             }
 
-            StringBuilder message = StringBuilderPool.Shared.Rent();
-
-            foreach (Player player in Player.List)
+            if (sender is RemoteAdmin.PlayerCommandSender ply)
             {
-                if (player.RemoteAdminAccess)
-                    message.Append(player.Nickname).Append(" - ").Append(player?.GroupName).AppendLine();
+                if (Player.Dictionary.Count == 0)
+                {
+                    response = $"<color=red>{Language.NoPlayersOnline}</color>";
+                    return false;
+                }
+                else
+                {
+                    TimeSpan duration = Round.ElapsedTime;
+                    var seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
+                    var minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
+                    int max = DiscordIntegration.Instance.Slots;
+                    int cur = Player.Dictionary.Count;
+
+                    var title = string.Format(Language.PlayerListEmbedTitle, cur, max, minutes, seconds);
+                    string msg = $"\n<color=green>{title}</color>\n";
+                    var stafflist = Player.List.Where(p => p.RemoteAdminAccess);
+                    if (stafflist.Count() >= 1)
+                    {
+                        foreach (Player player in stafflist)
+                        {
+                            var yes = string.Format(Language.PlayerListTextperStaff, player.Id, player.Nickname, player.Role, player.GroupName);
+                            msg += $"<color=red>{yes}</color>\n";
+                        }
+                    }
+                    else
+                    {
+                        msg += $"<color=red>{Language.NoStaffOnline}</color>";
+                    }
+
+                    response = msg;
+                    return true;
+                }
             }
+            else
+            {
+                TimeSpan duration = Round.ElapsedTime;
+                var seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
+                var minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
+                int max = DiscordIntegration.Instance.Slots;
+                int cur = Player.Dictionary.Count;
 
-            if (message.Length == 0)
-                message.Append(Language.NoStaffOnline);
+                var title = string.Format(Language.PlayerListEmbedTitle, cur, max, minutes, seconds);
+                string msg = $"```{Language.PlayerListCodeBlock}\n";
+                var stafflist = Player.List.Where(p => p.RemoteAdminAccess);
+                if (stafflist.Count() >= 1)
+                {
+                    foreach (Player player in stafflist)
+                    {
+                        var yes = string.Format(Language.PlayerListTextperStaff, player.Id, player.Nickname, player.Role, player.GroupName);
+                        msg += $"<color=red>{yes}</color>\n";
+                    }
 
-            response = message.ToString();
+                    msg += "\n```";
+                }
+                else
+                {
+                    msg = $"```diff\n-- {Language.NoStaffOnline} --\n```";
+                }
 
-            StringBuilderPool.Shared.Return(message);
-
-            return true;
+                IList<Field> fields = new List<Field>();
+                fields.Add(new Field(Language.PlayerListTitle, msg, false));
+                _ = Network.SendAsync(new RemoteCommand("sendEmbed", Events.NetworkHandler.channelId, title, string.Empty, fields));
+                response = null;
+                return true;
+            }
         }
     }
 }
