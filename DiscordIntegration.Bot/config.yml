@@ -22,11 +22,6 @@ commands:
   role_id_1:
     - di
     - discordintegration
-# With this you can create aliases for commands that do not allow you to change their add aliases
-alias:
-   "playerlist":
-     - plys
-     - caca
 discord_server:
   id: ''
 tcp_server:
