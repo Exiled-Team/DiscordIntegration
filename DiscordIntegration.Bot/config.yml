@@ -1,21 +1,21 @@
 token: ''
-prefix: +
+prefix: "+"
 channels:
   log:
     commands:
-      - channel-id-1
+      - "channel-id-1"
     game_events:
-      - channel-id-2
+      - "channel-id-2"
     bans:
-      - channel-id-3
+      - "channel-id-3"
     reports:
-      - channel-id-4
+      - "channel-id-4"
     staff_copy:
-      - channel-id-5
+      - "channel-id-5"
   topic:
-    - channel-id-5
+    - "channel-id-5"
   command:
-    - channel-id-6
+    - "channel-id-6"
 commands:
   role_id_1:
     - di
