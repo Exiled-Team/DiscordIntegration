@@ -96,7 +96,7 @@ namespace DiscordIntegration
 
         public string HasDropped { get; set; } = "{0} ({1}) [{2}] has dropped **{3}**.";
 
-        public string DecontaminationHasBegun { get; set; } = ":biohazard: **Deconamination has begun.**";
+        public string DecontaminationHasBegun { get; set; } = ":biohazard: **Decontamination has begun.**";
 
         public string HasEnteredPocketDimension { get; set; } = ":door: {0} ({1}) [{2}] has entered the pocket dimension.";
 
