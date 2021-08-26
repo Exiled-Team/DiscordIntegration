@@ -78,7 +78,7 @@ namespace DiscordIntegration.Events
         {
             if (Instance.Config.EventsToLog.UpgradingScp914Items)
             {
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.Scp914ProcessedItem, ev.Item)));
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.Scp914ProcessedItem, ev.Item.Type)));
             }
         }
     }
