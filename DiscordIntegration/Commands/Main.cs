@@ -20,7 +20,7 @@ namespace DiscordIntegration.Commands
 
         public override string Command { get; } = "discordintegration";
 
-        public override string[] Aliases { get; } = new[] { "integration", "ds" };
+        public override string[] Aliases { get; } = new[] { "di", "integration", "discord", "ds" };
 
         public override string Description { get; } = string.Empty;
 

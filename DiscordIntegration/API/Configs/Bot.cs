@@ -87,7 +87,7 @@ namespace DiscordIntegration.API.Configs
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (!ClientScene.ready)
+                if (!NetworkClient.ready)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(Instance.Config.Bot.ChannelTopicUpdateInterval), cancellationToken);
 
@@ -96,15 +96,12 @@ namespace DiscordIntegration.API.Configs
 
                 try
                 {
-                    int aliveHumans = Player.List.Where(player => player.IsAlive && player.IsHuman).Count();
+                    int aliveHumans = Player.List.Count(player => player.IsAlive && player.IsHuman);
                     int aliveScps = Player.Get(Team.SCP).Count();
-                    TimeSpan duration = Round.ElapsedTime;
-                    string seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
-                    string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
 
                     string warheadText = Warhead.IsDetonated ? Language.WarheadHasBeenDetonated : Warhead.IsInProgress ? Language.WarheadIsCountingToDetonation : Language.WarheadHasntBeenDetonated;
 
-                    await Network.SendAsync(new RemoteCommand("updateChannelsTopic", $"| <a:Warrior_Bailando:817324006474514433> Jugadores conectados: {Player.Dictionary.Count()}/{Instance.Slots} | ⏲️ Tiempo de la ronda: {minutes}:{seconds} | <:chiquito:701486171523514381> Humanos vivos: {aliveHumans} | <a:106Justice:589810623601311764> SCPs vivos: {aliveScps} | <a:Diamante:776885749512798229> IP: {Server.IpAddress}:{Server.Port}"));
+                    await Network.SendAsync(new RemoteCommand("updateChannelsTopic", $"{string.Format(Language.PlayersOnline, Player.Dictionary.Count, Instance.Slots)}. {string.Format(Language.RoundDuration, Round.ElapsedTime)}. {string.Format(Language.AliveHumans, aliveHumans)}. {string.Format(Language.AliveScps, aliveScps)}. {warheadText} IP: {Server.IpAddress}:{Server.Port} TPS: {Instance.Ticks / Instance.Config.Bot.ChannelTopicUpdateInterval}"));
 
                     Instance.Ticks = 0;
                 }

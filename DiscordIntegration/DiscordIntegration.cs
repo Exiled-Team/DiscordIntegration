@@ -15,6 +15,7 @@ namespace DiscordIntegration
     using API.User;
     using Events;
     using Exiled.API.Features;
+    using HarmonyLib;
     using MEC;
     using Handlers = Exiled.Events.Handlers;
     using Version = System.Version;
@@ -35,6 +36,8 @@ namespace DiscordIntegration
         private PlayerHandler playerHandler;
 
         private NetworkHandler networkHandler;
+
+        private Harmony harmony;
 
         private DiscordIntegration()
         {
@@ -85,6 +88,16 @@ namespace DiscordIntegration
         /// </summary>
         public override void OnEnabled()
         {
+            try
+            {
+                harmony = new Harmony($"com.joker.DI-{DateTime.Now.Ticks}");
+                harmony.PatchAll();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+
             Language = new Language();
             Network = new Network(Instance.Config.Bot.IPAddress, Instance.Config.Bot.Port, TimeSpan.FromSeconds(Instance.Config.Bot.ReconnectionInterval));
 
@@ -113,6 +126,7 @@ namespace DiscordIntegration
         /// </summary>
         public override void OnDisabled()
         {
+            harmony?.UnpatchAll();
             KillCoroutines();
 
             NetworkCancellationTokenSource.Cancel();
@@ -150,11 +164,9 @@ namespace DiscordIntegration
             Handlers.Warhead.Starting += mapHandler.OnStartingWarhead;
             Handlers.Warhead.Stopping += mapHandler.OnStoppingWarhead;
             Handlers.Warhead.Detonated += mapHandler.OnWarheadDetonated;
-            Handlers.Scp914.UpgradingItems += mapHandler.OnUpgradingItems;
+            Handlers.Scp914.UpgradingItem += mapHandler.OnUpgradingItems;
 
-            Handlers.Server.SendingRemoteAdminCommand += serverHandler.OnSendingRemoteAdminCommand;
             Handlers.Server.WaitingForPlayers += serverHandler.OnWaitingForPlayers;
-            Handlers.Server.SendingConsoleCommand += serverHandler.OnSendingConsoleCommand;
             Handlers.Server.RoundStarted += serverHandler.OnRoundStarted;
             Handlers.Server.RoundEnded += serverHandler.OnRoundEnded;
             Handlers.Server.RespawningTeam += serverHandler.OnRespawningTeam;
@@ -162,11 +174,11 @@ namespace DiscordIntegration
             Handlers.Server.LocalReporting += serverHandler.OnLocalReporting;
 
             Handlers.Scp914.ChangingKnobSetting += playerHandler.OnChangingScp914KnobSetting;
-            Handlers.Player.MedicalItemUsed += playerHandler.OnUsedMedicalItem;
+            Handlers.Player.ItemUsed += playerHandler.OnUsedMedicalItem;
             Handlers.Scp079.InteractingTesla += playerHandler.OnInteractingTesla;
             Handlers.Player.PickingUpItem += playerHandler.OnPickingUpItem;
-            Handlers.Player.InsertingGeneratorTablet += playerHandler.OnInsertingGeneratorTablet;
-            Handlers.Player.EjectingGeneratorTablet += playerHandler.OnEjectingGeneratorTablet;
+            Handlers.Player.ActivatingGenerator += playerHandler.OnInsertingGeneratorTablet;
+            Handlers.Player.StoppingGenerator += playerHandler.OnEjectingGeneratorTablet;
             Handlers.Player.UnlockingGenerator += playerHandler.OnUnlockingGenerator;
             Handlers.Player.OpeningGenerator += playerHandler.OnOpeningGenerator;
             Handlers.Player.ClosingGenerator += playerHandler.OnClosingGenerator;
@@ -177,7 +189,7 @@ namespace DiscordIntegration
             Handlers.Scp106.CreatingPortal += playerHandler.OnCreatingPortal;
             Handlers.Player.ActivatingWarheadPanel += playerHandler.OnActivatingWarheadPanel;
             Handlers.Player.TriggeringTesla += playerHandler.OnTriggeringTesla;
-            Handlers.Player.ThrowingGrenade += playerHandler.OnThrowingGrenade;
+            Handlers.Player.ThrowingItem += playerHandler.OnThrowingGrenade;
             Handlers.Player.Hurting += playerHandler.OnHurting;
             Handlers.Player.Dying += playerHandler.OnDying;
             Handlers.Player.Kicked += playerHandler.OnKicked;
@@ -190,7 +202,7 @@ namespace DiscordIntegration
             Handlers.Player.RemovingHandcuffs += playerHandler.OnRemovingHandcuffs;
             Handlers.Scp106.Teleporting += playerHandler.OnTeleporting;
             Handlers.Player.ReloadingWeapon += playerHandler.OnReloadingWeapon;
-            Handlers.Player.ItemDropped += playerHandler.OnItemDropped;
+            Handlers.Player.DroppingItem += playerHandler.OnItemDropped;
             Handlers.Player.Verified += playerHandler.OnVerified;
             Handlers.Player.Destroying += playerHandler.OnDestroying;
             Handlers.Player.ChangingRole += playerHandler.OnChangingRole;
@@ -217,11 +229,9 @@ namespace DiscordIntegration
             Handlers.Warhead.Starting -= mapHandler.OnStartingWarhead;
             Handlers.Warhead.Stopping -= mapHandler.OnStoppingWarhead;
             Handlers.Warhead.Detonated -= mapHandler.OnWarheadDetonated;
-            Handlers.Scp914.UpgradingItems -= mapHandler.OnUpgradingItems;
+            Handlers.Scp914.UpgradingItem -= mapHandler.OnUpgradingItems;
 
-            Handlers.Server.SendingRemoteAdminCommand -= serverHandler.OnSendingRemoteAdminCommand;
             Handlers.Server.WaitingForPlayers -= serverHandler.OnWaitingForPlayers;
-            Handlers.Server.SendingConsoleCommand -= serverHandler.OnSendingConsoleCommand;
             Handlers.Server.RoundStarted -= serverHandler.OnRoundStarted;
             Handlers.Server.RoundEnded -= serverHandler.OnRoundEnded;
             Handlers.Server.RespawningTeam -= serverHandler.OnRespawningTeam;
@@ -229,11 +239,11 @@ namespace DiscordIntegration
             Handlers.Server.LocalReporting -= serverHandler.OnLocalReporting;
 
             Handlers.Scp914.ChangingKnobSetting -= playerHandler.OnChangingScp914KnobSetting;
-            Handlers.Player.UsingMedicalItem -= playerHandler.OnUsedMedicalItem;
+            Handlers.Player.UsingItem -= playerHandler.OnUsedMedicalItem;
             Handlers.Scp079.InteractingTesla -= playerHandler.OnInteractingTesla;
             Handlers.Player.PickingUpItem -= playerHandler.OnPickingUpItem;
-            Handlers.Player.InsertingGeneratorTablet -= playerHandler.OnInsertingGeneratorTablet;
-            Handlers.Player.EjectingGeneratorTablet -= playerHandler.OnEjectingGeneratorTablet;
+            Handlers.Player.ActivatingGenerator -= playerHandler.OnInsertingGeneratorTablet;
+            Handlers.Player.StoppingGenerator -= playerHandler.OnEjectingGeneratorTablet;
             Handlers.Player.UnlockingGenerator -= playerHandler.OnUnlockingGenerator;
             Handlers.Player.OpeningGenerator -= playerHandler.OnOpeningGenerator;
             Handlers.Player.ClosingGenerator -= playerHandler.OnClosingGenerator;
@@ -244,7 +254,7 @@ namespace DiscordIntegration
             Handlers.Scp106.CreatingPortal -= playerHandler.OnCreatingPortal;
             Handlers.Player.ActivatingWarheadPanel -= playerHandler.OnActivatingWarheadPanel;
             Handlers.Player.TriggeringTesla -= playerHandler.OnTriggeringTesla;
-            Handlers.Player.ThrowingGrenade -= playerHandler.OnThrowingGrenade;
+            Handlers.Player.ThrowingItem -= playerHandler.OnThrowingGrenade;
             Handlers.Player.Hurting -= playerHandler.OnHurting;
             Handlers.Player.Dying -= playerHandler.OnDying;
             Handlers.Player.Kicked -= playerHandler.OnKicked;
@@ -257,7 +267,7 @@ namespace DiscordIntegration
             Handlers.Player.RemovingHandcuffs -= playerHandler.OnRemovingHandcuffs;
             Handlers.Scp106.Teleporting -= playerHandler.OnTeleporting;
             Handlers.Player.ReloadingWeapon -= playerHandler.OnReloadingWeapon;
-            Handlers.Player.ItemDropped -= playerHandler.OnItemDropped;
+            Handlers.Player.DroppingItem -= playerHandler.OnItemDropped;
             Handlers.Player.Verified -= playerHandler.OnVerified;
             Handlers.Player.Destroying -= playerHandler.OnDestroying;
             Handlers.Player.ChangingRole -= playerHandler.OnChangingRole;

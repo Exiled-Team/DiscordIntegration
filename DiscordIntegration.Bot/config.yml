@@ -1,58 +1,37 @@
-# Bot token
-token: "your-bot-token"
-
-# Bot commands prefix
-prefix: "+"
-
+token: ''
+prefix: +
 channels:
-  # Channels to log various kind of messages in.
   log:
-    # List of channels to log commands in.
     commands:
-      - "channel-id-1"
-    # List of channels to log game events in.
+      - channel-id-1
     game_events:
-      - "channel-id-2"
-    # List of channels to log bans in.
+      - channel-id-2
     bans:
-      - "channel-id-3"
+      - channel-id-3
     reports:
-      - "channel-id-4"
-  # Channel to which the topic will be changed.
+      - channel-id-4
+    staff_copy:
+      - channel-id-5
   topic:
-    - "channel-id-5"
-  # Channels in which commands are allowed to be executed.
+    - channel-id-5
   command:
-    - "channel-id-6"
- 
-# List of roles and commands they can use.
+    - channel-id-6
+  commandCategories:
+    - channel-category-id-7
 commands:
-  "role-1":
-    - "di"
-    - "discordintegration"
-
-# Discord server configs.
-discord_server:
-  # Discord server ID.
-  id: "your-discord-server-id"
-
-# TCP server configs.
-tcp_server:
-  # TCP server port.
-  port: 9000
-  # TCP server IP address.
-  ip_address: "127.0.0.1"
-
+  role_id_1:
+    - di
+    - discordintegration
+# With this you can create aliases for commands that do not allow you to change their add aliases
 alias:
-  playerList:
-      - caca
-      - jugadores
-      - players
-# Internal keep alive of a connected client, in milliseconds.
+   "playerlist":
+     - plys
+     - caca
+discord_server:
+  id: ''
+tcp_server:
+  port: 9000
+  ip_address: 127.0.0.1
 keep_alive_interval: 2000
-
-# Messages delay, in milliseconds
-messages_delay: 100
-
-# Indicates whether the debug is enabled or not.
+messages_delay: 1000
 is_debug_enabled: false

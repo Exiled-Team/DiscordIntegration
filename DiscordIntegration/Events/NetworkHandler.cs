@@ -16,7 +16,6 @@ namespace DiscordIntegration.Events
     using API.EventArgs.Network;
     using API.User;
     using Exiled.API.Features;
-    using Exiled.Permissions.Extensions;
     using Newtonsoft.Json;
     using static DiscordIntegration;
 
@@ -25,6 +24,9 @@ namespace DiscordIntegration.Events
     /// </summary>
     internal sealed class NetworkHandler
     {
+
+        public static string channelId;
+
         /// <inheritdoc cref="API.Network.OnReceivedFull(object, ReceivedFullEventArgs)"/>
         public void OnReceivedFull(object _, ReceivedFullEventArgs ev)
         {
@@ -39,61 +41,31 @@ namespace DiscordIntegration.Events
                 switch (remoteCommand.Action)
                 {
                     case "executeCommand":
-                        JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
-                        break;
-                    case "playerList":
-                        string description = string.Empty;
-                        IList<Field> fields = new List<Field>();
-                        TimeSpan duration = Round.ElapsedTime;
-                        string seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
-                        string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
-                        IEnumerable<Player> list = Player.List.OrderBy(pl => pl.Id);
-                        description += "```diff\n";
-                        foreach (Player ply in list)
                         {
-                            if (ply.RemoteAdminAccess)
-                            {
-                                description += $"- | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | Staff |\n";
-                            }
-                            else if (ply.CheckPermission("cerberus.viplist"))
-                            {
-                                description += $"+ | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | VIP |\n";
-                            }
-                            else if (ply.CheckPermission("cerberus.donadorlist"))
-                            {
-                                description += $"+ | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} | Donador |\n";
-                            }
-                            else
-                            {
-                                description += $"+ | {ply.Id} | {ply.Nickname} | {ply.Role.Translate()} |\n";
-                            }
-                        }
-
-                        description += "\n```";
-                        if (Player.List.Count() < 1)
-                        {
-                            description = "```diff\n- No hay jugadores conectados - \n```";
-                        }
-
-                        Network.SendAsync(new RemoteCommand(
-                            "sendEmbed",
-                            JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId,
-                            $"| Jugadores {Player.Dictionary.Count}/{Instance.Slots} | Tiempo de la ronda {minutes}:{seconds} |\n      |  ID  |  Nombre   |  Clase  |  Rol en el servidor  |", description));
-                        break;
-                    case "setGroupFromId":
-                        SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
-
-                        if (syncedUser == null)
+                            JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
+                            channelId = JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId;
                             break;
+                        }
 
-                        if (!Instance.SyncedUsersCache.Contains(syncedUser))
-                            Instance.SyncedUsersCache.Add(syncedUser);
+                    case "setGroupFromId":
+                        {
+                            SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
 
-                        syncedUser?.SetGroup();
-                        break;
+                            if (syncedUser == null)
+                                break;
+
+                            if (!Instance.SyncedUsersCache.Contains(syncedUser))
+                                Instance.SyncedUsersCache.Add(syncedUser);
+
+                            syncedUser?.SetGroup();
+                            break;
+                        }
+
                     case "commandReply":
-                        JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
-                        break;
+                        {
+                            JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
+                            break;
+                        }
                 }
             }
             catch (Exception exception)

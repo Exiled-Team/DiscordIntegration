@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /DiscordIntegration.Bot/config.dev.yml
+/DiscordIntegration.Bot/node_modules/*

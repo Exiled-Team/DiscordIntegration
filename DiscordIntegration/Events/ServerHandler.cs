@@ -19,37 +19,25 @@ namespace DiscordIntegration.Events
     internal sealed class ServerHandler
     {
 #pragma warning disable SA1600 // Elements should be documented
-        public async void OnSendingRemoteAdminCommand(SendingRemoteAdminCommandEventArgs ev)
-        {
-            if (Instance.Config.EventsToLog.SendingRemoteAdminCommands)
-                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.UsedCommand, ev.CommandSender.Nickname, ev.CommandSender.SenderId ?? Language.DedicatedServer, ev.Sender.Role.Translate(), ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
-        }
-
-        public async void OnSendingConsoleCommand(SendingConsoleCommandEventArgs ev)
-        {
-            if (Instance.Config.EventsToLog.SendingConsoleCommands) {
-                if (ev.Name == "sr" || ev.Name.StartsWith("keypress"))
-                    return;
-                await Network.SendAsync(new RemoteCommand("log", "commands", string.Format(Language.HasRunClientConsoleCommand, ev.Player.Nickname, ev.Player.UserId ?? Language.DedicatedServer, ev.Player.Role.Translate(), ev.Name, string.Join(" ", ev.Arguments)))).ConfigureAwait(false);
-            }
-        }
 
         public async void OnReportingCheater(ReportingCheaterEventArgs ev)
         {
             if (Instance.Config.EventsToLog.ReportingCheater)
-                await Network.SendAsync(new RemoteCommand("log", "reports", string.Format(Language.CheaterReportFilled, ev.Reporter.Nickname, ev.Reporter.Id.ToString(), ev.Reporter.Role.Translate(), ev.Reported.Nickname, ev.Reported.Id.ToString(), ev.Reported.Role.Translate(), ev.Reason))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "reports", string.Format(Language.CheaterReportFilled, ev.Reporter.Nickname, ev.Reporter.UserId, ev.Reporter.Role, ev.Reported.Nickname, ev.Reported.UserId, ev.Reported.Role, ev.Reason))).ConfigureAwait(false);
         }
 
         public async void OnLocalReporting(LocalReportingEventArgs ev)
         {
             if (Instance.Config.EventsToLog.ReportingCheater)
-                await Network.SendAsync(new RemoteCommand("log", "reports", string.Format(Language.CheaterReportFilled, ev.Issuer.Nickname, ev.Issuer.Id.ToString(), ev.Issuer.Role.Translate(), ev.Target.Nickname, ev.Target.Id.ToString(), ev.Target.Role.Translate(), ev.Reason))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "reports", string.Format(Language.CheaterReportFilled, ev.Issuer.Nickname, ev.Issuer.UserId, ev.Issuer.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Reason))).ConfigureAwait(false);
         }
 
         public async void OnWaitingForPlayers()
         {
             if (Instance.Config.EventsToLog.WaitingForPlayers)
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", Language.WaitingForPlayers)).ConfigureAwait(false);
+            if (Instance.Config.StaffOnlyEventsToLog.WaitingForPlayers)
+                await Network.SendAsync(new RemoteCommand("log", "staffCopy", Language.WaitingForPlayers)).ConfigureAwait(false);
         }
 
         public async void OnRoundStarted()

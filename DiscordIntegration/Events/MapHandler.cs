@@ -31,7 +31,7 @@ namespace DiscordIntegration.Events
         public async void OnGeneratorActivated(GeneratorActivatedEventArgs ev)
         {
             if (Instance.Config.EventsToLog.GeneratorActivated)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorFinished, ev.Generator.CurRoom, Generator079.mainGenerator.totalVoltage + 1))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorFinished, ev.Generator.GetComponentInParent<Room>(), Map.ActivatedGenerators + 1))).ConfigureAwait(false);
         }
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "Discard operator")]
@@ -47,7 +47,7 @@ namespace DiscordIntegration.Events
             {
                 object[] vars = ev.Player == null ?
                     new object[] { Warhead.DetonationTimer } :
-                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate(), Warhead.DetonationTimer };
+                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, Warhead.DetonationTimer };
 
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.WarheadStarted : Language.PlayerWarheadStarted, vars))).ConfigureAwait(false);
             }
@@ -59,32 +59,26 @@ namespace DiscordIntegration.Events
             {
                 object[] vars = ev.Player == null ?
                     Array.Empty<object>() :
-                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.Id.ToString() : Language.Redacted, ev.Player.Role.Translate() };
+                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role };
 
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.CanceledWarhead : Language.PlayerCanceledWarhead, vars))).ConfigureAwait(false);
             }
+
+            if (Instance.Config.StaffOnlyEventsToLog.StoppingWarhead)
+            {
+                object[] vars = ev.Player == null
+                    ? Array.Empty<object>()
+                    : new object[] { ev.Player.Nickname, ev.Player.UserId, ev.Player.Role };
+
+                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(ev.Player == null ? Language.CanceledWarhead : Language.PlayerCanceledWarhead, vars))).ConfigureAwait(false);
+            }
         }
 
-        public async void OnUpgradingItems(UpgradingItemsEventArgs ev)
+        public async void OnUpgradingItems(UpgradingItemEventArgs ev)
         {
             if (Instance.Config.EventsToLog.UpgradingScp914Items)
             {
-                StringBuilder players = StringBuilderPool.Shared.Rent();
-                StringBuilder items = StringBuilderPool.Shared.Rent();
-
-                foreach (Player player in ev.Players)
-                {
-                    if (!player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack)
-                        players.Append(player.Nickname).Append(" (").Append(Instance.Config.ShouldLogUserIds ? player.Id.ToString() : Language.Redacted).Append(") [").Append(player.Role.Translate()).Append(']').AppendLine();
-                }
-
-                foreach (Pickup item in ev.Items)
-                    items.Append(item.ItemId.ToString()).AppendLine();
-
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.Scp914HasProcessedTheFollowingPlayers, players, items)));
-
-                StringBuilderPool.Shared.Return(players);
-                StringBuilderPool.Shared.Return(items);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.Scp914ProcessedItem, ev.Item.Type)));
             }
         }
     }

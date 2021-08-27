@@ -9,6 +9,7 @@ const configPath = './config.yml';
 const syncedRolesPath = './synced-roles.yml';
 const discordClient = new discord.Client();
 const tcpServer = require('net').createServer();
+
 /**
  * @type {discord.Guild}
  * */
@@ -30,6 +31,9 @@ let config = {
       reports: [
         'channel-id-4'
       ],
+      staffCopy: [
+        'channel-id-5'
+      ],
     },
     topic: [
       'channel-id-5'
@@ -38,7 +42,7 @@ let config = {
       'channel-id-6'
     ],
     commandCategories: [
-      "channel-id-7" 
+      "channel-id-7"
     ]
   },
   commands: {
@@ -50,9 +54,6 @@ let config = {
   tcpServer: {
     port: 9000,
     ipAddress: '127.0.0.1'
-  },
-  alias: {
-    "playerList": ["jugadores", "players"]
   },
   keepAliveInterval: 2000,
   messagesDelay: 1000,
@@ -81,11 +82,12 @@ let remoteCommands = {
   "removeRole": removeRole,
   "sendEmbed": sendEmbed
 };
+
 /**
  * Logs in the bot and starts a TCP server.
  */
 discordClient.on('ready', async () => {
-  await discordClient.user.setActivity('conexion con el servidor...', {type: "LISTENING"});
+  await discordClient.user.setActivity('for connections.', {type: "LISTENING"});
   await discordClient.user.setStatus('dnd');
 
   console.log(`[DISCORD][INFO] Successfully logged in as ${discordClient.user.tag}.`);
@@ -108,35 +110,30 @@ discordClient.on('ready', async () => {
  * Handles commands from Discord.
  */
 discordClient.on('message', message => {
-  if (!config.channels.command || message.author.bot || !message.content.startsWith(config.prefix) || (!config.channels.command.includes(message.channel.id) && !config.channels.commandCategories.includes(message.channel.parentID)))
+  if (!config.channels.command || message.author.bot || !message.content.startsWith(config.prefix) || !config.channels.command.includes(message.channel.id) && !config.channels.commandCategories.includes(message.channel.parentID))
     return;
 
   if (sockets.length === 0) {
-    message.channel.send('El Servidor no esta conectado al Bot.');
+    message.channel.send('Server is not connected.');
     return;
   }
 
   const command = message.content.substring(config.prefix.length, message.content.length);
 
   if (command.length === 0) {
-    //message.channel.send('Los comandos no pueden estar vacios.');
+    message.channel.send('Command cannot be empty.');
     return;
   }
 
   if (!canExecuteCommand(message.member, command.toLowerCase())) {
-    //message.channel.send('Te faltan permisos.');
+    message.channel.send('Permission denied.');
     return;
   }
 
   if (config.isDebugEnabled)
     console.debug(`[DISCORD][DEBUG] ${message.author.tag} (${message.author.id}) executed a command: [${command}]`);
 
-  for(const alias in config.alias) {
-    if(alias.toLowerCase() === command || config.alias[alias].includes(command)) {
-      return sockets.forEach(socket => socket.write(JSON.stringify({action: alias, parameters: {channelId: message.channel.id, content: alias, user: {id: message.author.id + '@discord', name: message.author.username}}}) + '\0'));
-    } 
-  }
-  sockets.forEach(socket => socket.write(JSON.stringify({action: 'executeCommand', parameters: {channelId: message.channel.id, content: command, user: {id: message.author.id + '@discord', name: message.author.username}}}) + '\0'));
+  sockets.forEach(socket => socket.write(JSON.stringify({action: 'executeCommand', parameters: {channelId: message.channel.id, content: command, user: {id: message.author.id + '@discord', name: message.author.tag}}}) + '\0'));
 });
 
 /**
@@ -192,16 +189,16 @@ tcpServer.on('connection', socket => {
       } catch (exception) {
         console.error(`[NET][ERROR] An error has occurred while receiving data from ${socket?.address()?.address}:${socket?.address()?.port}: ${exception}`);
       }
-    });    
+    });
   });
 
   socket.on('error', error => {
     if (error.message.includes('ECONNRESET')) {
       console.info('[SOCKET][INFO] Server closed connection.');
-      log('gameEvents', '```diff\n- El Servidor corto la conexion.\n```', true);
+      log('gameEvents', '```diff\n- Server closed connection.\n```', true);
     } else {
       console.error(`[SOCKET][ERROR] Server closed connection: ${error}.`);
-      log('gameEvents', `\`\`\`diff\n - El Servidor corto la conexion: ${error}.\n\`\`\``, true);
+      log('gameEvents', `\`\`\`diff\n - Server closed connection: ${error}.\n\`\`\``, true);
     }
   });
 
@@ -304,7 +301,7 @@ function saveSyncedRoles() {
 
 /**
  * Gets the user's group from its user id.
- * 
+ *
  * @param {string} id The user id.
  */
 async function getGroupFromId(id) {
@@ -378,17 +375,6 @@ function sendMessage(channelId, content, shouldLogTimestamp = false) {
     .catch(error => console.error(`[DISCORD][ERROR] Cannot send message in "${channel.name}" (${channel.id}): ${error}`));
 }
 
-function sendEmbed(channelId, title, description, fields = [], color = "#8154d1") {
-  const embed = new discord.MessageEmbed();
-  if(title) embed.setTitle(title);
-  if(description) embed.setDescription(description);
-  for(const field of fields) {
-    embed.addField(field.name, field.value, field.inline);
-  }
-  embed.setColor(color);
-  discordServer.channels.cache.get(channelId)?.send(embed);
-}
-
 /**
  * Logs an event, command or ban in every configurated Discord channel.
  *
@@ -403,7 +389,7 @@ function log(type, content, isInstant = false) {
 
 /**
  * Changes the topic of a specific Discord channel.
- * 
+ *
  * @param {string} channelId The channel id
  * @param {string} newTopic The new topic to be set.
  */
@@ -429,7 +415,19 @@ function updateChannelsTopic(newTopic) {
 
   config.channels.topic.forEach(channelId => updateChannelTopic(channelId, newTopic));
 }
-
+/**
+ * Send a Sexy Embed.
+ */
+function sendEmbed(channelId, title, description, fields = [], color = "#15a3a3") {
+  const embed = new discord.MessageEmbed();
+  if(title) embed.setTitle(title);
+  if(description) embed.setDescription(description);
+  for(const field of fields) {
+    embed.addField(field.name, field.value, field.inline);
+  }
+  embed.setColor(color);
+  discordServer.channels.cache.get(channelId)?.send(embed);
+}
 /**
  * Updates the bot activity.
  * @param {string} newActivity The new activity.
@@ -521,7 +519,7 @@ async function close(exit = false) {
   sockets.forEach(socket => socket.destroy());
 
   sockets = [];
-  
+
   tcpServer.close(() => {
     console.info('[NET][INFO] Server closed.');
     tcpServer.unref();

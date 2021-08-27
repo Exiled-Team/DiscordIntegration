@@ -104,7 +104,7 @@ namespace DiscordIntegration
 
         public string HasTriggeredATeslaGate { get; set; } = ":zap: {0} ({1}) [{2}] has triggered a tesla gate.";
 
-        public string Scp914HasProcessedTheFollowingPlayers { get; set; } = ":gear: SCP-914 has processed the following players:\n **{0}**\nand items:\n **{1}**";
+        public string Scp914ProcessedItem { get; set; } = ":gear: SCP-914 has processed: **{0}**";
 
         public string HasClosedADoor { get; set; } = ":door: {0} ({1}) [{2}] has closed {3} door.";
 
@@ -202,7 +202,7 @@ namespace DiscordIntegration
 
         public string ReloadLanguageCommandSuccess { get; set; } = "Language reloaded successfully!";
 
-        public string ReloadSyncedRolesSuccess { get; internal set; } = "Bot synced roles reload request sent successfully.";
+        public string ReloadSyncedRolesSuccess { get; set; } = "Bot synced roles reload request sent successfully.";
 
         public string CouldNotUpdateChannelTopicError { get; set; } = "Error! Couldn't update channel topic: {0}";
 
@@ -240,7 +240,7 @@ namespace DiscordIntegration
 
         public string InvalidDiscordIdError { get; set; } = "{0} is not a valid Discord ID!";
 
-        public string InvalidUserdIdError { get; internal set; } = "{0} is not a valid user ID!";
+        public string InvalidUserdIdError { get; set; } = "{0} is not a valid user ID!";
 
         public string InvalidDiscordRoleIdError { get; set; } = "{0} is not a valid Discord role ID!";
 
@@ -259,6 +259,14 @@ namespace DiscordIntegration
         public string NotAuthenticated { get; set; } = "Not authenticated";
 
         public string DedicatedServer { get; set; } = "Dedicated server";
+
+        public string PlayerListEmbedTitle { get; set; } = "| Players: {0}/{1} | Round Time: {2}:{3} |";
+        public string PlayerListTitle { get; set; } = "|   ID    |     Nick     |     Role     |";
+        public string PlayerListTextperStaff { get; set; } = "- {0} - {1} - {2}\n";
+        public string PlayerListTextperPlayer { get; set; } = "+ {0} - {1} - {2}\n";
+        public string PlayerListObtainingList { get; set; } = "Obtaining list of players";
+        public string PlayerListNoPlayerOnline { get; set; } = "```diff\n-- No Players Online --\n```";
+        public string PlayerListCodeBlock { get; set; } = "diff";
 
 #pragma warning restore CS1591
 #pragma warning restore SA1600 // Elements should be documented
