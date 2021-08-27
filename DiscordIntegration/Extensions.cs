@@ -56,13 +56,30 @@ namespace DiscordIntegration
 
             return new PlayerCommandSender(sender.SenderId, sender.Nickname, sender.Permissions, sender.KickPower, sender.FullPermissions);
         }
+
+        /// <summary>
+        /// Translate RoleType Text
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static string Translate(this RoleType type)
+        {
+            return DiscordIntegration.Language.RoleTypeTranslate.TryGetValue(type, out var value) ? value : type.ToString();
+        }
     }
+
     public class Field
     {
-        public string name;
-        public string value;
-        public bool inline;
+        private string name;
+        private string value;
+        private bool inline;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Field"/> class.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="inline"></param>
         public Field(string name, string value, bool inline = false)
         {
             this.name = name;
