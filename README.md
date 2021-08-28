@@ -40,6 +40,7 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 1. Go to https://discord.com/developers/applications and create a new application.
 2. Inside of the application page under "settings" click Bot & build the bot.
 3. After creating the bot you can change the bots username and avatar if you wish.
+
 Bot token is located on the Bot page under username, Do NOT share the token because people can control the bot if they get it.
 
 ## How to run the bot
