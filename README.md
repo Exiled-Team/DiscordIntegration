@@ -36,6 +36,12 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 1. Run `cd path/to/bot` replacing `path/to/bot` with the path of where the extracted bot is located, make sure `discordIntegration.js` and `package.json` are in the same folder.
 2. Run `npm install`.
 
+## How to create a Discord bot
+1. Go to https://discord.com/developers/applications and create a new application.
+2. Inside of the application page under "settings" click Bot & build the bot.
+3. After creating the bot you can change the bots username and avatar if you wish.
+Bot token is located on the Bot page under username, Do NOT share the token because people can control the bot if they get it.
+
 ## How to run the bot
 
 Open the bot once to let it automatically generate config.yml and synced-roles.yml files.
