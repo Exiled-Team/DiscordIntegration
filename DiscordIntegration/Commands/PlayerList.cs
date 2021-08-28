@@ -124,9 +124,13 @@ namespace DiscordIntegration.Commands
                     IList<Field> fields = new List<Field>();
                     fields.Add(new Field(Language.PlayerListTitle, message, false));
                     var title = string.Format(Language.PlayerListEmbedTitle, Player.Dictionary.Count, DiscordIntegration.Instance.Slots, minutes, seconds);
+
+                    Log.Info("Message is: " + message + " Title is: " + title);
+
+                    Log.Info("Is field null ? " + fields is null);
+                    if (fields != null)
+                        Log.Info("Field is " + fields[0]);
                     _ = Network.SendAsync(new RemoteCommand("sendEmbed", channel, title, string.Empty, fields));
-
-
                 });
                 response = null;
                 return true;

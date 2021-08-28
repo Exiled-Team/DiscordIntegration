@@ -43,11 +43,11 @@ namespace DiscordIntegration.Events
 
         public async void OnStartingWarhead(StartingEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.StartingWarhead && (ev.Player == null || (ev.Player != null && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))))
+            if (Instance.Config.EventsToLog.StartingWarhead)
             {
                 object[] vars = ev.Player == null ?
                     new object[] { Warhead.DetonationTimer } :
-                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role.Translate(), Warhead.DetonationTimer };
+                    new object[] { ev.Player.Nickname, ev.Player.DoNotTrack ? Language.Redacted : ev.Player.UserId, ev.Player.Role.Translate(), Warhead.DetonationTimer };
 
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.WarheadStarted : Language.PlayerWarheadStarted, vars))).ConfigureAwait(false);
             }
@@ -55,11 +55,11 @@ namespace DiscordIntegration.Events
 
         public async void OnStoppingWarhead(StoppingEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.StoppingWarhead && (ev.Player == null || (ev.Player != null && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))))
+            if (Instance.Config.EventsToLog.StoppingWarhead)
             {
                 object[] vars = ev.Player == null ?
                     Array.Empty<object>() :
-                    new object[] { ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role.Translate() };
+                    new object[] { ev.Player.Nickname, ev.Player.DoNotTrack ? Language.Redacted : ev.Player.UserId, ev.Player.Role.Translate() };
 
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.CanceledWarhead : Language.PlayerCanceledWarhead, vars))).ConfigureAwait(false);
             }

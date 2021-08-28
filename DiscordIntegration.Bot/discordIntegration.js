@@ -427,6 +427,8 @@ function sendEmbed(channelId, title, description, fields = [], color = "#15a3a3"
   }
   embed.setColor(color);
   discordServer.channels.cache.get(channelId)?.send(embed);
+
+  console.log(`[Discord][Log] Sending Embed in ${channelId} embed info: ${embed}`)
 }
 /**
  * Updates the bot activity.

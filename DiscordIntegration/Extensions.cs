@@ -67,24 +67,4 @@ namespace DiscordIntegration
             return DiscordIntegration.Language.RoleTypeTranslate.TryGetValue(type, out var value) ? value : type.ToString();
         }
     }
-
-    public class Field
-    {
-        private string name;
-        private string value;
-        private bool inline;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Field"/> class.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        /// <param name="inline"></param>
-        public Field(string name, string value, bool inline = false)
-        {
-            this.name = name;
-            this.value = value;
-            this.inline = inline;
-        }
-    }
 }
