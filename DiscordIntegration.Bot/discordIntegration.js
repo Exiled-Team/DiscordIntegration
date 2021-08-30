@@ -125,8 +125,11 @@ discordClient.on('message', message => {
     return;
   }
 
-  if (!canExecuteCommand(message.member, command.toLowerCase())) {
+  if (!canExecuteCommand(message.member, command.toLowerCase()) && config.commands.contains(command.toLowerCase())) {
     message.channel.send('Permission denied.');
+    return;
+  }
+  else if(!canExecuteCommand(message.member, command.toLowerCase())){
     return;
   }
 
@@ -429,6 +432,18 @@ function sendEmbed(channelId, title, description, fields = [], color = "#15a3a3"
   discordServer.channels.cache.get(channelId)?.send(embed);
 
   console.log(`[Discord][Log] Sending Embed in ${channelId} embed info: ${embed}`)
+}
+
+function respondWhitEmbed(channelId, response, color= "#077591"){
+  const embed = new discord.MessageEmbed();
+  embed.description = response;
+  embed.setColor(color);
+  try {
+    discordServer.channels.cache.get(channelId)?.send(embed);
+  }catch (e) {
+    console.error(`Error on sending EmbedResponse: "${e}" ChannelID: "${channelId}"`);
+  }
+  
 }
 /**
  * Updates the bot activity.
