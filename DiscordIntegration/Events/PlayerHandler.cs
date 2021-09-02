@@ -169,18 +169,18 @@ namespace DiscordIntegration.Events
             {
                 if (ev.Player.DoNotTrack && Instance.Config.ShouldRespectDoNotTrack)
                 {
-                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GainedLevel, ev.Player.Nickname, Language.Redacted, ev.Player.Role.Translate(), ev.OldLevel, ev.NewLevel))).ConfigureAwait(false);
+                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GainedLevel, ev.Player.Nickname, Language.Redacted, ev.Player.Role.Translate(), ev.NewLevel - 1, ev.NewLevel))).ConfigureAwait(false);
                 }
                 else
                 {
                     if (ev.Player.DoNotTrack)
                         return;
-                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GainedLevel, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role.Translate(), ev.OldLevel, ev.NewLevel))).ConfigureAwait(false);
+                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GainedLevel, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role.Translate(), ev.NewLevel - 1, ev.NewLevel))).ConfigureAwait(false);
                 }
             }
 
             if (Instance.Config.StaffOnlyEventsToLog.GainingScp079Level)
-                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(Language.GainedLevel, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role.Translate(), ev.OldLevel, ev.NewLevel))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(Language.GainedLevel, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role.Translate(), ev.NewLevel - 1, ev.NewLevel))).ConfigureAwait(false);
         }
 
         public async void OnDestroying(DestroyingEventArgs ev)
@@ -349,18 +349,18 @@ namespace DiscordIntegration.Events
             {
                 if (ev.Player.DoNotTrack && Instance.Config.ShouldRespectDoNotTrack)
                 {
-                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Door.Open ? Language.HasClosedADoor : Language.HasOpenedADoor, ev.Player.Nickname, Language.Redacted, ev.Player.Role.Translate(), ev.Door.Nametag))).ConfigureAwait(false);
+                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Door.IsOpen ? Language.HasClosedADoor : Language.HasOpenedADoor, ev.Player.Nickname, Language.Redacted, ev.Player.Role.Translate(), ev.Door.Nametag))).ConfigureAwait(false);
                 }
                 else
                 {
                     if (ev.Player.DoNotTrack)
                         return;
-                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Door.Open ? Language.HasClosedADoor : Language.HasOpenedADoor, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role.Translate(), ev.Door.Nametag))).ConfigureAwait(false);
+                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Door.IsOpen ? Language.HasClosedADoor : Language.HasOpenedADoor, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role.Translate(), ev.Door.Nametag))).ConfigureAwait(false);
                 }
             }
 
             if (Instance.Config.StaffOnlyEventsToLog.PlayerInteractingDoor)
-                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(ev.Door.Open ? Language.HasClosedADoor : Language.HasOpenedADoor, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role.Translate(), ev.Door.Nametag))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(ev.Door.IsOpen ? Language.HasClosedADoor : Language.HasOpenedADoor, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role.Translate(), ev.Door.Nametag))).ConfigureAwait(false);
         }
 
         public async void OnActivatingScp914(ActivatingEventArgs ev)
@@ -516,20 +516,48 @@ namespace DiscordIntegration.Events
 
         public async void OnDying(DyingEventArgs ev)
         {
+
+            if (Instance.Config.EventsToLog.PlayerDying && ev.Killer != null && ev.Target != null && ev.Target.IsCuffed)
+            {
+                if (ev.Killer.Side == Exiled.API.Enums.Side.ChaosInsurgency)
+                {
+
+                }
+                else if(ev.Killer.Side == Exiled.API.Enums.Side.Mtf)
+                {
+
+                }
+            }
+
             if (Instance.Config.EventsToLog.PlayerDying &&
                 ev.Killer != null &&
                 ev.Target != null &&
-                (!Instance.Config.ShouldLogFriendlyFireKillsOnly || (Instance.Config.ShouldLogFriendlyFireKillsOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target)))
+                (!Instance.Config.ShouldLogFriendlyFireKillsOnly || (Instance.Config.ShouldLogFriendlyFireKillsOnly && ev.Killer.Side == ev.Target.Side && ev.Killer != ev.Target) || ev.Target.IsCuffed))
             {
                 if ((ev.Killer.DoNotTrack && Instance.Config.ShouldRespectDoNotTrack) || (ev.Target.DoNotTrack && Instance.Config.ShouldRespectDoNotTrack))
                 {
-                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKilledWith, ev.Killer.Nickname, ev.Killer.DoNotTrack ? Language.Redacted : ev.Killer.UserId, ev.Killer.Role.Translate(), ev.Target.Nickname, ev.Target.DoNotTrack ? Language.Redacted : ev.Target.UserId, ev.Target.Role.Translate(), ev.HitInformation.Tool.Name))).ConfigureAwait(false);
+                    if (ev.Target.IsCuffed)
+                    {
+                        await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKillCuffed, ev.Killer.Nickname, ev.Killer.DoNotTrack ? Language.Redacted : ev.Killer.UserId, ev.Killer.Role.Translate(), ev.Target.Nickname, ev.Target.DoNotTrack ? Language.Redacted : ev.Target.UserId, ev.Target.Role.Translate(), ev.HitInformation.Tool.Name))).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKilledWith, ev.Killer.Nickname, ev.Killer.DoNotTrack ? Language.Redacted : ev.Killer.UserId, ev.Killer.Role.Translate(), ev.Target.Nickname, ev.Target.DoNotTrack ? Language.Redacted : ev.Target.UserId, ev.Target.Role.Translate(), ev.HitInformation.Tool.Name))).ConfigureAwait(false);
+                    }
                 }
                 else
                 {
                     if (ev.Target.DoNotTrack || ev.Killer.DoNotTrack)
                         return;
-                    await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKilledWith, ev.Killer.Nickname, Instance.Config.ShouldLogUserIds ? ev.Killer.UserId : Language.Redacted, ev.Killer.Role.Translate(), ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role.Translate(), ev.HitInformation.Tool.Name))).ConfigureAwait(false);
+
+                    if (ev.Target.IsCuffed)
+                    {
+                        await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKillCuffed, ev.Killer.Nickname, Instance.Config.ShouldLogUserIds ? ev.Killer.UserId : Language.Redacted, ev.Killer.Role.Translate(), ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role.Translate(), ev.HitInformation.Tool.Name))).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.HasKilledWith, ev.Killer.Nickname, Instance.Config.ShouldLogUserIds ? ev.Killer.UserId : Language.Redacted, ev.Killer.Role.Translate(), ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role.Translate(), ev.HitInformation.Tool.Name))).ConfigureAwait(false);
+                    }
                 }
             }
 
