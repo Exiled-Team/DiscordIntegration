@@ -125,11 +125,9 @@ discordClient.on('message', message => {
     return;
   }
 
-  if (!canExecuteCommand(message.member, command.toLowerCase()) && config.commands.contains(command.toLowerCase())) {
-    message.channel.send('Permission denied.');
-    return;
-  }
-  else if(!canExecuteCommand(message.member, command.toLowerCase())){
+  if (!canExecuteCommand(message.member, command.toLowerCase())) {
+    console.info(`[DISCORD][INFO] ${message.member.nickname} dont have permission to execute ${command.toLowerCase()}`)
+    //message.channel.send('Permission denied.');
     return;
   }
 
