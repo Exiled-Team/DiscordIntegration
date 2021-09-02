@@ -517,18 +517,6 @@ namespace DiscordIntegration.Events
         public async void OnDying(DyingEventArgs ev)
         {
 
-            if (Instance.Config.EventsToLog.PlayerDying && ev.Killer != null && ev.Target != null && ev.Target.IsCuffed)
-            {
-                if (ev.Killer.Side == Exiled.API.Enums.Side.ChaosInsurgency)
-                {
-
-                }
-                else if(ev.Killer.Side == Exiled.API.Enums.Side.Mtf)
-                {
-
-                }
-            }
-
             if (Instance.Config.EventsToLog.PlayerDying &&
                 ev.Killer != null &&
                 ev.Target != null &&
