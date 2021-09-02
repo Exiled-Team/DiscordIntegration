@@ -72,6 +72,8 @@ namespace DiscordIntegration
 
         public string HasKilledWith { get; set; } = ":skull_crossbones: **{0} ({1}) [{2}] killed {3} ({4}) [{5}] with {6}.**";
 
+        public string HasKillCuffed { get; set; } = ":skull_crossbones: **{0} ({1}) [{2}] killed {3} ({4}) [{5}] who was under arrest.**";
+
         public string ThrewAGrenade { get; set; } = ":boom: {0} ({1}) [{2}] threw a {3}.";
 
         public string UsedMedicalItem { get; set; } = ":medical_symbol: {0} ({1}) [{2}] healed with {3}.";
