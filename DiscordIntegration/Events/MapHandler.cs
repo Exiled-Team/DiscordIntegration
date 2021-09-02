@@ -47,7 +47,7 @@ namespace DiscordIntegration.Events
             {
                 object[] vars = ev.Player == null ?
                     new object[] { Warhead.DetonationTimer } :
-                    new object[] { ev.Player.Nickname, ev.Player.DoNotTrack ? Language.Redacted : ev.Player.UserId, ev.Player.Role.Translate(), Warhead.DetonationTimer };
+                    new object[] { ev.Player.Nickname, ev.Player.Id, ev.Player.Role.Translate(), Warhead.DetonationTimer };
 
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.WarheadStarted : Language.PlayerWarheadStarted, vars))).ConfigureAwait(false);
             }
@@ -59,7 +59,7 @@ namespace DiscordIntegration.Events
             {
                 object[] vars = ev.Player == null ?
                     Array.Empty<object>() :
-                    new object[] { ev.Player.Nickname, ev.Player.DoNotTrack ? Language.Redacted : ev.Player.UserId, ev.Player.Role.Translate() };
+                    new object[] { ev.Player.Nickname, ev.Player.Id, ev.Player.Role.Translate() };
 
                 await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Player == null ? Language.CanceledWarhead : Language.PlayerCanceledWarhead, vars))).ConfigureAwait(false);
             }
