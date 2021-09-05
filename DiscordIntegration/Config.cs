@@ -23,6 +23,12 @@ namespace DiscordIntegration
         public bool IsEnabled { get; set; } = true;
 
         /// <summary>
+        /// Gets a value indicating whether the debug is enabled or not.
+        /// </summary>
+        [Description("Indicates whether the debug is enabled or not")]
+        public bool IsDebugEnabled { get; private set; }
+
+        /// <summary>
         /// Gets bot-related configs.
         /// </summary>
         [Description("Bot-related configs")]
@@ -87,12 +93,6 @@ namespace DiscordIntegration
         /// </summary>
         [Description("Indicates whether the plugin should try and set player's roles when they join based on the Discord Bot's discord sync feature or not")]
         public bool ShouldSyncRoles { get; private set; } = true;
-
-        /// <summary>
-        /// Gets a value indicating whether the debug is enabled or not.
-        /// </summary>
-        [Description("Indicates whether the debug is enabled or not")]
-        public bool IsDebugEnabled { get; private set; }
 
         /// <summary>
         /// Gets the plugin language.
