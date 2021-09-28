@@ -7,13 +7,11 @@
 
 namespace DiscordIntegration.Events
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Text;
     using API.Commands;
     using Exiled.API.Features;
     using Exiled.Events.EventArgs;
-    using NorthwoodLib.Pools;
+    using System;
+    using System.Diagnostics.CodeAnalysis;
     using static DiscordIntegration;
 
     /// <summary>
