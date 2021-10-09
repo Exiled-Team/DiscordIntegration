@@ -41,6 +41,9 @@ let config = {
     command: [
       'channel-id-6'
     ],
+    commandCategories: [
+      "channel-id-7"
+    ],
   },
   commands: {
     'role-id-1': [ 'di', 'discordintegration' ]
@@ -106,7 +109,7 @@ discordClient.on('ready', async () => {
  * Handles commands from Discord.
  */
 discordClient.on('message', message => {
-  if (!config.channels.command || message.author.bot || !message.content.startsWith(config.prefix) || !config.channels.command.includes(message.channel.id))
+  if (!config.channels.command || message.author.bot || !message.content.startsWith(config.prefix) || !config.channels.command.includes(message.channel.id) && !config.channels.commandCategories.includes(message.channel.parentID))
     return;
 
   if (sockets.length === 0) {
