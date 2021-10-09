@@ -9,8 +9,6 @@ namespace DiscordIntegration.Events
 {
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using API.Commands;
     using API.EventArgs.Network;
@@ -24,9 +22,6 @@ namespace DiscordIntegration.Events
     /// </summary>
     internal sealed class NetworkHandler
     {
-
-        public static string channelId;
-
         /// <inheritdoc cref="API.Network.OnReceivedFull(object, ReceivedFullEventArgs)"/>
         public void OnReceivedFull(object _, ReceivedFullEventArgs ev)
         {
@@ -41,31 +36,22 @@ namespace DiscordIntegration.Events
                 switch (remoteCommand.Action)
                 {
                     case "executeCommand":
-                        {
-                            JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
-                            channelId = JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.ChannelId;
-                            break;
-                        }
-
+                        JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
+                        break;
                     case "setGroupFromId":
-                        {
-                            SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
+                        SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
 
-                            if (syncedUser == null)
-                                break;
-
-                            if (!Instance.SyncedUsersCache.Contains(syncedUser))
-                                Instance.SyncedUsersCache.Add(syncedUser);
-
-                            syncedUser?.SetGroup();
+                        if (syncedUser == null)
                             break;
-                        }
 
+                        if (!Instance.SyncedUsersCache.Contains(syncedUser))
+                            Instance.SyncedUsersCache.Add(syncedUser);
+
+                        syncedUser?.SetGroup();
+                        break;
                     case "commandReply":
-                        {
-                            JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
-                            break;
-                        }
+                        JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
+                        break;
                 }
             }
             catch (Exception exception)

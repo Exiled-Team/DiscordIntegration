@@ -83,9 +83,9 @@ namespace DiscordIntegration.Events
         {
             if (Instance.Config.EventsToLog.GainingScp079Level && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
 #pragma warning disable CS0618 // Type or member is obsolete
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GainedLevel, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.OldLevel, ev.NewLevel))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GainedLevel, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.NewLevel - 1, ev.NewLevel))).ConfigureAwait(false);
             if (Instance.Config.StaffOnlyEventsToLog.GainingScp079Level)
-                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(Language.GainedLevel, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.OldLevel, ev.NewLevel))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(Language.GainedLevel, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.NewLevel - 1, ev.NewLevel))).ConfigureAwait(false);
 #pragma warning restore CS0618 // Type or member is obsolete
         }
 
@@ -156,9 +156,9 @@ namespace DiscordIntegration.Events
         public async void OnInteractingDoor(InteractingDoorEventArgs ev)
         {
             if (Instance.Config.EventsToLog.PlayerInteractingDoor && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Door.Open ? Language.HasClosedADoor : Language.HasOpenedADoor, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.Door.Nametag))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(ev.Door.IsOpen ? Language.HasClosedADoor : Language.HasOpenedADoor, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.Door.Nametag))).ConfigureAwait(false);
             if (Instance.Config.StaffOnlyEventsToLog.PlayerInteractingDoor)
-                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(ev.Door.Open ? Language.HasClosedADoor : Language.HasOpenedADoor, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Door.Nametag))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(ev.Door.IsOpen ? Language.HasClosedADoor : Language.HasOpenedADoor, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Door.Nametag))).ConfigureAwait(false);
         }
 
         public async void OnActivatingScp914(ActivatingEventArgs ev)
@@ -252,9 +252,9 @@ namespace DiscordIntegration.Events
         public async void OnUsedMedicalItem(UsedItemEventArgs ev)
         {
             if (ev.Player != null && Instance.Config.EventsToLog.PlayerUsedMedicalItem && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.UsedMedicalItem, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.Item.Type))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.UsedMedicalItem, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.Item))).ConfigureAwait(false);
             if (ev.Player != null && Instance.Config.StaffOnlyEventsToLog.PlayerUsedMedicalItem)
-                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(Language.UsedMedicalItem, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item.Type))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "staffCopy", string.Format(Language.UsedMedicalItem, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item))).ConfigureAwait(false);
         }
 
         public async void OnChangingRole(ChangingRoleEventArgs ev)

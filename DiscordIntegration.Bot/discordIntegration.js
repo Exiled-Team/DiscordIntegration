@@ -41,9 +41,6 @@ let config = {
     command: [
       'channel-id-6'
     ],
-    commandCategories: [
-      "channel-id-7"
-    ]
   },
   commands: {
     'role-id-1': [ 'di', 'discordintegration' ]
@@ -79,8 +76,7 @@ let remoteCommands = {
   "addUser": addUser,
   "removeUser": removeUser,
   "addRole": addRole,
-  "removeRole": removeRole,
-  "sendEmbed": sendEmbed
+  "removeRole": removeRole
 };
 
 /**
@@ -110,7 +106,7 @@ discordClient.on('ready', async () => {
  * Handles commands from Discord.
  */
 discordClient.on('message', message => {
-  if (!config.channels.command || message.author.bot || !message.content.startsWith(config.prefix) || !config.channels.command.includes(message.channel.id) && !config.channels.commandCategories.includes(message.channel.parentID))
+  if (!config.channels.command || message.author.bot || !message.content.startsWith(config.prefix) || !config.channels.command.includes(message.channel.id))
     return;
 
   if (sockets.length === 0) {
@@ -415,19 +411,7 @@ function updateChannelsTopic(newTopic) {
 
   config.channels.topic.forEach(channelId => updateChannelTopic(channelId, newTopic));
 }
-/**
- * Send a Sexy Embed.
- */
-function sendEmbed(channelId, title, description, fields = [], color = "#15a3a3") {
-  const embed = new discord.MessageEmbed();
-  if(title) embed.setTitle(title);
-  if(description) embed.setDescription(description);
-  for(const field of fields) {
-    embed.addField(field.name, field.value, field.inline);
-  }
-  embed.setColor(color);
-  discordServer.channels.cache.get(channelId)?.send(embed);
-}
+
 /**
  * Updates the bot activity.
  * @param {string} newActivity The new activity.
