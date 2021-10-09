@@ -56,15 +56,5 @@ namespace DiscordIntegration
 
             return new PlayerCommandSender(sender.SenderId, sender.Nickname, sender.Permissions, sender.KickPower, sender.FullPermissions);
         }
-
-        /// <summary>
-        /// Translate RoleType Text
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static string Translate(this RoleType type)
-        {
-            return DiscordIntegration.Language.RoleTypeTranslate.TryGetValue(type, out var value) ? value : type.ToString();
-        }
     }
 }

@@ -65,12 +65,6 @@ namespace DiscordIntegration
         public bool ShouldLogFriendlyFireDamageOnly { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether only friendly fire for damage should be logged or not on staff logs.
-        /// </summary>
-        [Description("Indicates whether only friendly fire for damage should be logged or not on staff Logs")]
-        public bool ShouldLogFriendlyFireDamageOnlyStaff { get; private set; } = false;
-
-        /// <summary>
         /// Gets a value indicating whether only friendly fire for kills should be logged or not.
         /// </summary>
         [Description("Indicates whether only friendly fire for kills should be logged or not")]

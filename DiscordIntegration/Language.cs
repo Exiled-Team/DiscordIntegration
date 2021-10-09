@@ -5,8 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Collections.Generic;
-
 namespace DiscordIntegration
 {
     using System;
@@ -72,8 +70,6 @@ namespace DiscordIntegration
 
         public string HasKilledWith { get; set; } = ":skull_crossbones: **{0} ({1}) [{2}] killed {3} ({4}) [{5}] with {6}.**";
 
-        public string HasKillCuffed { get; set; } = ":skull_crossbones: **{0} ({1}) [{2}] killed {3} ({4}) [{5}] who was under arrest.**";
-
         public string ThrewAGrenade { get; set; } = ":boom: {0} ({1}) [{2}] threw a {3}.";
 
         public string UsedMedicalItem { get; set; } = ":medical_symbol: {0} ({1}) [{2}] healed with {3}.";
@@ -100,7 +96,7 @@ namespace DiscordIntegration
 
         public string HasDropped { get; set; } = "{0} ({1}) [{2}] has dropped **{3}**.";
 
-        public string DecontaminationHasBegun { get; set; } = ":biohazard: **Deconamination has begun.**";
+        public string DecontaminationHasBegun { get; set; } = ":biohazard: **Decontamination has begun.**";
 
         public string HasEnteredPocketDimension { get; set; } = ":door: {0} ({1}) [{2}] has entered the pocket dimension.";
 
@@ -263,48 +259,6 @@ namespace DiscordIntegration
         public string NotAuthenticated { get; set; } = "Not authenticated";
 
         public string DedicatedServer { get; set; } = "Dedicated server";
-
-        public string PlayerListEmbedTitle { get; set; } = "| Players: {0}/{1} | Round Time: {2}:{3} |";
-
-        public string PlayerListTitle { get; set; } = "|   ID    |     Nick     |     Role     |";
-
-        public string PlayerListTextperStaff { get; set; } = "- {0} - {1} - {2}\n";
-
-        public string PlayerListTextperPlayer { get; set; } = "+ {0} - {1} - {2}\n";
-
-        public string PlayerListObtainingList { get; set; } = "Obtaining list of players";
-
-        public string PlayerListNoPlayerOnline { get; set; } = "```diff\n-- No Players Online --\n```";
-
-        public string PlayerListCodeBlock { get; set; } = "diff";
-
-        public Dictionary<RoleType, string> RoleTypeTranslate { get; set; } = new Dictionary<RoleType, string>()
-        {
-            { RoleType.None, "None" },
-            { RoleType.Scientist, "Scientist" },
-            { RoleType.Scp049, "SCP-049" },
-            { RoleType.Scp079, "SCP-079" },
-            { RoleType.Scp096, "SCP-096" },
-            { RoleType.Scp106, "SCP-106" },
-            { RoleType.Scp173, "SCP-173" },
-            { RoleType.Scp0492, "SCP-049-2" },
-            { RoleType.Scp93953, "SCP-939-53" },
-            { RoleType.Scp93989, "SCP-939-89" },
-            { RoleType.Spectator, "Spectator" },
-            { RoleType.Tutorial, "Tutorial" },
-            { RoleType.ChaosConscript, "Chaos Insurgency Conscript" },
-            { RoleType.ChaosMarauder, "Chaos Insurgency Marauder" },
-            { RoleType.ChaosRepressor, "Chaos Insurgency Repressor" },
-            { RoleType.ChaosRifleman, "Chaos Insurgency Rifleman" },
-            { RoleType.ClassD, "Class-D" },
-            { RoleType.FacilityGuard, "Facility Guard" },
-            { RoleType.NtfCaptain, "NTF Captain" },
-            { RoleType.NtfPrivate, "NTF Private" },
-            { RoleType.NtfSergeant, "NTF Sergeant" },
-            { RoleType.NtfSpecialist, "NTF Specialist" },
-        };
-            
-
 
 #pragma warning restore CS1591
 #pragma warning restore SA1600 // Elements should be documented
