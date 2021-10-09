@@ -56,5 +56,77 @@ namespace DiscordIntegration
 
             return new PlayerCommandSender(sender.SenderId, sender.Nickname, sender.Permissions, sender.KickPower, sender.FullPermissions);
         }
+
+        /// <summary>
+        /// Traduccion de los <see cref="RoleType"/> del juego.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns><see cref="string"/> traducida a español.</returns>
+        public static string Translate(this RoleType type)
+        {
+            switch (type)
+            {
+                case RoleType.None:
+                    return "Ninguno";
+                case RoleType.Spectator:
+                    return "Espectador";
+                case RoleType.Tutorial:
+                    return "Tutorial";
+                #region SCPs
+                case RoleType.Scp173:
+                    return "SCP-173";
+                case RoleType.Scp106:
+                    return "SCP-106";
+                case RoleType.Scp079:
+                    return "SCP-079";
+                case RoleType.Scp049:
+                    return "SCP-049";
+                case RoleType.Scp096:
+                    return "SCP-096";
+                case RoleType.Scp0492:
+                    return "SCP-049-2";
+                case RoleType.Scp93953:
+                    return "SCP-939-53";
+                case RoleType.Scp93989:
+                    return "SCP-939-89";
+                #endregion
+
+                #region Humanos desarmados
+                case RoleType.ClassD:
+                    return "Clase-D";
+                case RoleType.Scientist:
+                    return "Científico";
+                #endregion
+
+                #region NTF/MTF
+                case RoleType.NtfSpecialist:
+                    return "Especialista de la NTF";
+                case RoleType.NtfSergeant:
+                    return "Sargento de la NTF";
+                case RoleType.NtfCaptain:
+                    return "Capitán de la NTF";
+                case RoleType.NtfPrivate:
+                    return "Soldado Raso de la NTF";
+                case RoleType.FacilityGuard:
+                    return "Guardia de las instalaciones";
+                #endregion
+
+                #region Chaos
+
+                case RoleType.ChaosConscript:
+                    return "Recluta de los Caos";
+                case RoleType.ChaosRifleman:
+                    return "Fusilero de los Caos";
+                case RoleType.ChaosRepressor:
+                    return "Represor de los Caos";
+                case RoleType.ChaosMarauder:
+                    return "Merodeador de los Caos";
+                #endregion
+                default:
+                    return "None";
+            }
+        }
+
+
     }
 }
