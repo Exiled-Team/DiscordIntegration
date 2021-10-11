@@ -115,9 +115,13 @@ namespace DiscordIntegration.Events
         public void OnTerminated(object _, TerminatedEventArgs ev)
         {
             if (ev.Task.IsFaulted)
+            {
                 Log.Error($"[NET] {string.Format(Language.ServerHasBeenTerminatedWithErrors, Instance.Config.IsDebugEnabled ? ev.Task.Exception.ToString() : ev.Task.Exception.Message)}");
+            }
             else
+            {
                 Log.Warn($"[NET] {Language.ServerHasBeenTerminated}");
+            }
         }
     }
 }
