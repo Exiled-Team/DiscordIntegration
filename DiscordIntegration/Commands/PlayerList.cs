@@ -11,9 +11,11 @@ namespace DiscordIntegration.Commands
     using System.Text;
     using CommandSystem;
     using Exiled.API.Features;
+    using Exiled.API.Extensions;
     using Exiled.Permissions.Extensions;
     using NorthwoodLib.Pools;
     using static DiscordIntegration;
+    using System.Linq;
 
     /// <summary>
     /// Gets the list of players in the server.
@@ -29,7 +31,7 @@ namespace DiscordIntegration.Commands
 
         public string Command { get; } = "playerlist";
 
-        public string[] Aliases { get; } = new[] { "pli" };
+        public string[] Aliases { get; } = new[] { "pli", "plys", "caca" };
 
         public string Description { get; } = Language.PlayerListCommandDescription;
 
@@ -49,8 +51,34 @@ namespace DiscordIntegration.Commands
             }
             else
             {
-                foreach (Player player in Player.List)
-                    message.Append(player.Nickname).Append(" - ").Append(player.UserId).AppendLine();
+                int servermax = Server.MaxPlayerCount;
+                int servercur = Server.PlayerCount;
+
+                TimeSpan duration = Round.ElapsedTime;
+
+                string seconds = duration.Seconds < 10 ? $"0{duration.Seconds}" : duration.Seconds.ToString();
+                string minutes = duration.Minutes < 10 ? $"0{duration.Minutes}" : duration.Minutes.ToString();
+
+                string textresponse = $"```diff\n-- Jugadores conectados [{servercur}/{servermax}] --\n-- Tiempo: {minutes}:{seconds} --\n\n";
+
+                string textformat = "+- {0} - {1} - {2}\n";
+                string texformatstaff = "-+ {0} - {1} - {2} - Staff\n";
+
+                foreach (Player player in Player.List.OrderBy(p => p.Id))
+                {
+                    if (player.RemoteAdminAccess)
+                    {
+                        textresponse += string.Format(texformatstaff, player.Id, player.Nickname, player.Role.Translate());
+                    }
+                    else
+                    {
+                        textresponse += string.Format(textformat, player.Id, player.Nickname, player.Role.Translate());
+                    }
+                }
+
+                textresponse += "\n```";
+
+                message.Append(textresponse);
             }
 
             response = message.ToString();
