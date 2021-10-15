@@ -80,7 +80,7 @@ let remoteCommands = {
   "removeUser": removeUser,
   "addRole": addRole,
   "removeRole": removeRole,
-  "sendEmbed" : 
+  "sendEmbed": sendEmbed
 };
 
 /**
@@ -373,6 +373,25 @@ function sendMessage(channelId, content, shouldLogTimestamp = false) {
         console.debug(`[DISCORD][DEBUG] "${result}" message has been sent in "${channel.name}" (${channel.id}).`);
     })
     .catch(error => console.error(`[DISCORD][ERROR] Cannot send message in "${channel.name}" (${channel.id}): ${error}`));
+}
+
+/**
+ * Sends an embed in a specific Discord channel.
+ * @param {string} channelId
+ * @param {string} title
+ * @param {string} description
+ * @param {EmbedFieldData[]=} fields
+ * @param {ColorResolvable=} color
+ */
+function sendEmbed(channelId, title, description, fields = [], color = "#8154d1") {
+  const embed = new discord.MessageEmbed();
+  if(title) embed.setTitle(title);
+  if(description) embed.setDescription(description);
+  for(const field of fields) {
+    embed.addField(field.name, field.value, field.inline);
+  }
+  embed.setColor(color);
+  discordServer.channels.cache.get(channelId)?.send(embed);
 }
 
 /**
