@@ -51,6 +51,8 @@ namespace DiscordIntegration.Commands
             }
             else
             {
+                #region Bla bla bla
+
                 int servermax = Server.MaxPlayerCount;
                 int servercur = Server.PlayerCount;
 
@@ -63,6 +65,7 @@ namespace DiscordIntegration.Commands
 
                 string textformat = "+- {0} - {1} - {2}\n";
                 string texformatstaff = "-+ {0} - {1} - {2} - Staff\n";
+                #endregion
 
                 foreach (Player player in Player.List.OrderBy(p => p.Id))
                 {

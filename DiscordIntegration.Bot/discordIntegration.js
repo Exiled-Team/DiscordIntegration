@@ -79,7 +79,8 @@ let remoteCommands = {
   "addUser": addUser,
   "removeUser": removeUser,
   "addRole": addRole,
-  "removeRole": removeRole
+  "removeRole": removeRole,
+  "sendEmbed" : 
 };
 
 /**
