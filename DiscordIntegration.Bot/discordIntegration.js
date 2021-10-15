@@ -384,14 +384,13 @@ function sendMessage(channelId, content, shouldLogTimestamp = false) {
  * @param {ColorResolvable=} color
  */
 function sendEmbed(channelId, title, description, fields = [], color = "#8154d1") {
-  const embed = new discord.MessageEmbed();
-  if(title) embed.setTitle(title);
-  if(description) embed.setDescription(description);
-  for(const field of fields) {
-    embed.addField(field.name, field.value, field.inline);
-  }
-  embed.setColor(color);
-  discordServer.channels.cache.get(channelId)?.send(embed);
+
+    const embed = new discord.MessageEmbed();
+    if(title) embed.setTitle(title);
+    if (description) embed.setDescription(description);
+    fields?.forEach(field => embed.addField(field.name, field.value, field.inline));
+    embed.setColor(color);
+    discordServer.channels.cache.get(channelId)?.send(embed);
 }
 
 /**
