@@ -375,6 +375,24 @@ function sendMessage(channelId, content, shouldLogTimestamp = false) {
 }
 
 /**
+ * Sends an embed in a specific Discord channel.
+ * @param {string} channelId
+ * @param {string=} title
+ * @param {string=} description
+ * @param {EmbedFieldData[]=} fields
+ * @param {ColorResolvable=} color
+ */
+function sendEmbed(channelId, title, description, fields = [], color = "#8154d1") {
+
+    const embed = new discord.MessageEmbed();
+    if (title) embed.setTitle(title);
+    if (description) embed.setDescription(description);
+    fields?.forEach(field => embed.addField(field.name, field.value, field.inline));
+    embed.setColor(color);
+    discordServer.channels.cache.get(channelId)?.send(embed);
+}
+
+/**
  * Logs an event, command or ban in every configurated Discord channel.
  *
  * @param {string} content The content to be logged.
