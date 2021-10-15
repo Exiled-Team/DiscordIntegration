@@ -52,10 +52,10 @@ namespace DiscordIntegration.API.Commands
         /// <inheritdoc cref="CommandSender.RaReply"/>
         public override async void RaReply(string text, bool success, bool logToConsole, string overrideDisplay)
         {
-            await Network.SendAsync(new RemoteCommand("sendMessage", ChannelId, text.Substring(text.IndexOf('#') + 1), true));
+            await Network.SendAsync(new RemoteCommand("sendEmbed", ChannelId, null, text.Substring(text.IndexOf('#') + 1), null, Instance.Config.Bot.EmbedColor));
         }
 
         /// <inheritdoc cref="CommandSender.Print"/>
-        public override async void Print(string text) => await Network.SendAsync(new RemoteCommand("sendMessage", ChannelId, text.Substring(text.IndexOf('#') + 1), true));
+        public override async void Print(string text) => await Network.SendAsync(new RemoteCommand("sendEmbed", ChannelId, null, text.Substring(text.IndexOf('#') + 1), null, Instance.Config.Bot.EmbedColor));
     }
 }

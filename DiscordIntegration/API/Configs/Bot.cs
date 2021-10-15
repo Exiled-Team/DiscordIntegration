@@ -44,6 +44,8 @@ namespace DiscordIntegration.API.Configs
         [Description("Bot port")]
         public ushort Port { get; private set; } = 9000;
 
+        public string EmbedColor { get; set; } = "#085ec7";
+
         /// <summary>
         /// Gets the bot status update interval.
         /// </summary>

@@ -36,22 +36,30 @@ namespace DiscordIntegration.Events
                 switch (remoteCommand.Action)
                 {
                     case "executeCommand":
-                        JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
-                        break;
-                    case "setGroupFromId":
-                        SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
-
-                        if (syncedUser == null)
+                        {
+                            JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
                             break;
+                        }
+                    case "setGroupFromId":
+                        {
+                            SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
 
-                        if (!Instance.SyncedUsersCache.Contains(syncedUser))
-                            Instance.SyncedUsersCache.Add(syncedUser);
+                            if (syncedUser == null)
+                            {
+                                break;
+                            }
 
-                        syncedUser?.SetGroup();
-                        break;
+                            if (!Instance.SyncedUsersCache.Contains(syncedUser))
+                                Instance.SyncedUsersCache.Add(syncedUser);
+
+                            syncedUser?.SetGroup();
+                            break;
+                        }
                     case "commandReply":
-                        JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
-                        break;
+                        {
+                            JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
+                            break;
+                        }
                 }
             }
             catch (Exception exception)

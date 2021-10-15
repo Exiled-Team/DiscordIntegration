@@ -378,8 +378,8 @@ function sendMessage(channelId, content, shouldLogTimestamp = false) {
 /**
  * Sends an embed in a specific Discord channel.
  * @param {string} channelId
- * @param {string} title
- * @param {string} description
+ * @param {string=} title
+ * @param {string=} description
  * @param {EmbedFieldData[]=} fields
  * @param {ColorResolvable=} color
  */

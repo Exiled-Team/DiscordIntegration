@@ -16,6 +16,7 @@ namespace DiscordIntegration.Commands
     using NorthwoodLib.Pools;
     using static DiscordIntegration;
     using System.Linq;
+    using global::DiscordIntegration.API.Commands;
 
     /// <summary>
     /// Gets the list of players in the server.
