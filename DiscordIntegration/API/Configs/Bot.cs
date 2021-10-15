@@ -45,6 +45,12 @@ namespace DiscordIntegration.API.Configs
         public ushort Port { get; private set; } = 9000;
 
         /// <summary>
+        /// Gets or sets the HEX color for the embeds.
+        /// </summary>
+        [Description("The HEX color of the bot embeds.")]
+        public string EmbedColor { get; set; } = "#085ec7";
+
+        /// <summary>
         /// Gets the bot status update interval.
         /// </summary>
         [Description("Bot status update interval, in seconds")]
