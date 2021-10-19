@@ -34,6 +34,13 @@ namespace DiscordIntegration
         [Description("Indicates events that should be logged or not")]
         public EventsToLog EventsToLog { get; private set; } = new EventsToLog();
 
+
+        /// <summary>
+        /// Gets or sets <see cref="String[]"/> banned words.
+        /// </summary>
+        [Description("Si.")]
+        public string[] BlacklistCommand { get; set; } = new string[] { "PLAYERLISTCOLOREDSTEAMID SILENT", "PLAYERLISTCOLORED SILENT" };
+
         /// <summary>
         /// Gets events to log to the staff-only channel. These logs will always ignore DNT, and always show the player's UserID.
         /// </summary>

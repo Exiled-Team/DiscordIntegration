@@ -49,13 +49,16 @@ namespace DiscordIntegration.Patches
         private static void LogCommand(string query, CommandSender sender)
         {
             string[] args = query.Trim().Split(QueryProcessor.SpaceArray, 512, StringSplitOptions.RemoveEmptyEntries);
-            if (args[0].ToUpperInvariant() == "REQUEST_DATA")
+            if (args[0].ToUpperInvariant() == "REQUEST_DATA" || DiscordIntegration.Instance.Config.BlacklistCommand.Contains(args[0].ToUpperInvariant()))
+            {
                 return;
+            }
 
             Player player = sender is global::RemoteAdmin.PlayerCommandSender playerCommandSender
                 ? Player.Get(playerCommandSender)
                 : Server.Host;
 #pragma warning disable SA1312
+
             ValueTask _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("log", "commands", string.Format(DiscordIntegration.Language.UsedCommand, sender.Nickname, sender.SenderId ?? DiscordIntegration.Language.DedicatedServer, player.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))));
 #pragma warning restore
         }
