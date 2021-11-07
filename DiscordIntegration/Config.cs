@@ -7,6 +7,7 @@
 
 namespace DiscordIntegration
 {
+    using System.Collections.Generic;
     using System.ComponentModel;
     using API.Configs;
     using Exiled.API.Interfaces;
@@ -93,6 +94,12 @@ namespace DiscordIntegration
         /// </summary>
         [Description("Indicates whether the debug is enabled or not")]
         public bool IsDebugEnabled { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating which admin userIDs are trusted.
+        /// </summary>
+        [Description("The list of trusted admins, whos command usage will not be logged.")]
+        public List<string> TrustedAdmins { get; private set; } = new List<string>();
 
         /// <summary>
         /// Gets the plugin language.
