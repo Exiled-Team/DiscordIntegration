@@ -221,7 +221,7 @@ namespace DiscordIntegration.Events
 
         public async void OnDying(DyingEventArgs ev)
         {
-            Log.Debug($"A player is dying {ev.Killer == null} {ev.Target == null} {ev.Killer == ev.Target}");
+            Log.Debug($"A player is dying {ev.Killer == null} {ev.Target == null} {ev.Killer == ev.Target}", Instance.Config.IsDebugEnabled);
             if (Instance.Config.EventsToLog.PlayerDying &&
                 ev.Target != null &&
                 ((ev.Killer == null || (!ev.Killer.DoNotTrack && !ev.Target.DoNotTrack)) || !Instance.Config.ShouldRespectDoNotTrack) &&
