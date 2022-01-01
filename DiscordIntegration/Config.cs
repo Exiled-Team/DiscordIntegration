@@ -10,6 +10,7 @@ namespace DiscordIntegration
     using System.Collections.Generic;
     using System.ComponentModel;
     using API.Configs;
+    using Exiled.API.Enums;
     using Exiled.API.Interfaces;
 
     /// <summary>
@@ -72,10 +73,20 @@ namespace DiscordIntegration
         public bool ShouldLogFriendlyFireKillsOnly { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether the plugin should or shouldn't log SCP-207 damage when the damage log is enabled.
+        /// Gets a value indicating what damage types are not logged in hurting events.
         /// </summary>
-        [Description("Indicates whether the plugin should or shouldn't log SCP-207 damage when the damage log is enabled")]
-        public bool ShouldLogScp207Damage { get; private set; } = true;
+        [Description("Indicates what damage types aren't allowed to be logged for hurting events. These filters will not apply to death logs.")]
+        public List<DamageType> BlacklistedDamageTypes { get; private set; } = new List<DamageType>
+        {
+            DamageType.Scp207,
+            DamageType.PocketDimension,
+        };
+
+        /// <summary>
+        /// Gets a value indicating whether only player-dealt damage is logged in hurting events.
+        /// </summary>
+        [Description("Indicates whether or not only player-dealt damage should be logged in hurting events.")]
+        public bool OnlyLogPlayerDamage { get; private set; }
 
         /// <summary>
         /// Gets the date format that will be used throughout the plugin.
