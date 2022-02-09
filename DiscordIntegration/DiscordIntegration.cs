@@ -174,7 +174,7 @@ namespace DiscordIntegration
             Handlers.Server.LocalReporting += serverHandler.OnLocalReporting;
 
             Handlers.Scp914.ChangingKnobSetting += playerHandler.OnChangingScp914KnobSetting;
-            Handlers.Player.ItemUsed += playerHandler.OnUsedMedicalItem;
+            Handlers.Player.UsedItem += playerHandler.OnUsedMedicalItem;
             Handlers.Scp079.InteractingTesla += playerHandler.OnInteractingTesla;
             Handlers.Player.PickingUpItem += playerHandler.OnPickingUpItem;
             Handlers.Player.ActivatingGenerator += playerHandler.OnInsertingGeneratorTablet;
@@ -239,7 +239,7 @@ namespace DiscordIntegration
             Handlers.Server.LocalReporting -= serverHandler.OnLocalReporting;
 
             Handlers.Scp914.ChangingKnobSetting -= playerHandler.OnChangingScp914KnobSetting;
-            Handlers.Player.UsingItem -= playerHandler.OnUsedMedicalItem;
+            Handlers.Player.UsedItem -= playerHandler.OnUsedMedicalItem;
             Handlers.Scp079.InteractingTesla -= playerHandler.OnInteractingTesla;
             Handlers.Player.PickingUpItem -= playerHandler.OnPickingUpItem;
             Handlers.Player.ActivatingGenerator -= playerHandler.OnInsertingGeneratorTablet;

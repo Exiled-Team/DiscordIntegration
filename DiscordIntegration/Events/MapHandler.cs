@@ -9,8 +9,10 @@ namespace DiscordIntegration.Events
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Text;
     using API.Commands;
+    using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.Events.EventArgs;
     using NorthwoodLib.Pools;
@@ -31,7 +33,7 @@ namespace DiscordIntegration.Events
         public async void OnGeneratorActivated(GeneratorActivatedEventArgs ev)
         {
             if (Instance.Config.EventsToLog.GeneratorActivated)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorFinished, ev.Generator.GetComponentInParent<Room>(), Map.ActivatedGenerators + 1))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorFinished, ev.Generator.GetComponentInParent<Room>(), Generator.Get(GeneratorState.Engaged).Count() + 1))).ConfigureAwait(false);
         }
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "Discard operator")]
