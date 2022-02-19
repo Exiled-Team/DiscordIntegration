@@ -49,7 +49,7 @@ namespace DiscordIntegration.Patches
         private static void LogCommand(string query, CommandSender sender)
         {
             string[] args = query.Trim().Split(QueryProcessor.SpaceArray, 512, StringSplitOptions.RemoveEmptyEntries);
-            if (args[0].ToUpperInvariant() == "REQUEST_DATA")
+            if (args[0].StartsWith("$"))
                 return;
 
             Player player = sender is global::RemoteAdmin.PlayerCommandSender playerCommandSender
