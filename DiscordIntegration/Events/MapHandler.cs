@@ -33,7 +33,7 @@ namespace DiscordIntegration.Events
         public async void OnGeneratorActivated(GeneratorActivatedEventArgs ev)
         {
             if (Instance.Config.EventsToLog.GeneratorActivated)
-                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorFinished, ev.Generator.GetComponentInParent<Room>(), Generator.Get(GeneratorState.Engaged).Count() + 1))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand("log", "gameEvents", string.Format(Language.GeneratorFinished, ev.Generator.Room, Generator.Get(GeneratorState.Engaged).Count() + 1))).ConfigureAwait(false);
         }
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "Discard operator")]
