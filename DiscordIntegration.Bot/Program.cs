@@ -1,6 +1,7 @@
 ﻿namespace DiscordIntegration.Bot;
 
 using Newtonsoft.Json;
+using Services;
 
 public static class Program
 {
@@ -22,6 +23,12 @@ public static class Program
             foreach (Bot bot in _bots)
                 bot.Destroy();
         };
+
+        if (Config.Debug)
+        {
+            Log.Warn(nameof(Main), "Shutting down..");
+            Thread.Sleep(10000);
+        }
     }
 
     private static Config GetConfig()

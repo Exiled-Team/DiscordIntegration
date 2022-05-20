@@ -1,5 +1,6 @@
 ﻿namespace DiscordIntegration.Bot.Commands;
 
+using System.ComponentModel.Design;
 using System.Reflection;
 using Discord;
 using Discord.Interactions;
@@ -10,16 +11,19 @@ public class SlashCommandHandler
 {
     private readonly InteractionService service;
     private readonly DiscordSocketClient client;
+    private readonly ServiceContainer serviceContainer;
 
-    public SlashCommandHandler(InteractionService service, DiscordSocketClient client)
+    public SlashCommandHandler(InteractionService service, DiscordSocketClient client, Bot bot)
     {
         this.service = service;
         this.client = client;
+        serviceContainer = new();
+        serviceContainer.AddService(typeof(Bot), bot);
     }
 
     public async Task InstallCommandsAsync()
     {
-        await service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+        await service.AddModulesAsync(Assembly.GetEntryAssembly(), serviceContainer);
         client.InteractionCreated += HandleInteraction;
         service.SlashCommandExecuted += HandleSlashCommand;
         service.ContextCommandExecuted += HandleContextCommand;
@@ -31,7 +35,7 @@ public class SlashCommandHandler
         try
         {
             SocketInteractionContext context = new(client, interaction);
-            await service.ExecuteCommandAsync(context, null);
+            await service.ExecuteCommandAsync(context, serviceContainer);
             Log.Info(nameof(HandleInteraction), $"{interaction.User.Username} used an interaction.");
         }
         catch (Exception e)

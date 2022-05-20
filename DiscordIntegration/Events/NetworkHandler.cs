@@ -97,7 +97,7 @@ namespace DiscordIntegration.Events
         {
             Log.Info($"[NET] {string.Format(Language.SuccessfullyConnected, Network.IPEndPoint?.Address, Network.IPEndPoint?.Port)}");
 
-            await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, Language.ServerConnected, true));
+            await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, Language.ServerConnected));
         }
 
         /// <inheritdoc cref="API.Network.OnConnectingError(object, ConnectingErrorEventArgs)"/>

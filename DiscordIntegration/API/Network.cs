@@ -15,6 +15,7 @@ namespace DiscordIntegration.API
     using System.Threading;
     using System.Threading.Tasks;
     using API.EventArgs.Network;
+    using Exiled.API.Features;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
 
@@ -345,6 +346,7 @@ namespace DiscordIntegration.API
                 {
                     string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
+                    Log.Debug($"{nameof(ReceiveAsync)}: Received {receivedData}", DiscordIntegration.Instance.Config.IsDebugEnabled);
                     if (receivedData.IndexOf('\0') != -1)
                     {
                         foreach (var splittedData in receivedData.Split('\0'))
