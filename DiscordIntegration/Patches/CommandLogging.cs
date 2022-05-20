@@ -13,6 +13,7 @@ namespace DiscordIntegration.Patches
     using System.Linq;
     using System.Reflection.Emit;
     using System.Threading.Tasks;
+    using Dependency;
     using Exiled.API.Features;
     using global::DiscordIntegration.API;
     using global::DiscordIntegration.API.Commands;
@@ -58,7 +59,7 @@ namespace DiscordIntegration.Patches
 #pragma warning disable SA1312
             if (player == null || (!string.IsNullOrEmpty(player.UserId) && DiscordIntegration.Instance.Config.TrustedAdmins.Contains(player.UserId)))
                 return;
-            ValueTask _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("log", "commands", string.Format(DiscordIntegration.Language.UsedCommand, sender.Nickname, sender.SenderId ?? DiscordIntegration.Language.DedicatedServer, player.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))));
+            ValueTask _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.Log, "commands", string.Format(DiscordIntegration.Language.UsedCommand, sender.Nickname, sender.SenderId ?? DiscordIntegration.Language.DedicatedServer, player.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))));
 #pragma warning restore
         }
     }

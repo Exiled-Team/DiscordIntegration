@@ -13,6 +13,7 @@ namespace DiscordIntegration.Events
     using API.Commands;
     using API.EventArgs.Network;
     using API.User;
+    using Dependency;
     using Exiled.API.Features;
     using Newtonsoft.Json;
     using static DiscordIntegration;
@@ -35,10 +36,10 @@ namespace DiscordIntegration.Events
 
                 switch (remoteCommand.Action)
                 {
-                    case "executeCommand":
+                    case ActionType.ExecuteCommand:
                         JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
                         break;
-                    case "setGroupFromId":
+                    case ActionType.SetGroupFromId:
                         SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
 
                         if (syncedUser == null)
@@ -49,7 +50,7 @@ namespace DiscordIntegration.Events
 
                         syncedUser?.SetGroup();
                         break;
-                    case "commandReply":
+                    case ActionType.CommandReply:
                         JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
                         break;
                 }
@@ -96,7 +97,7 @@ namespace DiscordIntegration.Events
         {
             Log.Info($"[NET] {string.Format(Language.SuccessfullyConnected, Network.IPEndPoint?.Address, Network.IPEndPoint?.Port)}");
 
-            await Network.SendAsync(new RemoteCommand("log", "gameEvents", Language.ServerConnected, true));
+            await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, Language.ServerConnected, true));
         }
 
         /// <inheritdoc cref="API.Network.OnConnectingError(object, ConnectingErrorEventArgs)"/>

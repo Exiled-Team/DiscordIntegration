@@ -10,6 +10,7 @@ namespace DiscordIntegration.Commands.Remove
     using System;
     using API.Commands;
     using CommandSystem;
+    using Dependency;
     using Exiled.Permissions.Extensions;
 
     /// <summary>
@@ -56,7 +57,7 @@ namespace DiscordIntegration.Commands.Remove
                 return false;
             }
 
-            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("removeRole", arguments.At(0), sender.GetCompatible()));
+            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.RemoveRole, arguments.At(0), sender.GetCompatible()));
 
             response = DiscordIntegration.Language.RemoveRoleCommandSuccess;
             return false;

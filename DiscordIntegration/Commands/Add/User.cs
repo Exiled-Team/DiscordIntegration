@@ -10,6 +10,7 @@ namespace DiscordIntegration.Commands.Add
     using System;
     using API.Commands;
     using CommandSystem;
+    using Dependency;
     using Exiled.Permissions.Extensions;
 
     /// <summary>
@@ -62,7 +63,7 @@ namespace DiscordIntegration.Commands.Add
                 return false;
             }
 
-            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("addUser", arguments.At(0), arguments.At(1), sender.GetCompatible()));
+            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.AddUser, arguments.At(0), arguments.At(1), sender.GetCompatible()));
 
             response = DiscordIntegration.Language.AddUserCommandSuccess;
             return false;

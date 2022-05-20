@@ -13,6 +13,7 @@ namespace DiscordIntegration.API.Configs
     using System.Threading;
     using System.Threading.Tasks;
     using API.Commands;
+    using Dependency;
     using Exiled.API.Features;
     using Mirror;
     using static DiscordIntegration;
@@ -71,7 +72,7 @@ namespace DiscordIntegration.API.Configs
         {
             while (true)
             {
-                await Network.SendAsync(new RemoteCommand($"updateActivity", $"{Player.Dictionary.Count}/{Instance.Slots}"));
+                await Network.SendAsync(new RemoteCommand(ActionType.UpdateActivity, $"{Player.Dictionary.Count}/{Instance.Slots}"));
                 await Task.Delay(TimeSpan.FromSeconds(Instance.Config.Bot.StatusUpdateInterval), cancellationToken);
             }
         }
@@ -101,7 +102,7 @@ namespace DiscordIntegration.API.Configs
 
                     string warheadText = Warhead.IsDetonated ? Language.WarheadHasBeenDetonated : Warhead.IsInProgress ? Language.WarheadIsCountingToDetonation : Language.WarheadHasntBeenDetonated;
 
-                    await Network.SendAsync(new RemoteCommand("updateChannelsTopic", $"{string.Format(Language.PlayersOnline, Player.Dictionary.Count, Instance.Slots)}. {string.Format(Language.RoundDuration, Round.ElapsedTime)}. {string.Format(Language.AliveHumans, aliveHumans)}. {string.Format(Language.AliveScps, aliveScps)}. {warheadText} IP: {Server.IpAddress}:{Server.Port} TPS: {Instance.Ticks / Instance.Config.Bot.ChannelTopicUpdateInterval}"));
+                    await Network.SendAsync(new RemoteCommand(ActionType.UpdateChannelActivity, $"{string.Format(Language.PlayersOnline, Player.Dictionary.Count, Instance.Slots)}. {string.Format(Language.RoundDuration, Round.ElapsedTime)}. {string.Format(Language.AliveHumans, aliveHumans)}. {string.Format(Language.AliveScps, aliveScps)}. {warheadText} IP: {Server.IpAddress}:{Server.Port} TPS: {Instance.Ticks / Instance.Config.Bot.ChannelTopicUpdateInterval}"));
 
                     Instance.Ticks = 0;
                 }

@@ -10,6 +10,7 @@ namespace DiscordIntegration.Commands.Reload
     using System;
     using API.Commands;
     using CommandSystem;
+    using Dependency;
     using Exiled.Permissions.Extensions;
 
     /// <summary>
@@ -50,7 +51,7 @@ namespace DiscordIntegration.Commands.Reload
                 return false;
             }
 
-            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("loadConfigs", sender.GetCompatible()));
+            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.LoadConfig, sender.GetCompatible()));
 
             response = DiscordIntegration.Language.ReloadConfigsCommandSuccess;
             return true;

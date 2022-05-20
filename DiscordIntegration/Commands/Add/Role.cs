@@ -10,6 +10,7 @@ namespace DiscordIntegration.Commands.Add
     using System;
     using API.Commands;
     using CommandSystem;
+    using Dependency;
     using Exiled.Permissions.Extensions;
     using static DiscordIntegration;
 
@@ -63,7 +64,7 @@ namespace DiscordIntegration.Commands.Add
                 return false;
             }
 
-            _ = Network.SendAsync(new RemoteCommand("addRole", arguments.At(0), arguments.At(1), sender.GetCompatible()));
+            _ = Network.SendAsync(new RemoteCommand(ActionType.AddRole, arguments.At(0), arguments.At(1), sender.GetCompatible()));
 
             response = Language.AddRoleCommandSuccess;
             return false;
