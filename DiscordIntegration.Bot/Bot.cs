@@ -95,7 +95,6 @@ public class Bot
                 case ActionType.Log:
                     if (Enum.TryParse(command.Parameters[0].ToString(), true, out ChannelType type))
                     {
-                        Log.Debug($"[{Port}]", $"Logging to {type} - {Program.Config.Channels[Port].Logs[type].FirstOrDefault()}");
                         foreach (ulong channelId in Program.Config.Channels[Port].Logs[type])
                         {
                             if (!messages.ContainsKey(channelId))
