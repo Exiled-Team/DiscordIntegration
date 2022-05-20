@@ -18,10 +18,9 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
         try
         {
             Log.Debug(nameof(Send), $"Sending {command}");
-            await bot.Server.TcpClient.GetStream()
-                .WriteAsync(Encoding.UTF8.GetBytes(
-                    JsonConvert.SerializeObject(new RemoteCommand(ActionType.ExecuteCommand, command))));
-            
+            string literal = @"{channelId: %chan, content: %command, user: {id: %userid@discord, name: %name}}";
+            literal = literal.Replace("%chan", Context.Channel.Id.ToString()).Replace("%command", command).Replace("%userid", Context.User.Id.ToString()).Replace("%name", Context.User.Username);
+            await bot.Server.SendAsync(new RemoteCommand(ActionType.ExecuteCommand, Context.Channel.Id, command, Context.User.Id, Context.User.Username));
             await RespondAsync("Command sent.", ephemeral: true);
         }
         catch (Exception e)

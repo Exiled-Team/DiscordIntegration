@@ -29,6 +29,8 @@ namespace DiscordIntegration.Events
             try
             {
                 Log.Debug($"[NET] {string.Format(Language.ReceivedData, ev.Data, ev.Length)}", Instance.Config.IsDebugEnabled);
+                if (ev.Data.Contains("heartbeat"))
+                    return;
 
                 RemoteCommand remoteCommand = JsonConvert.DeserializeObject<RemoteCommand>(ev.Data, Network.JsonSerializerSettings);
 
@@ -37,7 +39,8 @@ namespace DiscordIntegration.Events
                 switch (remoteCommand.Action)
                 {
                     case ActionType.ExecuteCommand:
-                        JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
+                        GameCommand command = new GameCommand(remoteCommand.Parameters[0].ToString(), remoteCommand.Parameters[1].ToString(), new DiscordUser(remoteCommand.Parameters[2].ToString(), remoteCommand.Parameters[3].ToString()));
+                        command?.Execute();
                         break;
                     case ActionType.SetGroupFromId:
                         SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);

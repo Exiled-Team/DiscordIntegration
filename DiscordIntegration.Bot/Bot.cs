@@ -50,7 +50,10 @@ public class Bot
         }
 
         Log.Debug($"[{Port}] {nameof(Init)}", "Setting up commands...");
-        InteractionService = new(Client);
+        InteractionService = new(Client, new InteractionServiceConfig()
+        {
+            AutoServiceScopes = false,
+        });
         CommandHandler = new(InteractionService, Client, this);
 
         Log.Debug($"[{Port}] {nameof(Init)}", "Setting up logging..");
@@ -92,12 +95,20 @@ public class Bot
                 case ActionType.Log:
                     if (Enum.TryParse(command.Parameters[0].ToString(), true, out ChannelType type))
                     {
+                        Log.Debug($"[{Port}]", $"Logging to {type} - {Program.Config.Channels[Port].Logs[type].FirstOrDefault()}");
                         foreach (ulong channelId in Program.Config.Channels[Port].Logs[type])
                         {
                             if (!messages.ContainsKey(channelId))
                                 messages.Add(channelId, string.Empty);
                             messages[channelId] += $"[{DateTime.Now}] {command.Parameters[1]}\n";
                         }
+                    }
+
+                    break;
+                case ActionType.SendMessage:
+                    if (ulong.TryParse(command.Parameters[0].ToString(), out ulong chanId))
+                    {
+                        await Guild.GetTextChannel(chanId).SendMessageAsync(command.Parameters[1].ToString());
                     }
 
                     break;

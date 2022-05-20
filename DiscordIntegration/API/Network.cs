@@ -346,13 +346,13 @@ namespace DiscordIntegration.API
                 {
                     string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-                    Log.Debug($"{nameof(ReceiveAsync)}: Received {receivedData}", DiscordIntegration.Instance.Config.IsDebugEnabled);
                     if (receivedData.IndexOf('\0') != -1)
                     {
                         foreach (var splittedData in receivedData.Split('\0'))
                         {
                             if (totalReceivedData.Length > 0)
                             {
+                                Log.Debug($"{nameof(ReceiveAsync)}: Received {receivedData}", DiscordIntegration.Instance.Config.IsDebugEnabled);
                                 OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData.ToString() + splittedData, bytesRead));
 
                                 totalReceivedData.Clear();

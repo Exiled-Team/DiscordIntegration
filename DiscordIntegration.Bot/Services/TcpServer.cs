@@ -30,7 +30,7 @@ namespace DiscordIntegration.Bot.Services
 
         private bool isDisposed;
         private Bot bot;
-        private TcpListener Listener;
+        private TcpListener Listener = null!;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Network"/> class.
@@ -48,12 +48,14 @@ namespace DiscordIntegration.Bot.Services
         /// </summary>
         /// <param name="ipEndPoint">The remote server IP address and port.</param>
         /// <param name="reconnectionInterval"><inheritdoc cref="ReconnectionInterval"/></param>
-        public TcpServer(IPEndPoint ipEndPoint, TimeSpan reconnectionInterval, Bot bot)
+        /// <param name="bot">The <see cref="Bot"/> instance.</param>
+        public TcpServer(IPEndPoint? ipEndPoint, TimeSpan reconnectionInterval, Bot bot)
         {
             IPEndPoint = ipEndPoint;
             ReconnectionInterval = reconnectionInterval;
             this.bot = bot;
-            Listener = new TcpListener(ipEndPoint);
+            if (ipEndPoint != null) 
+                Listener = new TcpListener(ipEndPoint);
         }
 
         /// <summary>
@@ -64,62 +66,62 @@ namespace DiscordIntegration.Bot.Services
         /// <summary>
         /// Invoked after network received partial data.
         /// </summary>
-        public event EventHandler<ReceivedPartialEventArgs> ReceivedPartial;
+        public event EventHandler<ReceivedPartialEventArgs> ReceivedPartial = null!;
 
         /// <summary>
         /// Invoked after network received full data.
         /// </summary>
-        public event EventHandler<ReceivedFullEventArgs> ReceivedFull;
+        public event EventHandler<ReceivedFullEventArgs> ReceivedFull = null!;
 
         /// <summary>
         /// Invoked after the network thrown an exception while sending data.
         /// </summary>
-        public event EventHandler<SendingErrorEventArgs> SendingError;
+        public event EventHandler<SendingErrorEventArgs> SendingError = null!;
 
         /// <summary>
         /// Invoked after the network thrown an exception while receiving data.
         /// </summary>
-        public event EventHandler<ReceivingErrorEventArgs> ReceivingError;
+        public event EventHandler<ReceivingErrorEventArgs> ReceivingError = null!;
 
         /// <summary>
         /// Invoked after network sent data.
         /// </summary>
-        public event EventHandler<SentEventArgs> Sent;
+        public event EventHandler<SentEventArgs> Sent = null!;
 
         /// <summary>
         /// Invoked before the network connects to the server.
         /// </summary>
-        public event EventHandler<ConnectingEventArgs> Connecting;
+        public event EventHandler<ConnectingEventArgs> Connecting = null!;
 
         /// <summary>
         /// Invoked after successfully connecting to the server.
         /// </summary>
-        public event EventHandler<ConnectingErrorEventArgs> ConnectingError;
+        public event EventHandler<ConnectingErrorEventArgs> ConnectingError = null!;
 
         /// <summary>
         /// Invoked after the network successfully connects to the server.
         /// </summary>
-        public event EventHandler Connected;
+        public event EventHandler Connected = null!;
 
         /// <summary>
         /// Invoked after the network thrown an exception while updating the connection.
         /// </summary>
-        public event EventHandler<UpdatingConnectionErrorEventArgs> UpdatingConnectionError;
+        public event EventHandler<UpdatingConnectionErrorEventArgs> UpdatingConnectionError = null!;
 
         /// <summary>
         /// Invoked after the network termination.
         /// </summary>
-        public event EventHandler<TerminatedEventArgs> Terminated;
+        public event EventHandler<TerminatedEventArgs> Terminated = null!;
 
         /// <summary>
         /// Gets the active <see cref="System.Net.Sockets.TcpClient"/> instance.
         /// </summary>
-        public TcpClient TcpClient { get; private set; }
+        public TcpClient? TcpClient { get; private set; } = null!;
 
         /// <summary>
         /// Gets the IP end point to connect with.
         /// </summary>
-        public IPEndPoint IPEndPoint { get; private set; }
+        public IPEndPoint? IPEndPoint { get; private set; } = null!;
 
         /// <summary>
         /// Gets a value indicating whether the <see cref="TcpClient"/> is connected or not.
@@ -134,7 +136,7 @@ namespace DiscordIntegration.Bot.Services
         /// <summary>
         /// Gets the <see cref="Newtonsoft.Json.JsonSerializerSettings"/> instance.
         /// </summary>
-        public JsonSerializerSettings JsonSerializerSettings { get; } = new JsonSerializerSettings
+        public JsonSerializerSettings JsonSerializerSettings { get; } = new()
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
             TypeNameHandling = TypeNameHandling.Objects,
@@ -156,7 +158,7 @@ namespace DiscordIntegration.Bot.Services
             if (isDisposed)
                 throw new ObjectDisposedException(GetType().FullName);
 
-            await Update(cancellationToken).ContinueWith(task => OnTerminated(this, new TerminatedEventArgs(task))).ConfigureAwait(false);
+            await Update(cancellationToken).ContinueWith(task => OnTerminated(this, new TerminatedEventArgs(task)), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -195,7 +197,7 @@ namespace DiscordIntegration.Bot.Services
                 Log.Debug($"[{bot.Port}]", $"Sending {serializedObject}");
                 byte[] bytesToSend = Encoding.UTF8.GetBytes(serializedObject + '\0');
 
-                await TcpClient.GetStream().WriteAsync(bytesToSend, 0, bytesToSend.Length, cancellationToken);
+                await TcpClient?.GetStream().WriteAsync(bytesToSend, 0, bytesToSend.Length, cancellationToken)!;
 
                 OnSent(this, new SentEventArgs(serializedObject, bytesToSend.Length));
             }
@@ -218,7 +220,7 @@ namespace DiscordIntegration.Bot.Services
         {
             if (shouldDisposeAllResources)
             {
-                TcpClient.Dispose();
+                TcpClient?.Dispose();
                 TcpClient = null;
 
                 IPEndPoint = null;
@@ -283,7 +285,7 @@ namespace DiscordIntegration.Bot.Services
         /// </summary>
         /// <param name="sender">The sender instance.</param>
         /// <param name="ev">The <see cref="System.EventArgs"/> instance.</param>
-        protected virtual void OnConnected(object sender, System.EventArgs ev) => Connected?.Invoke(sender, ev);
+        protected virtual void OnConnected(object sender, EventArgs ev) => Connected?.Invoke(sender, ev);
 
         /// <summary>
         /// Called after the network thrown an exception while updating the connection.
@@ -301,14 +303,14 @@ namespace DiscordIntegration.Bot.Services
 
         private async Task ReceiveAsync(CancellationToken cancellationToken)
         {
-            StringBuilder totalReceivedData = new StringBuilder();
+            StringBuilder totalReceivedData = new();
             byte[] buffer = new byte[ReceptionBuffer];
 
             while (true)
             {
                 try
                 {
-                    await TcpClient.GetStream().WriteAsync(Encoding.UTF8.GetBytes("heartbeat"));
+                    await SendAsync("heartbeat");
                 }
                 catch (Exception e)
                 {
@@ -316,7 +318,7 @@ namespace DiscordIntegration.Bot.Services
                     return;
                 }
 
-                Task<int> readTask = TcpClient.GetStream().ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                Task<int> readTask = TcpClient!.GetStream().ReadAsync(buffer, 0, buffer.Length, cancellationToken);
                 
                 await Task.WhenAny(readTask, Task.Delay(5000));
                 
@@ -363,7 +365,7 @@ namespace DiscordIntegration.Bot.Services
             {
                 try
                 {
-                    ConnectingEventArgs ev = new ConnectingEventArgs(IPEndPoint.Address, (ushort)IPEndPoint.Port, ReconnectionInterval);
+                    ConnectingEventArgs ev = new(IPEndPoint!.Address, (ushort)IPEndPoint.Port, ReconnectionInterval);
 
                     OnConnecting(this, ev);
 
@@ -374,7 +376,7 @@ namespace DiscordIntegration.Bot.Services
                     Listener.Start();
                     TcpClient = await Listener.AcceptTcpClientAsync(cancellationToken);
 
-                    OnConnected(this, System.EventArgs.Empty);
+                    OnConnected(this, EventArgs.Empty);
 
                     await ReceiveAsync(cancellationToken);
                 }
