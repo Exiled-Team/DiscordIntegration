@@ -76,7 +76,7 @@ namespace DiscordIntegration
         /// <summary>
         /// Gets the minimum version of Exiled to make the plugin work correctly.
         /// </summary>
-        public override Version RequiredExiledVersion { get; } = new Version(5, 0, 0);
+        public override Version RequiredExiledVersion { get; } = new Version(5, 2, 0);
 
         /// <summary>
         /// Gets the ticks counter.
