@@ -7,6 +7,7 @@
 
 namespace DiscordIntegration.API.Commands
 {
+    using Dependency;
     using Newtonsoft.Json;
     using static DiscordIntegration;
 
@@ -21,13 +22,20 @@ namespace DiscordIntegration.API.Commands
         /// <param name="channelId"><inheritdoc cref="ChannelId"/></param>
         /// <param name="senderId"><inheritdoc cref="SenderId"/></param>
         /// <param name="nickname"><inheritdoc cref="Nickname"/></param>
+        /// <param name="command"><inheritdoc cref="Command"/></param>
         [JsonConstructor]
-        public BotCommandSender(string channelId, string senderId, string nickname)
+        public BotCommandSender(string channelId, string senderId, string nickname, string command)
         {
             ChannelId = channelId;
             SenderId = senderId;
             Nickname = nickname;
+            Command = command;
         }
+
+        /// <summary>
+        /// Gets the command sent.
+        /// </summary>
+        public string Command { get; }
 
         /// <summary>
         /// Gets the Discord channel ID to log the reply in.
@@ -52,10 +60,10 @@ namespace DiscordIntegration.API.Commands
         /// <inheritdoc cref="CommandSender.RaReply"/>
         public override async void RaReply(string text, bool success, bool logToConsole, string overrideDisplay)
         {
-            await Network.SendAsync(new RemoteCommand("sendMessage", ChannelId, text.Substring(text.IndexOf('#') + 1), true));
+            await Network.SendAsync(new RemoteCommand(ActionType.SendMessage, ChannelId, $"{Command}|{text.Substring(text.IndexOf('#') + 1)}", success));
         }
 
         /// <inheritdoc cref="CommandSender.Print"/>
-        public override async void Print(string text) => await Network.SendAsync(new RemoteCommand("sendMessage", ChannelId, text.Substring(text.IndexOf('#') + 1), true));
+        public override async void Print(string text) => await Network.SendAsync(new RemoteCommand(ActionType.SendMessage, ChannelId, text.Substring(text.IndexOf('#') + 1), true));
     }
 }

@@ -28,7 +28,7 @@ namespace DiscordIntegration.API.Commands
             ChannelId = channelId;
             Content = content;
             User = user;
-            Sender = new BotCommandSender(channelId, user?.Id, user?.Name);
+            Sender = new BotCommandSender(channelId, user?.Id, user?.Name, user?.Command);
         }
 
         /// <summary>

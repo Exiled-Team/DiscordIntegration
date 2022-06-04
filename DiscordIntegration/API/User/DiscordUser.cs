@@ -19,12 +19,19 @@ namespace DiscordIntegration.API.User
         /// </summary>
         /// <param name="id"><inheritdoc cref="Id"/></param>
         /// <param name="name"><inheritdoc cref="Name"/></param>
+        /// <param name="command"><inheritdoc cref="Command"/></param>
         [JsonConstructor]
-        public DiscordUser(string id, string name)
+        public DiscordUser(string id, string name, string command)
         {
             Id = id;
             Name = name;
+            Command = command;
         }
+
+        /// <summary>
+        /// Gets the command used.
+        /// </summary>
+        public string Command { get; }
 
         /// <summary>
         /// Gets the Discord user ID.

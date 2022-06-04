@@ -15,7 +15,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -27,7 +27,7 @@
     <CodeAnalysisRuleSet>stylecop.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -141,7 +141,6 @@
     <Compile Include="API\Configs\Bot.cs" />
     <Compile Include="API\Commands\BotCommandSender.cs" />
     <Compile Include="API\Commands\GameCommand.cs" />
-    <Compile Include="API\Commands\RemoteCommand.cs" />
     <Compile Include="API\Configs\EventsToLog.cs" />
     <Compile Include="API\User\SyncedUser.cs" />
     <Compile Include="API\Network.cs" />
@@ -162,6 +161,12 @@
     <Compile Include="API\User\DiscordUser.cs" />
     <None Include="packages.config" />
     <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DiscordIntegration.Dependency\DiscordIntegration.Dependency.csproj">
+      <Project>{a80e03ba-8f52-43f5-baff-191ddb78c4e0}</Project>
+      <Name>DiscordIntegration.Dependency</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

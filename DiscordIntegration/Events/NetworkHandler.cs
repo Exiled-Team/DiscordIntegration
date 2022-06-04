@@ -13,6 +13,7 @@ namespace DiscordIntegration.Events
     using API.Commands;
     using API.EventArgs.Network;
     using API.User;
+    using Dependency;
     using Exiled.API.Features;
     using Newtonsoft.Json;
     using static DiscordIntegration;
@@ -28,6 +29,8 @@ namespace DiscordIntegration.Events
             try
             {
                 Log.Debug($"[NET] {string.Format(Language.ReceivedData, ev.Data, ev.Length)}", Instance.Config.IsDebugEnabled);
+                if (ev.Data.Contains("heartbeat"))
+                    return;
 
                 RemoteCommand remoteCommand = JsonConvert.DeserializeObject<RemoteCommand>(ev.Data, Network.JsonSerializerSettings);
 
@@ -35,10 +38,11 @@ namespace DiscordIntegration.Events
 
                 switch (remoteCommand.Action)
                 {
-                    case "executeCommand":
-                        JsonConvert.DeserializeObject<GameCommand>(remoteCommand.Parameters[0].ToString())?.Execute();
+                    case ActionType.ExecuteCommand:
+                        GameCommand command = new GameCommand(remoteCommand.Parameters[0].ToString(), remoteCommand.Parameters[1].ToString(), new DiscordUser(remoteCommand.Parameters[2].ToString(), remoteCommand.Parameters[3].ToString(), remoteCommand.Parameters[1].ToString()));
+                        command?.Execute();
                         break;
-                    case "setGroupFromId":
+                    case ActionType.SetGroupFromId:
                         SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
 
                         if (syncedUser == null)
@@ -49,7 +53,7 @@ namespace DiscordIntegration.Events
 
                         syncedUser?.SetGroup();
                         break;
-                    case "commandReply":
+                    case ActionType.CommandReply:
                         JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
                         break;
                 }
@@ -96,7 +100,7 @@ namespace DiscordIntegration.Events
         {
             Log.Info($"[NET] {string.Format(Language.SuccessfullyConnected, Network.IPEndPoint?.Address, Network.IPEndPoint?.Port)}");
 
-            await Network.SendAsync(new RemoteCommand("log", "gameEvents", Language.ServerConnected, true));
+            await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, Language.ServerConnected));
         }
 
         /// <inheritdoc cref="API.Network.OnConnectingError(object, ConnectingErrorEventArgs)"/>

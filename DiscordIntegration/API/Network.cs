@@ -15,6 +15,7 @@ namespace DiscordIntegration.API
     using System.Threading;
     using System.Threading.Tasks;
     using API.EventArgs.Network;
+    using Exiled.API.Features;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
 
@@ -351,6 +352,7 @@ namespace DiscordIntegration.API
                         {
                             if (totalReceivedData.Length > 0)
                             {
+                                Log.Debug($"{nameof(ReceiveAsync)}: Received {receivedData}", DiscordIntegration.Instance.Config.IsDebugEnabled);
                                 OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData.ToString() + splittedData, bytesRead));
 
                                 totalReceivedData.Clear();

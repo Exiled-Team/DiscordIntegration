@@ -10,6 +10,7 @@ namespace DiscordIntegration.Commands.Reload
     using System;
     using API.Commands;
     using CommandSystem;
+    using Dependency;
     using Exiled.Permissions.Extensions;
 
     /// <summary>
@@ -52,7 +53,7 @@ namespace DiscordIntegration.Commands.Reload
 
             DiscordIntegration.Instance.SyncedUsersCache.Clear();
 
-            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("loadSyncedRoles", sender.GetCompatible()));
+            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.LoadSyncedRole, sender.GetCompatible()));
 
             response = DiscordIntegration.Language.ReloadSyncedRolesSuccess;
             return true;

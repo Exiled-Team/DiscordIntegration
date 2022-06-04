@@ -10,6 +10,7 @@ namespace DiscordIntegration.Commands.Remove
     using System;
     using API.Commands;
     using CommandSystem;
+    using Dependency;
     using Exiled.Permissions.Extensions;
 
     /// <summary>
@@ -58,7 +59,7 @@ namespace DiscordIntegration.Commands.Remove
 
             DiscordIntegration.Instance.SyncedUsersCache.RemoveWhere(syncedUser => syncedUser.Id == arguments.At(0));
 
-            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand("removeUser", arguments.At(0), sender.GetCompatible()));
+            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.RemoveUser, arguments.At(0), sender.GetCompatible()));
 
             response = DiscordIntegration.Language.RemoveUserCommandSuccess;
             return false;
