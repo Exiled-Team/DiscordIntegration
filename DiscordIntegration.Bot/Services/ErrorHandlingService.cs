@@ -26,7 +26,7 @@ public static class ErrorHandlingService
             ErrorCodes.UnableToParseDate, "The date {0} is invalid."
         },
         {
-            ErrorCodes.InvalidNumberOfArguments, "This command requires {0} arguments."
+            ErrorCodes.InvalidCommand, "That command is not enabled on this server."
         },
         {
             ErrorCodes.DatabaseNotFound, "Joker broke something, ping him."
@@ -60,10 +60,10 @@ public static class ErrorHandlingService
 
     public static async Task<Embed> GetErrorEmbed(ErrorCodes errorCode, string extra = "")
     {
-        Log.Info(nameof(GetErrorEmbed), $"Sending error code: {errorCode}");
+        Log.Debug(nameof(GetErrorEmbed), $"Sending error code: {errorCode}");
         return await EmbedBuilderService.CreateBasicEmbed(GetErrorMessage(errorCode),
             !string.IsNullOrEmpty(extra)
                 ? string.Format(GetErrorDescription(errorCode), $"\"{extra}\"")
-                : GetErrorDescription(errorCode).Replace("{0}", string.Empty), Color.Red);
+                : GetErrorDescription(errorCode).Replace("{0}", string.Empty) + "\n**Please report all bugs on Github.**", Color.Red);
     }
 }

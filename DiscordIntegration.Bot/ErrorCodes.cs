@@ -8,7 +8,7 @@ public enum ErrorCodes
     PermissionDenied,
     InvalidChannelId,
     UnableToParseDate,
-    InvalidNumberOfArguments,
+    InvalidCommand,
     DatabaseNotFound,
     FailedToParseTitle,
     FailedToParseColor,

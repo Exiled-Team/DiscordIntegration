@@ -5,7 +5,7 @@ using Discord;
 
 public class EmbedBuilderService
 {
-    public static string Footer => $"Benevolent Lawmaking, Analysis and Reinforcement Technology | {Assembly.GetExecutingAssembly().GetName().Version} | - Joker119";
+    public static string Footer => $"Discord Integration | {Assembly.GetExecutingAssembly().GetName().Version} | - Joker119";
 
     public static async Task<Embed> CreateBasicEmbed(string title, string description, Color color)
     {

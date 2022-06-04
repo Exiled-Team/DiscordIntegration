@@ -107,7 +107,8 @@ public class Bot
                 case ActionType.SendMessage:
                     if (ulong.TryParse(command.Parameters[0].ToString(), out ulong chanId))
                     {
-                        await Guild.GetTextChannel(chanId).SendMessageAsync(command.Parameters[1].ToString());
+                        string[] split = command.Parameters[1].ToString()!.Split("|");
+                        await Guild.GetTextChannel(chanId).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed(split[0].TrimEnd('|'), split[1].TrimStart('|'), (bool)command.Parameters[2] ? Color.Green : Color.Red));
                     }
 
                     break;
@@ -133,12 +134,28 @@ public class Bot
     {
         for (;;)
         {
+            List<KeyValuePair<ulong, string>> toSend = new();
             lock (messages)
             {
                 foreach (KeyValuePair<ulong, string> message in messages)
-                    _ = Guild.GetTextChannel(message.Key).SendMessageAsync(message.Value);
+                    toSend.Add(message);
 
                 messages.Clear();
+            }
+
+            foreach (KeyValuePair<ulong, string> message in toSend)
+            {
+                if (message.Value.Length > 1900)
+                {
+                    string msg = string.Empty;
+                    string[] split = message.Value.Split('\n');
+                    while (msg.Length < 1900)
+                        msg += split;
+                    _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed("Server Logs", msg, Color.Green));
+                    messages.Add(message.Key, message.Value.Replace(msg, string.Empty));
+                }
+                else
+                    _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed("Server Logs", message.Value, Color.Green));
             }
 
             await Task.Delay(Program.Config.MessageDelay);

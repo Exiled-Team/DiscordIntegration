@@ -6,7 +6,7 @@ public class Config
 {
     public Dictionary<ushort, string> BotTokens { get; set; } = new();
     public Dictionary<ushort, ChannelConfig> Channels { get; set; } = new();
-    public Dictionary<ulong, List<string>> ValidCommands { get; set; } = new();
+    public Dictionary<ushort, Dictionary<ulong, List<string>>> ValidCommands { get; set; } = new();
     public Dictionary<ushort, ulong> DiscordServerIds { get; set; } = new();
     public Dictionary<ushort, TcpServerConfig> TcpServers { get; set; } = new();
     public int KeepAliveInterval { get; set; }
@@ -18,7 +18,7 @@ public class Config
         BotTokens = new Dictionary<ushort, string>
         {
             {
-                7777,
+                1,
                 "bot-token-here"
             }
         },
@@ -26,7 +26,7 @@ public class Config
         Channels = new Dictionary<ushort, ChannelConfig>
         {
             {
-                7777,
+                1,
                 new()
                 {
                     TopicInfo = new List<ulong>
@@ -64,12 +64,17 @@ public class Config
             }
         },
         
-        ValidCommands = new Dictionary<ulong, List<string>>
+        ValidCommands = new Dictionary<ushort, Dictionary<ulong, List<string>>>
         {
             {
-                7777, new()
+                1, new Dictionary<ulong, List<string>>
                 {
-                    "di"
+                    {
+                        0, new List<string>
+                        {
+                            "di"
+                        }
+                    }
                 }
             }
         },
@@ -77,14 +82,14 @@ public class Config
         DiscordServerIds = new Dictionary<ushort, ulong>
         {
             {
-                7777, 0
+                1, 0
             }
         },
         
         TcpServers = new Dictionary<ushort, TcpServerConfig>
         {
             {
-                7777, new TcpServerConfig
+                1, new TcpServerConfig
                 {
                     Port = 9000,
                     IpAddress = "127.0.0.1"

@@ -39,7 +39,7 @@ namespace DiscordIntegration.Events
                 switch (remoteCommand.Action)
                 {
                     case ActionType.ExecuteCommand:
-                        GameCommand command = new GameCommand(remoteCommand.Parameters[0].ToString(), remoteCommand.Parameters[1].ToString(), new DiscordUser(remoteCommand.Parameters[2].ToString(), remoteCommand.Parameters[3].ToString()));
+                        GameCommand command = new GameCommand(remoteCommand.Parameters[0].ToString(), remoteCommand.Parameters[1].ToString(), new DiscordUser(remoteCommand.Parameters[2].ToString(), remoteCommand.Parameters[3].ToString(), remoteCommand.Parameters[1].ToString()));
                         command?.Execute();
                         break;
                     case ActionType.SetGroupFromId:
