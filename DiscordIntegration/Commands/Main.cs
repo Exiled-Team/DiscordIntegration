@@ -28,9 +28,6 @@ namespace DiscordIntegration.Commands
         {
             RegisterCommand(PlayerList.Instance);
             RegisterCommand(StaffList.Instance);
-            RegisterCommand(Reload.Reload.Instance);
-            RegisterCommand(Add.Add.Instance);
-            RegisterCommand(Remove.Remove.Instance);
         }
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
