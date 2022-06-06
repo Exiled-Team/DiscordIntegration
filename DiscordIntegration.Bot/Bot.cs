@@ -145,17 +145,25 @@ public class Bot
 
             foreach (KeyValuePair<ulong, string> message in toSend)
             {
-                if (message.Value.Length > 1900)
+                try
                 {
-                    string msg = string.Empty;
-                    string[] split = message.Value.Split('\n');
-                    while (msg.Length < 1900)
-                        msg += split;
-                    _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", msg, Color.Green));
-                    messages.Add(message.Key, message.Value.Replace(msg, string.Empty));
+                    if (message.Value.Length > 1900)
+                    {
+                        string msg = string.Empty;
+                        string[] split = message.Value.Split('\n');
+                        while (msg.Length < 1900)
+                            msg += split;
+                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", msg, Color.Green));
+                        messages.Add(message.Key, message.Value.Replace(msg, string.Empty));
+                    }
+                    else
+                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message.Value, Color.Green));
                 }
-                else
-                    _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message.Value, Color.Green));
+                catch (Exception e)
+                {
+                    Log.Error(nameof(DequeueMessages), $"{e.Message}\nThis is likely caused because {message.Key} is not a valid channel ID, or an invalid GuildID: {Program.Config.DiscordServerIds[ServerNumber]}. If the GuildID is correct, to avoid this error, disabling the logging of events targeting channels that you've purposefully set to an invalid channel ID.\nEnable debug mode to show the contents of the messages causing this error.");
+                    Log.Debug(nameof(DequeueMessages), $"{e.Message}\n{message.Value}");
+                }
             }
 
             await Task.Delay(Program.Config.MessageDelay);
