@@ -187,14 +187,14 @@ namespace DiscordIntegration.Bot.Services
             {
                 if (!IsConnected)
                 {
-                    Log.Debug($"[{bot.Port}]", "Sending aborted, not connected.");
+                    Log.Debug($"[{bot.ServerNumber}]", "Sending aborted, not connected.");
                     return;
                 }
                 
 
                 string serializedObject = JsonConvert.SerializeObject(data, JsonSerializerSettings);
 
-                Log.Debug($"[{bot.Port}]", $"Sending {serializedObject}");
+                Log.Debug($"[{bot.ServerNumber}]", $"Sending {serializedObject}");
                 byte[] bytesToSend = Encoding.UTF8.GetBytes(serializedObject + '\0');
 
                 await TcpClient?.GetStream().WriteAsync(bytesToSend, 0, bytesToSend.Length, cancellationToken)!;
@@ -314,7 +314,7 @@ namespace DiscordIntegration.Bot.Services
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"[{bot.Port}] {nameof(ReceiveAsync)}", e);
+                    Log.Error($"[{bot.ServerNumber}] {nameof(ReceiveAsync)}", e);
                     return;
                 }
 
