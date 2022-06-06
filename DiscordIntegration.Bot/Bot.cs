@@ -118,7 +118,8 @@ public class Bot
                     else
                         await Client.SetStatusAsync(UserStatus.AFK);
 
-                    await Client.SetActivityAsync(new Game(command.Parameters[0].ToString()));
+                    if (Client.Activity.Name != command.Parameters[0].ToString())
+                        await Client.SetActivityAsync(new Game(command.Parameters[0].ToString()));
 
                     break;
             }
@@ -151,8 +152,13 @@ public class Bot
                     {
                         string msg = string.Empty;
                         string[] split = message.Value.Split('\n');
+                        int i = 0;
                         while (msg.Length < 1900)
-                            msg += split;
+                        {
+                            msg += split[i];
+                            i++;
+                        }
+
                         _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", msg, Color.Green));
                         messages.Add(message.Key, message.Value.Replace(msg, string.Empty));
                     }
