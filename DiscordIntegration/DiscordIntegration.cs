@@ -126,7 +126,9 @@ namespace DiscordIntegration
         /// </summary>
         public override void OnDisabled()
         {
-            harmony?.UnpatchAll();
+            harmony?.UnpatchAll(harmony.Id);
+            harmony = null;
+
             KillCoroutines();
 
             NetworkCancellationTokenSource.Cancel();
