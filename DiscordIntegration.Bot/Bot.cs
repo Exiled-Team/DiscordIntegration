@@ -138,7 +138,8 @@ public class Bot
         catch (Exception e)
         {
             Log.Error(nameof(OnReceived), e.Message);
-            
+            if (e.StackTrace is not null) 
+                Log.Error(nameof(OnReceived), e.StackTrace);
         }
     }
 
