@@ -25,6 +25,8 @@ namespace DiscordIntegration
     /// </summary>
     public class DiscordIntegration : Plugin<Config>
     {
+        private static readonly DiscordIntegration InstanceValue = new();
+
         private readonly List<CoroutineHandle> coroutines = new List<CoroutineHandle>();
 
         private MapHandler mapHandler;
@@ -59,7 +61,7 @@ namespace DiscordIntegration
         /// <summary>
         /// Gets the <see cref="DiscordIntegration"/> instance.
         /// </summary>
-        public static DiscordIntegration Instance { get; private set; }
+        public static DiscordIntegration Instance => InstanceValue;
 
         /// <summary>
         /// Gets a list of synced users from the Discord server and SCP: SL one.
@@ -86,7 +88,6 @@ namespace DiscordIntegration
         /// </summary>
         public override void OnEnabled()
         {
-            Instance = this;
             try
             {
                 harmony = new Harmony($"com.joker.DI-{DateTime.Now.Ticks}");
