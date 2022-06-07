@@ -9,6 +9,7 @@ public class LogChannels
     public List<ulong>? Bans { get; set; } = new();
     public List<ulong>? Reports { get; set; } = new();
     public List<ulong>? StaffCopy { get; set; } = new();
+    public List<ulong>? Errors { get; set; } = new();
 
     public IEnumerable<ulong> this[ChannelType result] => (result switch
     {
@@ -17,6 +18,7 @@ public class LogChannels
         ChannelType.Bans => Bans,
         ChannelType.Reports => Reports,
         ChannelType.StaffCopy => StaffCopy,
+        ChannelType.Errors => Errors,
         _ => throw new ArgumentOutOfRangeException(nameof(result), result, null)
     })!;
 }

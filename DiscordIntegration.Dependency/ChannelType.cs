@@ -1,7 +1,5 @@
 namespace DiscordIntegration.Dependency
 {
-    using System.ComponentModel.Design;
-
     public enum ChannelType
     {
         Command,
@@ -9,5 +7,6 @@ namespace DiscordIntegration.Dependency
         Bans,
         Reports,
         StaffCopy,
+        Errors
     }
 }

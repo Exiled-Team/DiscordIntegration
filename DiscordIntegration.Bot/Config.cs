@@ -59,6 +59,10 @@ public class Config
                         {
                             0,
                         },
+                        Errors = new List<ulong>
+                        {
+                            0,
+                        },
                     }
                 }
             }

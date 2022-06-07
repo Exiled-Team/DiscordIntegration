@@ -55,6 +55,12 @@ namespace DiscordIntegration
         public bool ShouldLogUserIds { get; private set; } = true;
 
         /// <summary>
+        /// Gets a value indicating whether server errors should be logged.
+        /// </summary>
+        [Description("Indicates whether server errors should be logged or not.")]
+        public bool LogErrors { get; private set; } = true;
+
+        /// <summary>
         /// Gets a value indicating whether players' with the "Do not track" enabled, should be logged or not.
         /// </summary>
         [Description("Indicates whether players' with the \"Do not track\" enabled, should be logged or not")]

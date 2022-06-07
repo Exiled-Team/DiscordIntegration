@@ -1,5 +1,6 @@
 namespace DiscordIntegration.Bot;
 
+using System.Collections.Specialized;
 using System.Net;
 using System.Net.Sockets;
 using API.EventArgs.Network;
@@ -20,6 +21,7 @@ public class Bot
     private SocketGuild? guild;
     private string token;
     private Dictionary<ulong, string> messages = new();
+    private int lastCount;
 
     public ushort ServerNumber { get; }
     public DiscordSocketClient Client => client ??= new DiscordSocketClient();
@@ -113,13 +115,22 @@ public class Bot
 
                     break;
                 case ActionType.UpdateActivity:
-                    if (int.TryParse(((string) command.Parameters[0]).AsSpan(0, 1), out int count) && count > 0)
-                        await Client.SetStatusAsync(UserStatus.Online);
-                    else
-                        await Client.SetStatusAsync(UserStatus.AFK);
+                    if (int.TryParse(((string) command.Parameters[0]).AsSpan(0, 1), out int count))
+                    {
+                        switch (count)
+                        {
+                            case > 0 when Client.Status != UserStatus.Online:
+                                await Client.SetStatusAsync(UserStatus.Online);
+                                break;
+                            case 0 when Client.Status != UserStatus.AFK:
+                                await Client.SetStatusAsync(UserStatus.AFK);
+                                break;
+                        }
+                    }
 
-                    if (Client.Activity.Name != command.Parameters[0].ToString())
+                    if (count != lastCount)
                         await Client.SetActivityAsync(new Game(command.Parameters[0].ToString()));
+                    lastCount = count;
 
                     break;
             }
