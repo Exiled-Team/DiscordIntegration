@@ -25,9 +25,7 @@ namespace DiscordIntegration
     /// </summary>
     public class DiscordIntegration : Plugin<Config>
     {
-        private static readonly DiscordIntegration InstanceValue = new();
-
-        private readonly List<CoroutineHandle> coroutines = new List<CoroutineHandle>();
+        private static readonly DiscordIntegration InstanceValue = new ();
 
         private MapHandler mapHandler;
 
@@ -116,8 +114,6 @@ namespace DiscordIntegration
         {
             harmony?.UnpatchAll(harmony.Id);
             harmony = null;
-
-            KillCoroutines();
 
             NetworkCancellationTokenSource.Cancel();
             NetworkCancellationTokenSource.Dispose();
@@ -276,13 +272,6 @@ namespace DiscordIntegration
             mapHandler = null;
             serverHandler = null;
             networkHandler = null;
-        }
-
-        private void KillCoroutines()
-        {
-            Timing.KillCoroutines(coroutines.ToArray());
-
-            coroutines.Clear();
         }
     }
 }
