@@ -133,12 +133,12 @@
     <Compile Include="API\Commands\BotCommandSender.cs" />
     <Compile Include="API\Commands\GameCommand.cs" />
     <Compile Include="API\Configs\EventsToLog.cs" />
-    <Compile Include="API\User\SyncedUser.cs" />
     <Compile Include="API\Network.cs" />
     <Compile Include="Events\MapHandler.cs" />
     <Compile Include="Events\PlayerHandler.cs" />
     <Compile Include="DiscordIntegration.cs" />
     <Compile Include="API\Commands\PlayerCommandSender.cs" />
+    <Compile Include="Patches\ClientCommandLogging.cs" />
     <Compile Include="Patches\CommandLogging.cs" />
     <Compile Include="Patches\ErrorLoggingPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

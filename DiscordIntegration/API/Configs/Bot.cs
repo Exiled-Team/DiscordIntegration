@@ -102,9 +102,7 @@ namespace DiscordIntegration.API.Configs
 
                     string warheadText = Warhead.IsDetonated ? Language.WarheadHasBeenDetonated : Warhead.IsInProgress ? Language.WarheadIsCountingToDetonation : Language.WarheadHasntBeenDetonated;
 
-                    await Network.SendAsync(new RemoteCommand(ActionType.UpdateChannelActivity, $"{string.Format(Language.PlayersOnline, Player.Dictionary.Count, Instance.Slots)}. {string.Format(Language.RoundDuration, Round.ElapsedTime)}. {string.Format(Language.AliveHumans, aliveHumans)}. {string.Format(Language.AliveScps, aliveScps)}. {warheadText} IP: {Server.IpAddress}:{Server.Port} TPS: {Instance.Ticks / Instance.Config.Bot.ChannelTopicUpdateInterval}"));
-
-                    Instance.Ticks = 0;
+                    await Network.SendAsync(new RemoteCommand(ActionType.UpdateChannelActivity, $"{string.Format(Language.PlayersOnline, Player.Dictionary.Count, Instance.Slots)}. {string.Format(Language.RoundDuration, Round.ElapsedTime)}. {string.Format(Language.AliveHumans, aliveHumans)}. {string.Format(Language.AliveScps, aliveScps)}. {warheadText} IP: {Server.IpAddress}:{Server.Port} TPS: {Server.Tps}"), cancellationToken);
                 }
                 catch (Exception exception)
                 {

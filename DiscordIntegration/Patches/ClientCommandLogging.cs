@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="CommandLogging.cs" company="Exiled Team">
+// <copyright file="ClientCommandLogging.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -8,37 +8,41 @@
 namespace DiscordIntegration.Patches
 {
 #pragma warning disable SA1118
+
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection.Emit;
-    using System.Threading.Tasks;
-    using Dependency;
+
     using Exiled.API.Features;
-    using global::DiscordIntegration.API;
-    using global::DiscordIntegration.API.Commands;
+
+    using global::DiscordIntegration.Dependency;
+
     using HarmonyLib;
+
     using NorthwoodLib.Pools;
+
     using RemoteAdmin;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="RemoteAdmin.CommandProcessor.ProcessQuery"/> for command logging.
+    /// Patches <see cref="RemoteAdmin.QueryProcessor.ProcessGameConsoleQuery"/> to add client command logging.
     /// </summary>
-    [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
-    internal class CommandLogging
+    [HarmonyPatch(typeof(QueryProcessor), nameof(QueryProcessor.ProcessGameConsoleQuery))]
+    internal class ClientCommandLogging
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instruction)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instruction);
             const int index = 0;
 
-            newInstructions.InsertRange(index, new[]
+            newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldarg_1),
-                new CodeInstruction(OpCodes.Call, Method(typeof(CommandLogging), nameof(LogCommand))),
+                new (OpCodes.Ldarg_1),
+                new (OpCodes.Ldarg_0),
+                new (OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._sender))),
+                new (OpCodes.Call, Method(typeof(ClientCommandLogging), nameof(LogCommand))),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -49,19 +53,19 @@ namespace DiscordIntegration.Patches
 
         private static void LogCommand(string query, CommandSender sender)
         {
-            if (!DiscordIntegration.Instance.Config.EventsToLog.SendingRemoteAdminCommands)
+            if (!DiscordIntegration.Instance.Config.EventsToLog.SendingConsoleCommands)
                 return;
             string[] args = query.Trim().Split(QueryProcessor.SpaceArray, 512, StringSplitOptions.RemoveEmptyEntries);
             if (args[0].StartsWith("$"))
                 return;
 
-            Player player = sender is RemoteAdmin.PlayerCommandSender playerCommandSender
+            Player player = sender is PlayerCommandSender playerCommandSender
                 ? Player.Get(playerCommandSender)
                 : Server.Host;
             if (player == null || (!string.IsNullOrEmpty(player.UserId) && DiscordIntegration.Instance.Config.TrustedAdmins.Contains(player.UserId)))
                 return;
             _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.Command, string.Format(DiscordIntegration.Language.UsedCommand, sender.Nickname, sender.SenderId ?? DiscordIntegration.Language.DedicatedServer, player.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))));
-            if (DiscordIntegration.Instance.Config.StaffOnlyEventsToLog.SendingRemoteAdminCommands)
+            if (DiscordIntegration.Instance.Config.StaffOnlyEventsToLog.SendingConsoleCommands)
                 _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(DiscordIntegration.Language.UsedCommand, sender.Nickname, sender.SenderId ?? DiscordIntegration.Language.DedicatedServer, player.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))));
         }
     }

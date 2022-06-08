@@ -64,11 +64,6 @@ namespace DiscordIntegration
         public static DiscordIntegration Instance => InstanceValue;
 
         /// <summary>
-        /// Gets a list of synced users from the Discord server and SCP: SL one.
-        /// </summary>
-        public HashSet<SyncedUser> SyncedUsersCache { get; } = new HashSet<SyncedUser>();
-
-        /// <summary>
         /// Gets the server slots.
         /// </summary>
         public int Slots => CustomNetworkManager.slots;
@@ -77,11 +72,6 @@ namespace DiscordIntegration
         /// Gets the minimum version of Exiled to make the plugin work correctly.
         /// </summary>
         public override Version RequiredExiledVersion { get; } = new Version(5, 2, 0);
-
-        /// <summary>
-        /// Gets the ticks counter.
-        /// </summary>
-        public short Ticks { get; internal set; }
 
         /// <summary>
         /// Fired when the plugin is enabled.
@@ -107,8 +97,6 @@ namespace DiscordIntegration
             Language.Load();
 
             RegisterEvents();
-
-            coroutines.Add(Timing.RunCoroutine(CountTicks(), Segment.Update));
 
             Bot.UpdateActivityCancellationTokenSource = new CancellationTokenSource();
             Bot.UpdateChannelsTopicCancellationTokenSource = new CancellationTokenSource();
@@ -141,10 +129,6 @@ namespace DiscordIntegration
 
             Bot.UpdateChannelsTopicCancellationTokenSource.Cancel();
             Bot.UpdateChannelsTopicCancellationTokenSource.Dispose();
-
-            Ticks = 0;
-
-            SyncedUsersCache.Clear();
 
             UnregisterEvents();
 
@@ -299,16 +283,6 @@ namespace DiscordIntegration
             Timing.KillCoroutines(coroutines.ToArray());
 
             coroutines.Clear();
-        }
-
-        private IEnumerator<float> CountTicks()
-        {
-            while (true)
-            {
-                Ticks++;
-
-                yield return Timing.WaitForOneFrame;
-            }
         }
     }
 }

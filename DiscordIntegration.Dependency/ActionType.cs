@@ -6,14 +6,7 @@ namespace DiscordIntegration.Dependency
         SendMessage,
         UpdateActivity,
         ExecuteCommand,
-        SetGroupFromId,
         CommandReply,
-        AddUser,
-        AddRole,
-        LoadConfig,
-        LoadSyncedRole,
-        RemoveRole,
-        RemoveUser,
         UpdateChannelActivity,
     }
 }

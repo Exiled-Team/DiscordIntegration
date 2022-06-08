@@ -256,16 +256,6 @@ namespace DiscordIntegration.Events
 
         public async void OnVerified(VerifiedEventArgs ev)
         {
-            if (Instance.Config.ShouldSyncRoles)
-            {
-                SyncedUser syncedUser = Instance.SyncedUsersCache.FirstOrDefault(tempSyncedUser => tempSyncedUser?.Id == ev.Player.UserId);
-
-                if (syncedUser == null)
-                    await Network.SendAsync(new RemoteCommand(ActionType.SetGroupFromId, ev.Player.UserId)).ConfigureAwait(false);
-                else
-                    syncedUser?.SetGroup();
-            }
-
             if (Instance.Config.EventsToLog.PlayerJoined && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.HasJoinedTheGame, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, Instance.Config.ShouldLogIPAddresses ? ev.Player.IPAddress : Language.Redacted))).ConfigureAwait(false);
             if (Instance.Config.StaffOnlyEventsToLog.PlayerJoined)

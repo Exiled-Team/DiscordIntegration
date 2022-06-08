@@ -133,6 +133,15 @@ public class Bot
                     lastCount = count;
 
                     break;
+                case ActionType.UpdateChannelActivity:
+                    foreach (ulong channelId in Program.Config.Channels[ServerNumber].TopicInfo)
+                    {
+                        SocketTextChannel channel = Guild.GetTextChannel(channelId);
+                        if (channel is not null) 
+                            await channel.ModifyAsync(x => x.Topic = (string) command.Parameters[0]);
+                    }
+
+                    break;
             }
         }
         catch (Exception e)

@@ -42,17 +42,6 @@ namespace DiscordIntegration.Events
                         GameCommand command = new GameCommand(remoteCommand.Parameters[0].ToString(), remoteCommand.Parameters[1].ToString(), new DiscordUser(remoteCommand.Parameters[2].ToString(), remoteCommand.Parameters[3].ToString(), remoteCommand.Parameters[1].ToString()));
                         command?.Execute();
                         break;
-                    case ActionType.SetGroupFromId:
-                        SyncedUser syncedUser = JsonConvert.DeserializeObject<SyncedUser>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings);
-
-                        if (syncedUser == null)
-                            break;
-
-                        if (!Instance.SyncedUsersCache.Contains(syncedUser))
-                            Instance.SyncedUsersCache.Add(syncedUser);
-
-                        syncedUser?.SetGroup();
-                        break;
                     case ActionType.CommandReply:
                         JsonConvert.DeserializeObject<CommandReply>(remoteCommand.Parameters[0].ToString(), Network.JsonSerializerSettings)?.Answer();
                         break;
