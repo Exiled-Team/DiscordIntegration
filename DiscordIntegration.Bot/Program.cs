@@ -1,4 +1,4 @@
-﻿namespace DiscordIntegration.Bot;
+namespace DiscordIntegration.Bot;
 
 using Newtonsoft.Json;
 using Services;
@@ -16,8 +16,10 @@ public static class Program
     {
         if (args.Contains("--debug"))
             Config.Debug = true;
+        
         foreach (KeyValuePair<ushort, string> botToken in Config.BotTokens)
             _bots.Add(new Bot(botToken.Key, botToken.Value));
+        
         AppDomain.CurrentDomain.ProcessExit += (_, _) =>
         {
             foreach (Bot bot in _bots)
@@ -29,6 +31,8 @@ public static class Program
             Log.Warn(nameof(Main), "Shutting down..");
             Thread.Sleep(10000);
         }
+        
+        KeepAlive().GetAwaiter().GetResult();
     }
 
     private static Config GetConfig()
@@ -37,5 +41,11 @@ public static class Program
             return JsonConvert.DeserializeObject<Config>(File.ReadAllText(KCfgFile))!;
         File.WriteAllText(KCfgFile, JsonConvert.SerializeObject(Config.Default, Formatting.Indented));
         return Config.Default;
+    }
+
+    private static async Task KeepAlive()
+    {
+        Log.Debug(nameof(KeepAlive), "Keeping alive bots.");
+        await Task.Delay(-1);
     }
 }
