@@ -176,7 +176,7 @@ public class Bot
                         int i = 0;
                         while (msg.Length < 1900)
                         {
-                            msg += split[i];
+                            msg += "{split[i]}\n";
                             i++;
                         }
 
