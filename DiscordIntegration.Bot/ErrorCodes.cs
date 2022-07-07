@@ -17,4 +17,5 @@ public enum ErrorCodes
     Unspecified,
     TriggerLengthExceedsLimit,
     UnableToParseId,
+    None,
 }
