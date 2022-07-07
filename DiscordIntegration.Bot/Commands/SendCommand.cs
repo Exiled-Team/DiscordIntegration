@@ -46,6 +46,8 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
 
         foreach (KeyValuePair<ulong, List<string>> commandList in Program.Config.ValidCommands[serverNum])
         {
+            if (user.Hierarchy >= user.Guild.GetRole(commandList.Key)?.Position && commandList.Value.Contains(".*"))
+                return ErrorCodes.None;
             if (!commandList.Value.Contains(command) && !commandList.Value.Any(command.StartsWith))
                 return ErrorCodes.InvalidCommand;
             if (user.Hierarchy >= user.Guild.GetRole(commandList.Key)?.Position)
