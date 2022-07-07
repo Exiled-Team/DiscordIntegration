@@ -9,6 +9,7 @@ public class Config
     public Dictionary<ushort, Dictionary<ulong, List<string>>> ValidCommands { get; set; } = new();
     public Dictionary<ushort, ulong> DiscordServerIds { get; set; } = new();
     public Dictionary<ushort, TcpServerConfig> TcpServers { get; set; } = new();
+    public Dictionary<ushort, LogsTypes> LogsTypes { get; set; } = new();
     public int KeepAliveInterval { get; set; }
     public int MessageDelay { get; set; }
     public bool Debug { get; set; }
@@ -99,6 +100,12 @@ public class Config
                     IpAddress = "127.0.0.1"
                 }
             }
+        },
+        
+        LogsTypes = new Dictionary<ushort, LogsTypes>()
+        {
+            {1, DiscordIntegration.Bot.Enums.LogsTypes.Embed},
+            {2, DiscordIntegration.Bot.Enums.LogsTypes.MessageContent},
         },
         
         KeepAliveInterval = 2000,
