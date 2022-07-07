@@ -12,6 +12,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using Services;
+using Enums;
 using ActionType = Dependency.ActionType;
 using ChannelType = Dependency.ChannelType;
 
@@ -180,11 +181,11 @@ public class Bot
                             i++;
                         }
 
-                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", msg, Color.Green));
+                        await SendLogsAsync(Program.Config.LogsTypes[ServerNumber], message.Key, msg);
                         messages.Add(message.Key, message.Value.Replace(msg, string.Empty));
                     }
                     else
-                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message.Value, Color.Green));
+                        await SendLogsAsync(Program.Config.LogsTypes[ServerNumber], message.Key, message.Value);
                 }
                 catch (Exception e)
                 {
@@ -194,6 +195,19 @@ public class Bot
             }
 
             await Task.Delay(Program.Config.MessageDelay);
+        }
+    }
+    
+    private async Task SendLogsAsync(LogsTypes logsType, ulong channelId, string message)
+    {
+        switch (logsType)
+        {
+            case LogsTypes.Embed:
+                _ = Guild.GetTextChannel(channelId).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message, Color.Green));
+                break;
+            case LogsTypes.MessageContent:
+                _ = Guild.GetTextChannel(channelId).SendMessageAsync(message);
+                break;
         }
     }
 }
