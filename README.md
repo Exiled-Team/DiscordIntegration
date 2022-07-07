@@ -66,7 +66,7 @@ Remember to always wrap configs with quotation marks, even if it's not necessary
   },
 ```
 
-3. Add role IDs and list every command they can exeute. You can use `.*` to permit to that role ID to use all game commands without restrictions.
+3. Add role IDs and list every command they can execute. You can use `.*` to permit to that role ID to use all game commands without restrictions.
 
 ```json
   "ValidCommands": {
