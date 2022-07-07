@@ -1,4 +1,4 @@
-﻿namespace DiscordIntegration.Bot;
+﻿namespace DiscordIntegration.Bot.Enums;
 
 public enum LogsTypes
 {
