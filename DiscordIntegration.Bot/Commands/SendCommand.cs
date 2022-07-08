@@ -17,9 +17,9 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
     public SendCommand(Bot bot) => this.bot = bot;
 
     [SlashCommand($"send", "Sends a command to the SCP server.")]
-    public async Task Send([Summary("server", "The server number to send the command to.")] ushort serverNum, [Summary("command", "The command to send.")] string command)
+    public async Task Send([Summary("server"), Autocomplete(typeof(ServersAutocompleteHandler))] string serverNum, [Summary("command", "The command to send.")] string command)
     {
-        switch (CanRunCommand((IGuildUser) Context.User, serverNum, command))
+        switch (CanRunCommand((IGuildUser) Context.User, Convert.ToUInt16(serverNum), command))
         {
             case 0:
                 break;
@@ -60,3 +60,16 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
         return 2;
     }
 }
+
+public class ServersAutocompleteHandler : AutocompleteHandler
+    {
+        public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction,
+            IParameterInfo parameter, IServiceProvider services)
+        {
+            
+            List<AutocompleteResult> results = Program.Config.TcpServers
+                .Select(server => new AutocompleteResult(server.Key.ToString(), server.Key.ToString())).ToList();
+            
+            return AutocompletionResult.FromSuccess(results.Take(25));
+        }
+    }
