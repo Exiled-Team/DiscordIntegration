@@ -176,12 +176,12 @@ public class Bot
                         int i = 0;
                         while (msg.Length < 1900)
                         {
-                            msg += split[i];
+                            msg += split[i] + "\n";
                             i++;
                         }
 
                         _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", msg, Color.Green));
-                        messages.Add(message.Key, message.Value.Replace(msg, string.Empty));
+                        messages.Add(message.Key, message.Value.Substring(msg.Length));
                     }
                     else
                         _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message.Value, Color.Green));
