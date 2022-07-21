@@ -153,9 +153,7 @@ public class Bot
             List<KeyValuePair<ulong, string>> toSend = new();
             lock (messages)
             {
-                foreach (KeyValuePair<ulong, string> message in messages)
-                    toSend.Add(message);
-
+                toSend.AddRange(messages);
                 messages.Clear();
             }
 
