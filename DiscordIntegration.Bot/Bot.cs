@@ -15,13 +15,16 @@ using ChannelType = Dependency.ChannelType;
 
 public class Bot
 {
-    private DiscordSocketClient? client;
     private SocketGuild? guild;
     private string token;
     private Dictionary<ulong, string> messages = new();
 
     public ushort ServerNumber { get; }
-    public DiscordSocketClient Client => client ??= new DiscordSocketClient();
+    public DiscordSocketClient Client { get; } = new(new DiscordSocketConfig
+    {
+        GatewayIntents = GatewayIntents.All,
+        MessageCacheSize = 0,
+    });
     public SocketGuild Guild => guild ??= Client.GetGuild(Program.Config.DiscordServerIds[ServerNumber]);
     public InteractionService InteractionService { get; private set; } = null!;
     public SlashCommandHandler SlashCommandHandler { get; private set; } = null!;
