@@ -25,7 +25,7 @@ namespace DiscordIntegration.Commands
         {
         }
 
-        public static StaffList Instance { get; } = new();
+        public static StaffList Instance { get; } = new ();
 
         public string Command => "stafflist";
 

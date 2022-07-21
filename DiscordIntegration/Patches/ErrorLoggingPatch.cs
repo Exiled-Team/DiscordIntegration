@@ -24,6 +24,9 @@ namespace DiscordIntegration.Patches
 
     using static HarmonyLib.AccessTools;
 
+    /// <summary>
+    /// Patches errors for sending it on Discord.
+    /// </summary>
     [HarmonyPatch(typeof(Log), nameof(Log.Error), typeof(object))]
     [HarmonyPatch(typeof(Log), nameof(Log.Error), typeof(string))]
     internal class ErrorLoggingPatch
