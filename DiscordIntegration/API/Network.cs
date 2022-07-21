@@ -342,37 +342,43 @@ namespace DiscordIntegration.API
 
                 int bytesRead = await readTask;
 
-                if (bytesRead > 0)
+                switch (bytesRead)
                 {
-                    string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-
-                    if (receivedData.IndexOf('\0') != -1)
+                    case > 0:
                     {
-                        foreach (var splittedData in receivedData.Split('\0'))
-                        {
-                            if (totalReceivedData.Length > 0)
-                            {
-                                Log.Debug($"{nameof(ReceiveAsync)}: Received {receivedData}", DiscordIntegration.Instance.Config.IsDebugEnabled);
-                                OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData.ToString() + splittedData, bytesRead));
+                        string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-                                totalReceivedData.Clear();
-                            }
-                            else if (!string.IsNullOrEmpty(splittedData))
+                        if (receivedData.IndexOf('\0') != -1)
+                        {
+                            foreach (var splittedData in receivedData.Split('\0'))
                             {
-                                OnReceivedFull(this, new ReceivedFullEventArgs(splittedData, bytesRead));
+                                if (totalReceivedData.Length > 0)
+                                {
+                                    Log.Debug($"{nameof(ReceiveAsync)}: Received {receivedData}", DiscordIntegration.Instance.Config.IsDebugEnabled);
+                                    OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData.ToString() + splittedData, bytesRead));
+
+                                    totalReceivedData.Clear();
+                                }
+                                else if (!string.IsNullOrEmpty(splittedData))
+                                {
+                                    OnReceivedFull(this, new ReceivedFullEventArgs(splittedData, bytesRead));
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        OnReceivedPartial(this, new ReceivedPartialEventArgs(receivedData, bytesRead));
+                        else
+                        {
+                            OnReceivedPartial(this, new ReceivedPartialEventArgs(receivedData, bytesRead));
 
-                        totalReceivedData.Append(receivedData);
+                            totalReceivedData.Append(receivedData);
+                        }
+
+                        break;
                     }
+
+                    case 0 when totalReceivedData.Length > 1:
+                        OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData.ToString(), bytesRead));
+                        break;
                 }
-
-                if (bytesRead == 0 && totalReceivedData.Length > 1)
-                    OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData.ToString(), bytesRead));
             }
         }
 

@@ -52,10 +52,10 @@ namespace DiscordIntegration.API.Commands
         public override ulong Permissions { get; } = ServerStatic.GetPermissionsHandler().FullPerm;
 
         /// <inheritdoc cref="CommandSender.KickPower"/>
-        public override byte KickPower { get; } = byte.MaxValue;
+        public override byte KickPower => byte.MaxValue;
 
         /// <inheritdoc cref="CommandSender.FullPermissions"/>
-        public override bool FullPermissions { get; } = true;
+        public override bool FullPermissions => true;
 
         /// <inheritdoc cref="CommandSender.RaReply"/>
         public override async void RaReply(string text, bool success, bool logToConsole, string overrideDisplay)

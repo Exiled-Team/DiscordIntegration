@@ -300,9 +300,9 @@ namespace DiscordIntegration.Events
 
         public async void OnPickingUpItem(PickingUpItemEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.PlayerPickingupItem && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
+            if (Instance.Config.EventsToLog.PlayerPickingUpItem && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.HasPickedUp, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.Pickup.Type))).ConfigureAwait(false);
-            if (Instance.Config.StaffOnlyEventsToLog.PlayerPickingupItem)
+            if (Instance.Config.StaffOnlyEventsToLog.PlayerPickingUpItem)
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.HasPickedUp, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Pickup.Type))).ConfigureAwait(false);
         }
 

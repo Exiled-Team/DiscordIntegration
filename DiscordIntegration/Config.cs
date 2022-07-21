@@ -28,19 +28,19 @@ namespace DiscordIntegration
         /// Gets bot-related configs.
         /// </summary>
         [Description("Bot-related configs")]
-        public Bot Bot { get; private set; } = new Bot();
+        public Bot Bot { get; private set; } = new();
 
         /// <summary>
         /// Gets events to log confings.
         /// </summary>
         [Description("Indicates events that should be logged or not")]
-        public EventsToLog EventsToLog { get; private set; } = new EventsToLog();
+        public EventsToLog EventsToLog { get; private set; } = new();
 
         /// <summary>
         /// Gets events to log to the staff-only channel. These logs will always ignore DNT, and always show the player's UserID.
         /// </summary>
         [Description("Indicates events that should be logged to the staff-only channel. These logs always ignore DNT, and will always show the player's UserID.")]
-        public EventsToLog StaffOnlyEventsToLog { get; private set; } = new EventsToLog();
+        public EventsToLog StaffOnlyEventsToLog { get; private set; } = new();
 
         /// <summary>
         /// Gets a value indicating whether players' IP addresses should be logged or not.
@@ -82,7 +82,7 @@ namespace DiscordIntegration
         /// Gets a value indicating what damage types are not logged in hurting events.
         /// </summary>
         [Description("Indicates what damage types aren't allowed to be logged for hurting events. These filters will not apply to death logs.")]
-        public List<DamageType> BlacklistedDamageTypes { get; private set; } = new List<DamageType>
+        public List<DamageType> BlacklistedDamageTypes { get; private set; } = new ()
         {
             DamageType.Scp207,
             DamageType.PocketDimension,
@@ -110,7 +110,7 @@ namespace DiscordIntegration
         /// Gets a value indicating which admin userIDs are trusted.
         /// </summary>
         [Description("The list of trusted admins, whos command usage will not be logged.")]
-        public List<string> TrustedAdmins { get; private set; } = new List<string>();
+        public List<string> TrustedAdmins { get; private set; } = new ();
 
         /// <summary>
         /// Gets the plugin language.
