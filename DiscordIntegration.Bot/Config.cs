@@ -5,6 +5,7 @@ using ConfigObjects;
 public class Config
 {
     public Dictionary<ushort, string> BotTokens { get; set; } = new();
+    public Dictionary<ulong, ushort> BotIds { get; set; } = new();
     public Dictionary<ushort, ChannelConfig> Channels { get; set; } = new();
     public Dictionary<ushort, Dictionary<ulong, List<string>>> ValidCommands { get; set; } = new();
     public Dictionary<ushort, ulong> DiscordServerIds { get; set; } = new();
@@ -81,6 +82,11 @@ public class Config
                     }
                 }
             }
+        },
+        
+        BotIds = new Dictionary<ulong, ushort>()
+        {
+            {1, 0}
         },
         
         DiscordServerIds = new Dictionary<ushort, ulong>

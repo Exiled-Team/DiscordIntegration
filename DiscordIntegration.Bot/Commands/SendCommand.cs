@@ -17,20 +17,16 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
     public SendCommand(Bot bot) => this.bot = bot;
 
     [SlashCommand($"send", "Sends a command to the SCP server.")]
-    public async Task Send([Summary("server", "The server number to send the command to.")] ushort serverNum, [Summary("command", "The command to send.")] string command)
+    public async Task Send([Summary("command", "The command to send.")] string command)
     {
-        switch (CanRunCommand((IGuildUser) Context.User, serverNum, command))
-        {
-            case 0:
-                break;
-            case 1:
-                await RespondAsync(embed: await ErrorHandlingService.GetErrorEmbed(ErrorCodes.InvalidCommand));
-                return;
-            case 2:
-                await RespondAsync(embed: await ErrorHandlingService.GetErrorEmbed(ErrorCodes.PermissionDenied));
-                return;
-        }
+        ErrorCodes errorCode = CanRunCommand((IGuildUser) Context.User, Config.Default.BotIds[Context.Client.CurrentUser.Id], command);
         
+        if (errorCode != ErrorCodes.None)
+        {
+            await RespondAsync(embed: await ErrorHandlingService.GetErrorEmbed(errorCode));
+            return;
+        }
+
         try
         {
             Log.Debug(nameof(Send), $"Sending {command}");
@@ -44,19 +40,19 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
         }
     }
 
-    public int CanRunCommand(IGuildUser user, ushort serverNum, string command)
+    public ErrorCodes CanRunCommand(IGuildUser user, ushort serverNum, string command)
     {
         if (!Program.Config.ValidCommands.ContainsKey(serverNum) || Program.Config.ValidCommands[serverNum].Count == 0)
-            return 1;
+            return ErrorCodes.InvalidCommand;
 
         foreach (KeyValuePair<ulong, List<string>> commandList in Program.Config.ValidCommands[serverNum])
         {
             if (!commandList.Value.Contains(command) && !commandList.Value.Any(command.StartsWith))
-                return 1;
+                return ErrorCodes.InvalidCommand;
             if (user.Hierarchy >= user.Guild.GetRole(commandList.Key)?.Position)
-                return 0;
+                return ErrorCodes.None;
         }
 
-        return 2;
+        return ErrorCodes.PermissionDenied;
     }
 }
