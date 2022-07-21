@@ -172,11 +172,11 @@ public class Bot
                             i++;
                         }
 
-                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", msg, Color.Green));
+                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {Config.Default.BotIds[Client.CurrentUser.Id]} Logs", msg, Color.Green));
                         messages.Add(message.Key, message.Value.Replace(msg, string.Empty));
                     }
                     else
-                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message.Value, Color.Green));
+                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {Config.Default.BotIds[Client.CurrentUser.Id]} Logs", message.Value, Color.Green));
                 }
                 catch (Exception e)
                 {
