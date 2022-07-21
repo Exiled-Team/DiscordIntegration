@@ -95,7 +95,6 @@ public class Bot
             Log.Debug($"[{ServerNumber}]", $"Received data {ev.Data}");
             RemoteCommand command = JsonConvert.DeserializeObject<RemoteCommand>(ev.Data)!;
             Log.Debug($"[{ServerNumber}]", $"Received command {command.Action}.");
-
             switch (command.Action)
             {
                 case ActionType.Log:
@@ -132,7 +131,7 @@ public class Bot
                         }
                     }
 
-                    if (!Client.Activity.Name.StartsWith(count.ToString()))
+                    if (Client.Activity is null || !Client.Activity.Name.StartsWith(count.ToString()))
                         await Client.SetActivityAsync(new Game(command.Parameters[0].ToString()));
 
                     break;
