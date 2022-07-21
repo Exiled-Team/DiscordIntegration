@@ -1,3 +1,5 @@
+using DiscordIntegration.Bot.Commands.Handlers;
+
 namespace DiscordIntegration.Bot;
 
 using API.EventArgs.Network;
@@ -22,7 +24,8 @@ public class Bot
     public DiscordSocketClient Client => client ??= new DiscordSocketClient();
     public SocketGuild Guild => guild ??= Client.GetGuild(Program.Config.DiscordServerIds[ServerNumber]);
     public InteractionService InteractionService { get; private set; } = null!;
-    public SlashCommandHandler CommandHandler { get; private set; } = null!;
+    public SlashCommandHandler SlashCommandHandler { get; private set; } = null!;
+    public PrefixCommandHandler PrefixCommandHandler { get; private set; } = null!;
     public TcpServer Server { get; private set; } = null!;
 
     public Bot(ushort port, string token)
@@ -51,14 +54,17 @@ public class Bot
         {
             AutoServiceScopes = false,
         });
-        CommandHandler = new(InteractionService, Client, this);
-
+        
+        SlashCommandHandler = new(InteractionService, Client, this);
+        PrefixCommandHandler = new(InteractionService, Client, this);
+        
         Log.Debug($"[{ServerNumber}] {nameof(Init)}", "Setting up logging..");
         InteractionService.Log += Log.Send;
         Client.Log += Log.Send;
 
         Log.Debug($"[{ServerNumber}] {nameof(Init)}", "Registering commands..");
-        await CommandHandler.InstallCommandsAsync();
+        await SlashCommandHandler.InstallCommandsAsync();
+        await PrefixCommandHandler.InstallCommandsAsync();
         Client.Ready += async () =>
         {
             int slashCommands = (await InteractionService.RegisterCommandsToGuildAsync(Guild.Id)).Count;

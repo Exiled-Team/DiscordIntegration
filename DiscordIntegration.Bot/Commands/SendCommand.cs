@@ -1,11 +1,9 @@
 namespace DiscordIntegration.Bot.Commands;
 
-using System.Text;
 using Dependency;
 
 using Discord;
 using Discord.Interactions;
-using Newtonsoft.Json;
 using Services;
 
 using ActionType = DiscordIntegration.Dependency.ActionType;

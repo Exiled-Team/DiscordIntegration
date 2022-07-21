@@ -6,6 +6,7 @@ public class Config
 {
     public Dictionary<ushort, string> BotTokens { get; set; } = new();
     public Dictionary<ulong, ushort> BotIds { get; set; } = new();
+    public Dictionary<ushort, string> BotPrefixes { get; set; } = new();
     public Dictionary<ushort, ChannelConfig> Channels { get; set; } = new();
     public Dictionary<ushort, Dictionary<ulong, List<string>>> ValidCommands { get; set; } = new();
     public Dictionary<ushort, ulong> DiscordServerIds { get; set; } = new();
@@ -23,6 +24,11 @@ public class Config
                 1,
                 "bot-token-here"
             }
+        },
+        
+        BotPrefixes = new Dictionary<ushort, string>()
+        {
+            {1, "+"}
         },
         
         Channels = new Dictionary<ushort, ChannelConfig>

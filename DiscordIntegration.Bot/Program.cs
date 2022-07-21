@@ -10,7 +10,6 @@ public static class Program
     private static List<Bot> _bots = new();
 
     public static Config Config => _config ??= GetConfig();
-    public static Random Rng { get; } = new();
 
     public static void Main(string[] args)
     {
