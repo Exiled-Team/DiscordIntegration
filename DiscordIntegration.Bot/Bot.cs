@@ -1,13 +1,9 @@
 namespace DiscordIntegration.Bot;
 
-using System.Collections.Specialized;
-using System.Net;
-using System.Net.Sockets;
 using API.EventArgs.Network;
 using Commands;
 using Dependency;
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Newtonsoft.Json;
@@ -21,7 +17,6 @@ public class Bot
     private SocketGuild? guild;
     private string token;
     private Dictionary<ulong, string> messages = new();
-    private int lastCount;
 
     public ushort ServerNumber { get; }
     public DiscordSocketClient Client => client ??= new DiscordSocketClient();
@@ -128,9 +123,8 @@ public class Bot
                         }
                     }
 
-                    if (count != lastCount)
+                    if (!Client.Activity.Name.StartsWith(count.ToString()))
                         await Client.SetActivityAsync(new Game(command.Parameters[0].ToString()));
-                    lastCount = count;
 
                     break;
                 case ActionType.UpdateChannelActivity:
