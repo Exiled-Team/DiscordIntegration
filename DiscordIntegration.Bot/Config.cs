@@ -10,6 +10,7 @@ public class Config
     public Dictionary<ushort, Dictionary<ulong, List<string>>> ValidCommands { get; set; } = new();
     public Dictionary<ushort, ulong> DiscordServerIds { get; set; } = new();
     public Dictionary<ushort, TcpServerConfig> TcpServers { get; set; } = new();
+    public int YourUtc;
     public int KeepAliveInterval { get; set; }
     public int MessageDelay { get; set; }
     public bool Debug { get; set; }
@@ -107,6 +108,7 @@ public class Config
             }
         },
         
+        YourUtc = 3,
         KeepAliveInterval = 2000,
         MessageDelay = 1000,
         Debug = false,

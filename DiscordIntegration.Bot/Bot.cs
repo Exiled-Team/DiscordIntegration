@@ -96,7 +96,7 @@ public class Bot
                         {
                             if (!messages.ContainsKey(channelId))
                                 messages.Add(channelId, string.Empty);
-                            messages[channelId] += $"[{DateTime.Now}] {command.Parameters[1]}\n";
+                            messages[channelId] += $"[{new DateTime(DateTime.UtcNow.AddHours(Config.Default.YourUtc).Ticks)}] {command.Parameters[1]}\n";
                         }
                     }
 
