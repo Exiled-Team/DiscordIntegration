@@ -34,7 +34,7 @@ public class Bot
     {
         ServerNumber = port;
         this.token = token;
-        Init().GetAwaiter().GetResult();
+        Task.Run(Init);
     }
 
     public void Destroy() => Client.LogoutAsync();
