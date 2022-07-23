@@ -34,47 +34,11 @@ namespace DiscordIntegration.API
         /// <summary>
         /// Initializes a new instance of the <see cref="Network"/> class.
         /// </summary>
-        public Network()
-            : this(null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Network"/> class.
-        /// </summary>
-        /// <param name="reconnectionInterval"><inheritdoc cref="ReconnectionInterval"/></param>
-        public Network(TimeSpan reconnectionInterval)
-            : this(null, reconnectionInterval)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Network"/> class.
-        /// </summary>
-        /// <param name="ipAddress">The remote server IP address.</param>
-        /// <param name="port">The remote server IP port.</param>
-        public Network(string ipAddress, ushort port)
-            : this(new IPEndPoint(IPAddress.Parse(ipAddress), port))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Network"/> class.
-        /// </summary>
         /// <param name="ipAddress">The remote server IP address.</param>
         /// <param name="port">The remote server IP port.</param>
         /// <param name="reconnectionInterval">The reconnection interval.</param>
         public Network(string ipAddress, ushort port, TimeSpan reconnectionInterval)
             : this(new IPEndPoint(IPAddress.Parse(ipAddress), port), reconnectionInterval)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Network"/> class.
-        /// </summary>
-        /// <param name="ipEndPoint">The remote server IP address and port.</param>
-        public Network(IPEndPoint ipEndPoint)
-            : this(ipEndPoint, TimeSpan.FromSeconds(5))
         {
         }
 
