@@ -37,7 +37,7 @@ namespace DiscordIntegration.API.Configs
 
         public bool PlayerItemDropped { get; private set; }
 
-        public bool PlayerPickingupItem { get; private set; }
+        public bool PlayerPickingUpItem { get; private set; }
 
         public bool PlayerIntercomSpeaking { get; private set; } = true;
 

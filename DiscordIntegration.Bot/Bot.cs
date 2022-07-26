@@ -1,13 +1,11 @@
+using DiscordIntegration.Bot.Commands.Handlers;
+
 namespace DiscordIntegration.Bot;
 
-using System.Collections.Specialized;
-using System.Net;
-using System.Net.Sockets;
 using API.EventArgs.Network;
 using Commands;
 using Dependency;
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Newtonsoft.Json;
@@ -17,17 +15,20 @@ using ChannelType = Dependency.ChannelType;
 
 public class Bot
 {
-    private DiscordSocketClient? client;
     private SocketGuild? guild;
     private string token;
     private Dictionary<ulong, string> messages = new();
-    private int lastCount;
 
     public ushort ServerNumber { get; }
-    public DiscordSocketClient Client => client ??= new DiscordSocketClient();
+    public DiscordSocketClient Client { get; } = new(new DiscordSocketConfig
+    {
+        GatewayIntents = GatewayIntents.All,
+        MessageCacheSize = 0,
+    });
     public SocketGuild Guild => guild ??= Client.GetGuild(Program.Config.DiscordServerIds[ServerNumber]);
     public InteractionService InteractionService { get; private set; } = null!;
-    public SlashCommandHandler CommandHandler { get; private set; } = null!;
+    public SlashCommandHandler SlashCommandHandler { get; private set; } = null!;
+    public PrefixCommandHandler PrefixCommandHandler { get; private set; } = null!;
     public TcpServer Server { get; private set; } = null!;
 
     public Bot(ushort port, string token)
@@ -56,14 +57,17 @@ public class Bot
         {
             AutoServiceScopes = false,
         });
-        CommandHandler = new(InteractionService, Client, this);
-
+        
+        SlashCommandHandler = new(InteractionService, Client, this);
+        PrefixCommandHandler = new(InteractionService, Client, this);
+        
         Log.Debug($"[{ServerNumber}] {nameof(Init)}", "Setting up logging..");
         InteractionService.Log += Log.Send;
         Client.Log += Log.Send;
 
         Log.Debug($"[{ServerNumber}] {nameof(Init)}", "Registering commands..");
-        await CommandHandler.InstallCommandsAsync();
+        await SlashCommandHandler.InstallCommandsAsync();
+        await PrefixCommandHandler.InstallCommandsAsync();
         Client.Ready += async () =>
         {
             int slashCommands = (await InteractionService.RegisterCommandsToGuildAsync(Guild.Id)).Count;
@@ -91,7 +95,6 @@ public class Bot
             Log.Debug($"[{ServerNumber}]", $"Received data {ev.Data}");
             RemoteCommand command = JsonConvert.DeserializeObject<RemoteCommand>(ev.Data)!;
             Log.Debug($"[{ServerNumber}]", $"Received command {command.Action}.");
-
             switch (command.Action)
             {
                 case ActionType.Log:
@@ -101,7 +104,7 @@ public class Bot
                         {
                             if (!messages.ContainsKey(channelId))
                                 messages.Add(channelId, string.Empty);
-                            messages[channelId] += $"[{DateTime.Now}] {command.Parameters[1]}\n";
+                            messages[channelId] += $"[{new DateTime(DateTime.UtcNow.AddHours(Config.Default.YourUtc).Ticks)}] {command.Parameters[1]}\n";
                         }
                     }
 
@@ -128,9 +131,8 @@ public class Bot
                         }
                     }
 
-                    if (count != lastCount)
+                    if (Client.Activity is null || !Client.Activity.Name.StartsWith(count.ToString()))
                         await Client.SetActivityAsync(new Game(command.Parameters[0].ToString()));
-                    lastCount = count;
 
                     break;
                 case ActionType.UpdateChannelActivity:
@@ -159,9 +161,7 @@ public class Bot
             List<KeyValuePair<ulong, string>> toSend = new();
             lock (messages)
             {
-                foreach (KeyValuePair<ulong, string> message in messages)
-                    toSend.Add(message);
-
+                toSend.AddRange(messages);
                 messages.Clear();
             }
 
@@ -180,11 +180,11 @@ public class Bot
                             i++;
                         }
 
-                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", msg, Color.Green));
-                        messages.Add(message.Key, message.Value.Replace(msg, string.Empty));
+                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {Config.Default.BotIds[Client.CurrentUser.Id]} Logs", msg, Color.Green));
+                        messages.Add(message.Key, message.Value.Substring(msg.Length));
                     }
                     else
-                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message.Value, Color.Green));
+                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {Config.Default.BotIds[Client.CurrentUser.Id]} Logs", message.Value, Color.Green));
                 }
                 catch (Exception e)
                 {

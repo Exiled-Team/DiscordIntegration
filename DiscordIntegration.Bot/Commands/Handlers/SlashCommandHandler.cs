@@ -1,11 +1,11 @@
-﻿namespace DiscordIntegration.Bot.Commands;
+﻿namespace DiscordIntegration.Bot.Commands.Handlers;
 
 using System.ComponentModel.Design;
 using System.Reflection;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Services;
+using DiscordIntegration.Bot.Services;
 
 public class SlashCommandHandler
 {

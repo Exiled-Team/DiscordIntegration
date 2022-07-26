@@ -80,9 +80,7 @@ namespace DiscordIntegration.Events
         public async void OnUpgradingItems(UpgradingItemEventArgs ev)
         {
             if (Instance.Config.EventsToLog.UpgradingScp914Items)
-            {
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.Scp914ProcessedItem, ev.Item.Type)));
-            }
         }
     }
 }

@@ -11,7 +11,7 @@ namespace DiscordIntegration.Dependency
         public RemoteCommand(ActionType action, object data)
         {
             Action = action;
-            Parameters = new object[] { data };
+            Parameters = new[] { data };
         }
 
         public RemoteCommand(ActionType action, params object[] data)

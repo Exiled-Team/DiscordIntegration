@@ -18,11 +18,11 @@ namespace DiscordIntegration.Commands
     {
         public Main() => LoadGeneratedCommands();
 
-        public override string Command { get; } = "discordintegration";
+        public override string Command => "discordintegration";
 
-        public override string[] Aliases { get; } = new[] { "di", "integration", "discord", "ds" };
+        public override string[] Aliases { get; } = { "di", "integration", "discord", "ds" };
 
-        public override string Description { get; } = string.Empty;
+        public override string Description => string.Empty;
 
         public override void LoadGeneratedCommands()
         {

@@ -5,10 +5,13 @@ using ConfigObjects;
 public class Config
 {
     public Dictionary<ushort, string> BotTokens { get; set; } = new();
+    public Dictionary<ulong, ushort> BotIds { get; set; } = new();
+    public Dictionary<ushort, string> BotPrefixes { get; set; } = new();
     public Dictionary<ushort, ChannelConfig> Channels { get; set; } = new();
     public Dictionary<ushort, Dictionary<ulong, List<string>>> ValidCommands { get; set; } = new();
     public Dictionary<ushort, ulong> DiscordServerIds { get; set; } = new();
     public Dictionary<ushort, TcpServerConfig> TcpServers { get; set; } = new();
+    public int YourUtc;
     public int KeepAliveInterval { get; set; }
     public int MessageDelay { get; set; }
     public bool Debug { get; set; }
@@ -21,6 +24,11 @@ public class Config
                 1,
                 "bot-token-here"
             }
+        },
+        
+        BotPrefixes = new Dictionary<ushort, string>()
+        {
+            {1, "+"}
         },
         
         Channels = new Dictionary<ushort, ChannelConfig>
@@ -83,6 +91,11 @@ public class Config
             }
         },
         
+        BotIds = new Dictionary<ulong, ushort>()
+        {
+            {1, 0}
+        },
+        
         DiscordServerIds = new Dictionary<ushort, ulong>
         {
             {
@@ -101,6 +114,7 @@ public class Config
             }
         },
         
+        YourUtc = 3,
         KeepAliveInterval = 2000,
         MessageDelay = 1000,
         Debug = false,

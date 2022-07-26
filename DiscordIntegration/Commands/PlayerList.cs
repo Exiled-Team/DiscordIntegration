@@ -25,11 +25,11 @@ namespace DiscordIntegration.Commands
         {
         }
 
-        public static PlayerList Instance { get; } = new PlayerList();
+        public static PlayerList Instance { get; } = new ();
 
-        public string Command { get; } = "playerlist";
+        public string Command => "playerlist";
 
-        public string[] Aliases { get; } = new[] { "pli" };
+        public string[] Aliases { get; } = { "pli" };
 
         public string Description { get; } = Language.PlayerListCommandDescription;
 

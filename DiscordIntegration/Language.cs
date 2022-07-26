@@ -124,7 +124,7 @@ namespace DiscordIntegration
 
         public string WarheadIsCountingToDetonation { get; set; } = "Warhead is counting down to detonation.";
 
-        public string WarheadHasntBeenDetonated { get; set; } = "Warhead has not been detonated.";
+        public string WarheadHasNotBeenDetonated { get; set; } = "Warhead has not been detonated.";
 
         public string PlayerWarheadStarted { get; set; } = ":radioactive: **{0} ({1}) [{2}] started the alpha-warhead countdown, detonation in: {3}.**";
 
@@ -240,7 +240,7 @@ namespace DiscordIntegration
 
         public string InvalidDiscordIdError { get; set; } = "{0} is not a valid Discord ID!";
 
-        public string InvalidUserdIdError { get; set; } = "{0} is not a valid user ID!";
+        public string InvalidUserIdError { get; set; } = "{0} is not a valid user ID!";
 
         public string InvalidDiscordRoleIdError { get; set; } = "{0} is not a valid Discord role ID!";
 
@@ -277,7 +277,6 @@ namespace DiscordIntegration
             catch (Exception exception)
             {
                 Log.Error($"Error! Failed to read {Instance.Config.Language} language, located at \"{FullPath}\": {exception}.\nDefault translation will be used.");
-                return;
             }
             finally
             {
@@ -314,7 +313,6 @@ namespace DiscordIntegration
             catch (Exception exception)
             {
                 Log.Error($"Error! Failed to create \"{Instance.Config.Language}\" language at \"{FullPath}\": {exception}.");
-                return;
             }
             finally
             {
