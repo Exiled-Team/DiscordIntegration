@@ -19,7 +19,7 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand($"send", "Sends a command to the SCP server.")]
     public async Task Send([Summary("server", "The server number to send the command to.")] ushort serverNum, [Summary("command", "The command to send.")] string command)
     {
-        switch (CanRunCommand((IGuildUser) Context.User, serverNum, command))
+        switch (SlashCommandHandler.CanRunCommand((IGuildUser) Context.User, serverNum, command))
         {
             case 0:
                 break;
@@ -42,21 +42,5 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
             Log.Error(nameof(Send), e);
             await RespondAsync(embed: await ErrorHandlingService.GetErrorEmbed(ErrorCodes.Unspecified, e.Message));
         }
-    }
-
-    public int CanRunCommand(IGuildUser user, ushort serverNum, string command)
-    {
-        if (!Program.Config.ValidCommands.ContainsKey(serverNum) || Program.Config.ValidCommands[serverNum].Count == 0)
-            return 1;
-
-        foreach (KeyValuePair<ulong, List<string>> commandList in Program.Config.ValidCommands[serverNum])
-        {
-            if (!commandList.Value.Contains(command) && !commandList.Value.Any(command.StartsWith))
-                return 1;
-            if (user.Hierarchy >= user.Guild.GetRole(commandList.Key)?.Position)
-                return 0;
-        }
-
-        return 2;
     }
 }

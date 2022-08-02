@@ -67,4 +67,20 @@ public class SlashCommandHandler
 
     private async Task HandleComponentCommand(ComponentCommandInfo info, IInteractionContext context, IResult result) =>
         await HandleServiceError(context, result);
+
+    public static int CanRunCommand(IGuildUser user, ushort serverNum, string command)
+    {
+        if (!Program.Config.ValidCommands.ContainsKey(serverNum) || Program.Config.ValidCommands[serverNum].Count == 0)
+            return 1;
+
+        foreach (KeyValuePair<ulong, List<string>> commandList in Program.Config.ValidCommands[serverNum])
+        {
+            if (!commandList.Value.Contains(command) && !commandList.Value.Any(command.StartsWith))
+                return 1;
+            if (user.Hierarchy >= user.Guild.GetRole(commandList.Key)?.Position)
+                return 0;
+        }
+
+        return 2;
+    }
 }
