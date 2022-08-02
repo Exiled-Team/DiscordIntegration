@@ -16,6 +16,8 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 
 Bot token is located on the Bot page under username, Do NOT share the token because people can control the bot if they get it.
 
+**Note that before generating the link, check that you have applications.commands scope.**
+
 ## How to run the bot
 
 Open the bot once to let it automatically generate config.yml and synced-roles.yml files.
@@ -64,7 +66,7 @@ Remember to always wrap configs with quotation marks, even if it's not necessary
   },
 ```
 
-3. Add role IDs and list every command they can exeute. You can use `.*` to permit to that role ID to use all game commands without restrictions.
+3. Add role IDs and list every command they can execute. You can use `.*` to permit to that role ID to use all game commands without restrictions.
 
 ```json
   "ValidCommands": {
