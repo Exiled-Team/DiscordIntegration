@@ -15,6 +15,8 @@ namespace DiscordIntegration.Bot.Services
     using System.Threading;
     using System.Threading.Tasks;
     using DiscordIntegration.API.EventArgs.Network;
+    using DiscordIntegration.Dependency;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
 
@@ -308,19 +310,9 @@ namespace DiscordIntegration.Bot.Services
 
             while (true)
             {
-                try
-                {
-                    await SendAsync("heartbeat");
-                }
-                catch (Exception e)
-                {
-                    Log.Error($"[{bot.ServerNumber}] {nameof(ReceiveAsync)}", e);
-                    return;
-                }
-
                 Task<int> readTask = TcpClient!.GetStream().ReadAsync(buffer, 0, buffer.Length, cancellationToken);
                 
-                await Task.WhenAny(readTask, Task.Delay(5000));
+                await Task.WhenAny(readTask, Task.Delay(5000, cancellationToken));
                 
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -332,17 +324,41 @@ namespace DiscordIntegration.Bot.Services
 
                     if (receivedData.IndexOf('\0') != -1)
                     {
-                        foreach (var splittedData in receivedData.Split('\0'))
+                        foreach (string splitData in receivedData.Split('\0'))
                         {
                             if (totalReceivedData.Length > 0)
                             {
-                                OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData.ToString() + splittedData, bytesRead));
+                                try
+                                {
+                                    _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.Error(nameof(ReceiveAsync), $"Received unusable data. Clearing buffer. - {totalReceivedData + splitData}");
+                                    totalReceivedData.Clear();
+                                    continue;
+                                }
+
+                                OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData + splitData, bytesRead));
 
                                 totalReceivedData.Clear();
                             }
-                            else if (!string.IsNullOrEmpty(splittedData))
+                            else if (!string.IsNullOrEmpty(splitData))
                             {
-                                OnReceivedFull(this, new ReceivedFullEventArgs(splittedData, bytesRead));
+                                try
+                                {
+                                    _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.Error(nameof(ReceiveAsync), $"Received partial data, caching to buffer - {splitData}");
+                                    totalReceivedData.Append(splitData);
+                                    continue;
+                                }
+
+                                OnReceivedFull(this, new ReceivedFullEventArgs(splitData, bytesRead));
+                                
+                                totalReceivedData.Clear();
                             }
                         }
                     }
@@ -353,9 +369,6 @@ namespace DiscordIntegration.Bot.Services
                         totalReceivedData.Append(receivedData);
                     }
                 }
-
-                if (bytesRead == 0 && totalReceivedData.Length > 1)
-                    OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData.ToString(), bytesRead));
             }
         }
 

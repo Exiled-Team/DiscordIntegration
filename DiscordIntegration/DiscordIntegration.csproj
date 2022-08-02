@@ -1,171 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{56A08520-835E-4D09-BB5C-6EF47E2313FB}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DiscordIntegration</RootNamespace>
-    <AssemblyName>DiscordIntegration</AssemblyName>
-    <TargetFramework>net6.0</TargetFramework>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <LangVersion>9</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>annotations</Nullable>
+    <AssemblyVersion>6.0.3</AssemblyVersion>
+    <FileVersion>6.0.3</FileVersion>
+    <LangVersion>10</LangVersion>
+    <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>../bin/Plugin</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>stylecop.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>../bin/Plugin/</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <CodeAnalysisRuleSet>stylecop.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Release\DiscordIntegration.xml</DocumentationFile>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.0.4.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\EXILED\bin\Release\0Harmony.dll</HintPath>
+    <ProjectReference Include="..\DiscordIntegration.Dependency\DiscordIntegration.Dependency.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EXILED" Version="5.3.0-beta.4" />
+    <PackageReference Include="Lib.Harmony" Version="2.2.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\..\References\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(EXILED_REFERENCES)\Assembly-CSharp-Publicized.dll</HintPath>
+    <Reference Include="Mirror">
+      <HintPath>..\..\References\Mirror.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(EXILED_REFERENCES)\Assembly-CSharp-firstpass.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\References\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="CommandSystem.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\EXILED.5.1.0\lib\net472\CommandSystem.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Exiled.API, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\EXILED.5.1.0\lib\net472\Exiled.API.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Exiled.Bootstrap, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\EXILED.5.1.0\lib\net472\Exiled.Bootstrap.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Exiled.CreditTags, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\EXILED.5.1.0\lib\net472\Exiled.CreditTags.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Exiled.CustomItems, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\EXILED.5.1.0\lib\net472\Exiled.CustomItems.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Exiled.CustomRoles, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\EXILED.5.1.0\lib\net472\Exiled.CustomRoles.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Exiled.Events, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\EXILED.5.1.0\lib\net472\Exiled.Events.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Exiled.Loader, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\EXILED.5.1.0\lib\net472\Exiled.Loader.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Exiled.Permissions, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\EXILED.5.1.0\lib\net472\Exiled.Permissions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Exiled.Updater, Version=3.1.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\EXILED.5.1.0\lib\net472\Exiled.Updater.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(EXILED_REFERENCES)\Mirror.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NorthwoodLib, Version=1.2.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\References\NorthwoodLib.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(EXILED_REFERENCES)\UnityEngine.CoreModule.dll</HintPath>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\References\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="API\EventArgs\Network\ConnectingEventArgs.cs" />
-    <Compile Include="API\EventArgs\Network\TerminatedEventArgs.cs" />
-    <Compile Include="API\EventArgs\Network\ConnectingErrorEventArgs.cs" />
-    <Compile Include="API\EventArgs\Network\ErrorEventArgs.cs" />
-    <Compile Include="API\EventArgs\Network\ReceivedEventArgs.cs" />
-    <Compile Include="API\EventArgs\Network\ReceivedFullEventArgs.cs" />
-    <Compile Include="API\EventArgs\Network\ReceivedPartialEventArgs.cs" />
-    <Compile Include="API\EventArgs\Network\ReceivingErrorEventArgs.cs" />
-    <Compile Include="API\EventArgs\Network\SendingErrorEventArgs.cs" />
-    <Compile Include="API\EventArgs\Network\SentEventArgs.cs" />
-    <Compile Include="API\EventArgs\Network\UpdatingConnectionErrorEventArgs.cs" />
-    <Compile Include="Commands\Main.cs" />
-    <Compile Include="Commands\PlayerList.cs" />
-    <Compile Include="Commands\StaffList.cs" />
-    <Compile Include="Config.cs" />
-    <Compile Include="Events\NetworkHandler.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="API\Commands\CommandReply.cs" />
-    <Compile Include="API\Configs\Bot.cs" />
-    <Compile Include="API\Commands\BotCommandSender.cs" />
-    <Compile Include="API\Commands\GameCommand.cs" />
-    <Compile Include="API\Configs\EventsToLog.cs" />
-    <Compile Include="API\Network.cs" />
-    <Compile Include="Events\MapHandler.cs" />
-    <Compile Include="Events\PlayerHandler.cs" />
-    <Compile Include="DiscordIntegration.cs" />
-    <Compile Include="API\Commands\PlayerCommandSender.cs" />
-    <Compile Include="Patches\ClientCommandLogging.cs" />
-    <Compile Include="Patches\CommandLogging.cs" />
-    <Compile Include="Patches\ErrorLoggingPatch.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Events\ServerHandler.cs" />
-    <Compile Include="Language.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="API\User\DiscordUser.cs" />
-    <None Include="packages.config" />
-    <AdditionalFiles Include="stylecop.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DiscordIntegration.Dependency\DiscordIntegration.Dependency.csproj">
-      <Project>{a80e03ba-8f52-43f5-baff-191ddb78c4e0}</Project>
-      <Name>DiscordIntegration.Dependency</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-         Other similar extension points exist, see Microsoft.Common.targets.
-    <Target Name="BeforeBuild">
-    </Target>
-    <Target Name="AfterBuild">
-    </Target>
-    -->
+
 </Project>

@@ -16,6 +16,9 @@ namespace DiscordIntegration.API
     using System.Threading.Tasks;
     using API.EventArgs.Network;
     using Exiled.API.Features;
+
+    using global::DiscordIntegration.Dependency;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
 
@@ -296,9 +299,9 @@ namespace DiscordIntegration.API
             StringBuilder totalReceivedData = new StringBuilder();
             byte[] buffer = new byte[ReceptionBuffer];
 
-            while (true)
+while (true)
             {
-                Task<int> readTask = TcpClient.GetStream().ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                Task<int> readTask = TcpClient?.GetStream().ReadAsync(buffer, 0, buffer.Length, cancellationToken)!;
 
                 await Task.WhenAny(readTask, Task.Delay(Timeout.Infinite, cancellationToken));
 
@@ -312,18 +315,39 @@ namespace DiscordIntegration.API
 
                     if (receivedData.IndexOf('\0') != -1)
                     {
-                        foreach (var splittedData in receivedData.Split('\0'))
+                        foreach (string splitData in receivedData.Split('\0'))
                         {
                             if (totalReceivedData.Length > 0)
                             {
-                                Log.Debug($"{nameof(ReceiveAsync)}: Received {receivedData}", DiscordIntegration.Instance.Config.IsDebugEnabled);
-                                OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData.ToString() + splittedData, bytesRead));
+                                try
+                                {
+                                    _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
+                                }
+                                catch (Exception e)
+                                {
+                                    totalReceivedData.Clear();
+                                    continue;
+                                }
+
+                                OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData + splitData, bytesRead));
 
                                 totalReceivedData.Clear();
                             }
-                            else if (!string.IsNullOrEmpty(splittedData))
+                            else if (!string.IsNullOrEmpty(splitData))
                             {
-                                OnReceivedFull(this, new ReceivedFullEventArgs(splittedData, bytesRead));
+                                try
+                                {
+                                    _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
+                                }
+                                catch (Exception e)
+                                {
+                                    totalReceivedData.Append(splitData);
+                                    continue;
+                                }
+
+                                OnReceivedFull(this, new ReceivedFullEventArgs(splitData, bytesRead));
+                                
+                                totalReceivedData.Clear();
                             }
                         }
                     }
@@ -334,9 +358,6 @@ namespace DiscordIntegration.API
                         totalReceivedData.Append(receivedData);
                     }
                 }
-
-                if (bytesRead == 0 && totalReceivedData.Length > 1)
-                    OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData.ToString(), bytesRead));
             }
         }
 
@@ -346,7 +367,7 @@ namespace DiscordIntegration.API
             {
                 try
                 {
-                    ConnectingEventArgs ev = new ConnectingEventArgs(IPEndPoint.Address, (ushort)IPEndPoint.Port, ReconnectionInterval);
+                    ConnectingEventArgs ev = new(IPEndPoint.Address, (ushort)IPEndPoint.Port, ReconnectionInterval);
 
                     OnConnecting(this, ev);
 
