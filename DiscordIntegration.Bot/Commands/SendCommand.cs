@@ -19,16 +19,11 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand($"send", "Sends a command to the SCP server.")]
     public async Task Send([Summary("server", "The server number to send the command to.")] ushort serverNum, [Summary("command", "The command to send.")] string command)
     {
-        switch (SlashCommandHandler.CanRunCommand((IGuildUser) Context.User, serverNum, command))
+        ErrorCodes canRunCommand = SlashCommandHandler.CanRunCommand((IGuildUser) Context.User, serverNum, command);
+        if (canRunCommand != ErrorCodes.None)
         {
-            case 0:
-                break;
-            case 1:
-                await RespondAsync(embed: await ErrorHandlingService.GetErrorEmbed(ErrorCodes.InvalidCommand));
-                return;
-            case 2:
-                await RespondAsync(embed: await ErrorHandlingService.GetErrorEmbed(ErrorCodes.PermissionDenied));
-                return;
+            await RespondAsync(embed: await ErrorHandlingService.GetErrorEmbed(canRunCommand));
+            return;
         }
         
         try

@@ -2,6 +2,7 @@ namespace DiscordIntegration.Bot;
 
 public enum ErrorCodes
 {
+    None,
     InternalCommandError,
     UnableToParseDuration,
     SpecifiedUserNotFound,
