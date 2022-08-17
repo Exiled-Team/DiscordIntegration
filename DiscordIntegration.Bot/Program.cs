@@ -1,5 +1,7 @@
 namespace DiscordIntegration.Bot;
 
+using System.Reflection;
+
 using Newtonsoft.Json;
 using Services;
 
@@ -14,6 +16,7 @@ public static class Program
 
     public static void Main(string[] args)
     {
+        Log.Info(0, nameof(Main), $"Welcome to Discord Integration v{Assembly.GetExecutingAssembly().GetName().Version}!");
         if (args.Contains("--debug"))
             Config.Debug = true;
         
@@ -24,14 +27,14 @@ public static class Program
         {
             foreach (Bot bot in _bots)
                 bot.Destroy();
+
+            if (Config.Debug)
+            {
+                Log.Warn(0, nameof(Main), "Shutting down..");
+                Thread.Sleep(10000);
+            }
         };
 
-        if (Config.Debug)
-        {
-            Log.Warn(0, nameof(Main), "Shutting down..");
-            Thread.Sleep(10000);
-        }
-        
         KeepAlive().GetAwaiter().GetResult();
     }
 
