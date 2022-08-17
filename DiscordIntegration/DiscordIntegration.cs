@@ -37,6 +37,8 @@ namespace DiscordIntegration
 
         private Harmony harmony;
 
+        private int slots;
+
         private DiscordIntegration()
         {
         }
@@ -64,7 +66,15 @@ namespace DiscordIntegration
         /// <summary>
         /// Gets the server slots.
         /// </summary>
-        public int Slots => CustomNetworkManager.slots;
+        public int Slots
+        {
+            get
+            {
+                if (Server.MaxPlayerCount > 0)
+                    slots = Server.MaxPlayerCount;
+                return slots;
+            }
+        }
 
         /// <summary>
         /// Gets the minimum version of Exiled to make the plugin work correctly.
@@ -99,7 +109,7 @@ namespace DiscordIntegration
             Bot.UpdateActivityCancellationTokenSource = new CancellationTokenSource();
             Bot.UpdateChannelsTopicCancellationTokenSource = new CancellationTokenSource();
 
-            _ = Network.Start(NetworkCancellationTokenSource.Token);
+            _ = Network.Start(NetworkCancellationTokenSource);
 
             _ = Bot.UpdateActivity(Bot.UpdateActivityCancellationTokenSource.Token);
             _ = Bot.UpdateChannelsTopic(Bot.UpdateChannelsTopicCancellationTokenSource.Token);

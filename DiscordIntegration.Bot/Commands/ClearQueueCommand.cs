@@ -1,22 +1,17 @@
 namespace DiscordIntegration.Bot.Commands;
 
-using System.Text;
-using Dependency;
-
 using Discord;
 using Discord.Interactions;
-using Newtonsoft.Json;
-using Services;
 
-using ActionType = DiscordIntegration.Dependency.ActionType;
+using DiscordIntegration.Bot.Services;
 
-public class SendCommand : InteractionModuleBase<SocketInteractionContext>
+public class ClearQueueCommand : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly Bot bot;
 
-    public SendCommand(Bot bot) => this.bot = bot;
+    public ClearQueueCommand(Bot bot) => this.bot = bot;
 
-    [SlashCommand($"send", "Sends a command to the SCP server.")]
+    [SlashCommand($"clear", "Sends a command to the SCP server.")]
     public async Task Send([Summary("command", "The command to send.")] string command)
     {
         ErrorCodes canRunCommand = SlashCommandHandler.CanRunCommand((IGuildUser) Context.User, bot.ServerNumber, command);
@@ -28,9 +23,8 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
         
         try
         {
-            Log.Debug(bot.ServerNumber, nameof(Send), $"Sending {command}");
-            await bot.Server.SendAsync(new RemoteCommand(ActionType.ExecuteCommand, Context.Channel.Id, command, Context.User.Id, Context.User.Username));
-            await RespondAsync("Command sent.", ephemeral: true);
+            bot.Messages.Clear();
+            await RespondAsync("Current message queue for ", ephemeral: true);
         }
         catch (Exception e)
         {

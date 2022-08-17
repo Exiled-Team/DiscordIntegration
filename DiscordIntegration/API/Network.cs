@@ -114,7 +114,7 @@ namespace DiscordIntegration.API
         /// <summary>
         /// Gets the active <see cref="System.Net.Sockets.TcpClient"/> instance.
         /// </summary>
-        public TcpClient TcpClient { get; private set; }
+        public TcpClient? TcpClient { get; private set; }
 
         /// <summary>
         /// Gets the IP end point to connect with.
@@ -143,15 +143,9 @@ namespace DiscordIntegration.API
         /// <summary>
         /// Starts the <see cref="TcpClient"/>.
         /// </summary>
-        /// <returns>Returns the <see cref="Network"/> <see cref="Task"/>.</returns>
-        public async Task Start() => await Start(CancellationToken.None);
-
-        /// <summary>
-        /// Starts the <see cref="TcpClient"/>.
-        /// </summary>
         /// <param name="cancellationToken">The <see cref="Task"/> cancellation token.</param>
         /// <returns>Returns the <see cref="Network"/> <see cref="Task"/>.</returns>
-        public async Task Start(CancellationToken cancellationToken)
+        public async Task Start(CancellationTokenSource cancellationToken)
         {
             if (isDisposed)
                 throw new ObjectDisposedException(GetType().FullName);
@@ -190,7 +184,7 @@ namespace DiscordIntegration.API
 
                 byte[] bytesToSend = Encoding.UTF8.GetBytes(serializedObject + '\0');
 
-                await TcpClient.GetStream().WriteAsync(bytesToSend, 0, bytesToSend.Length, cancellationToken);
+                await TcpClient!.GetStream().WriteAsync(bytesToSend, 0, bytesToSend.Length, cancellationToken);
 
                 OnSent(this, new SentEventArgs(serializedObject, bytesToSend.Length));
             }
@@ -294,74 +288,86 @@ namespace DiscordIntegration.API
         /// <param name="ev">The <see cref="TerminatedEventArgs"/> instance.</param>
         protected virtual void OnTerminated(object sender, TerminatedEventArgs ev) => Terminated?.Invoke(sender, ev);
 
-        private async Task ReceiveAsync(CancellationToken cancellationToken)
+        private async Task ReceiveAsync(CancellationTokenSource cancellationToken)
         {
-            StringBuilder totalReceivedData = new StringBuilder();
+            StringBuilder totalReceivedData = new();
             byte[] buffer = new byte[ReceptionBuffer];
 
-while (true)
+            while (true)
             {
-                Task<int> readTask = TcpClient?.GetStream().ReadAsync(buffer, 0, buffer.Length, cancellationToken)!;
-
-                await Task.WhenAny(readTask, Task.Delay(Timeout.Infinite, cancellationToken));
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                int bytesRead = await readTask;
-
-                if (bytesRead > 0)
+                try
                 {
-                    string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    if (TcpClient is null)
+                        return;
+                    
+                    Task<int> readTask = TcpClient.GetStream().ReadAsync(buffer, 0, buffer.Length, cancellationToken.Token);
 
-                    if (receivedData.IndexOf('\0') != -1)
+                    await Task.WhenAny(readTask, Task.Delay(10000, cancellationToken.Token)).ConfigureAwait(false);
+
+                    cancellationToken.Token.ThrowIfCancellationRequested();
+
+                    int bytesRead = await readTask;
+
+                    if (bytesRead > 0)
                     {
-                        foreach (string splitData in receivedData.Split('\0'))
+                        string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+
+                        if (receivedData.IndexOf('\0') != -1)
                         {
-                            if (totalReceivedData.Length > 0)
+                            foreach (string splitData in receivedData.Split('\0'))
                             {
-                                try
+                                if (splitData is "\"heartbeat\"" or "heartbeat")
+                                    continue;
+                                if (totalReceivedData.Length > 0)
                                 {
-                                    _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
-                                }
-                                catch (Exception e)
-                                {
+                                    try
+                                    {
+                                        _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        totalReceivedData.Clear();
+                                        continue;
+                                    }
+
+                                    OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData + splitData, bytesRead));
+
                                     totalReceivedData.Clear();
-                                    continue;
                                 }
-
-                                OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData + splitData, bytesRead));
-
-                                totalReceivedData.Clear();
-                            }
-                            else if (!string.IsNullOrEmpty(splitData))
-                            {
-                                try
+                                else if (!string.IsNullOrEmpty(splitData))
                                 {
-                                    _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
-                                }
-                                catch (Exception e)
-                                {
-                                    totalReceivedData.Append(splitData);
-                                    continue;
-                                }
+                                    try
+                                    {
+                                        _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        totalReceivedData.Append(splitData);
+                                        continue;
+                                    }
 
-                                OnReceivedFull(this, new ReceivedFullEventArgs(splitData, bytesRead));
-                                
-                                totalReceivedData.Clear();
+                                    OnReceivedFull(this, new ReceivedFullEventArgs(splitData, bytesRead));
+
+                                    totalReceivedData.Clear();
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        OnReceivedPartial(this, new ReceivedPartialEventArgs(receivedData, bytesRead));
+                        else
+                        {
+                            OnReceivedPartial(this, new ReceivedPartialEventArgs(receivedData, bytesRead));
 
-                        totalReceivedData.Append(receivedData);
+                            totalReceivedData.Append(receivedData);
+                        }
                     }
+                }
+                catch (Exception)
+                {
+                    TcpClient?.Dispose();
                 }
             }
         }
 
-        private async Task Update(CancellationToken cancellationToken)
+        private async Task Update(CancellationTokenSource cancellationToken)
         {
             while (true)
             {
@@ -396,9 +402,9 @@ while (true)
                     OnUpdatingConnectionError(this, new UpdatingConnectionErrorEventArgs(exception));
                 }
 
-                cancellationToken.ThrowIfCancellationRequested();
+                cancellationToken.Token.ThrowIfCancellationRequested();
 
-                await Task.Delay(ReconnectionInterval, cancellationToken);
+                await Task.Delay(ReconnectionInterval, cancellationToken.Token);
             }
         }
     }

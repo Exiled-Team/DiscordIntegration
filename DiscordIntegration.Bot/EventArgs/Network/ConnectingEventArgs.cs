@@ -20,12 +20,10 @@ namespace DiscordIntegration.API.EventArgs.Network
         /// </summary>
         /// <param name="ipAddress"><inheritdoc cref="IPAddress"/></param>
         /// <param name="port"><inheritdoc cref="Port"/></param>
-        /// <param name="reconnectionInterval"><inheritdoc cref="ReconnectionInterval"/></param>
-        public ConnectingEventArgs(IPAddress ipAddress, ushort port, TimeSpan reconnectionInterval)
+        public ConnectingEventArgs(IPAddress ipAddress, ushort port)
         {
             IPAddress = ipAddress;
             Port = port;
-            ReconnectionInterval = reconnectionInterval;
         }
 
         /// <summary>
@@ -37,10 +35,5 @@ namespace DiscordIntegration.API.EventArgs.Network
         /// Gets or sets the port.
         /// </summary>
         public ushort Port { get; set; }
-
-        /// <summary>
-        /// Gets or sets the reconnection interval.
-        /// </summary>
-        public TimeSpan ReconnectionInterval { get; set; }
     }
 }

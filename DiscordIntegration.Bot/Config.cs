@@ -39,29 +39,53 @@ public class Config
                     },
                     Logs = new LogChannels
                     {
-                        Commands = new List<ulong>
+                        Commands = new List<LogChannel>
                         {
-                            0,
+                            new()
+                            {
+                                Id = 0,
+                                LogType = LogType.Embed
+                            },
                         },
-                        GameEvents = new List<ulong>
+                        GameEvents = new List<LogChannel>
                         {
-                            0,
+                            new()
+                            {
+                                Id = 0,
+                                LogType = LogType.Embed
+                            },
                         },
-                        Bans = new List<ulong>
+                        Bans = new List<LogChannel>
                         {
-                            0,
+                            new()
+                            {
+                                Id = 0,
+                                LogType = LogType.Embed
+                            },
                         },
-                        Reports = new List<ulong>
+                        Reports = new List<LogChannel>
                         {
-                            0,
+                            new()
+                            {
+                                Id = 0,
+                                LogType = LogType.Embed
+                            },
                         },
-                        StaffCopy = new List<ulong>
+                        StaffCopy = new List<LogChannel>
                         {
-                            0,
+                            new()
+                            {
+                                Id = 0,
+                                LogType = LogType.Embed
+                            },
                         },
-                        Errors = new List<ulong>
+                        Errors = new List<LogChannel>
                         {
-                            0,
+                            new()
+                            {
+                                Id = 0,
+                                LogType = LogType.Embed
+                            },
                         },
                     }
                 }

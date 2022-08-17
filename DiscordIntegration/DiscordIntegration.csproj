@@ -3,8 +3,8 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>annotations</Nullable>
-    <AssemblyVersion>6.0.3</AssemblyVersion>
-    <FileVersion>6.0.3</FileVersion>
+    <AssemblyVersion>6.0.4</AssemblyVersion>
+    <FileVersion>6.0.4</FileVersion>
     <LangVersion>10</LangVersion>
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>

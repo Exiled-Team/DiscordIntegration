@@ -12,6 +12,7 @@ public class SlashCommandHandler
     private readonly InteractionService service;
     private readonly DiscordSocketClient client;
     private readonly ServiceContainer serviceContainer;
+    private readonly Bot bot;
 
     public SlashCommandHandler(InteractionService service, DiscordSocketClient client, Bot bot)
     {
@@ -19,6 +20,7 @@ public class SlashCommandHandler
         this.client = client;
         serviceContainer = new();
         serviceContainer.AddService(typeof(Bot), bot);
+        this.bot = bot;
     }
 
     public async Task InstallCommandsAsync()
@@ -36,11 +38,11 @@ public class SlashCommandHandler
         {
             SocketInteractionContext context = new(client, interaction);
             await service.ExecuteCommandAsync(context, serviceContainer);
-            Log.Info(nameof(HandleInteraction), $"{interaction.User.Username} used an interaction.");
+            Log.Info(bot.ServerNumber, nameof(HandleInteraction), $"{interaction.User.Username} used an interaction.");
         }
         catch (Exception e)
         {
-            Log.Error(nameof(HandleInteraction), e);
+            Log.Error(bot.ServerNumber, nameof(HandleInteraction), e);
             if (interaction.Type == InteractionType.ApplicationCommand)
                 await interaction.RespondAsync(
                     embed: await ErrorHandlingService.GetErrorEmbed(ErrorCodes.Unspecified, e.Message));
@@ -75,7 +77,8 @@ public class SlashCommandHandler
 
         foreach (KeyValuePair<ulong, List<string>> commandList in Program.Config.ValidCommands[serverNum])
         {
-            if (!commandList.Value.Contains(command) && !commandList.Value.Any(command.StartsWith))
+            
+            if (!commandList.Value.Contains(command) && !commandList.Value.Any(command.StartsWith) && !commandList.Value.Contains(".*"))
                 return ErrorCodes.InvalidCommand;
             if (user.Hierarchy >= user.Guild.GetRole(commandList.Key)?.Position)
                 return ErrorCodes.None;

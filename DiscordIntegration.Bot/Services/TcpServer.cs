@@ -14,6 +14,9 @@ namespace DiscordIntegration.Bot.Services
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+
+    using Discord;
+
     using DiscordIntegration.API.EventArgs.Network;
     using DiscordIntegration.Dependency;
 
@@ -39,9 +42,8 @@ namespace DiscordIntegration.Bot.Services
         /// </summary>
         /// <param name="ipAddress">The remote server IP address.</param>
         /// <param name="port">The remote server IP port.</param>
-        /// <param name="reconnectionInterval">The reconnection interval.</param>
-        public TcpServer(string ipAddress, ushort port, TimeSpan reconnectionInterval, Bot bot)
-            : this(new IPEndPoint(IPAddress.Parse(ipAddress), port), reconnectionInterval, bot)
+        public TcpServer(string ipAddress, ushort port, Bot bot)
+            : this(new IPEndPoint(IPAddress.Parse(ipAddress), port), bot)
         {
         }
 
@@ -49,12 +51,10 @@ namespace DiscordIntegration.Bot.Services
         /// Initializes a new instance of the <see cref="Network"/> class.
         /// </summary>
         /// <param name="ipEndPoint">The remote server IP address and port.</param>
-        /// <param name="reconnectionInterval"><inheritdoc cref="ReconnectionInterval"/></param>
         /// <param name="bot">The <see cref="Bot"/> instance.</param>
-        public TcpServer(IPEndPoint? ipEndPoint, TimeSpan reconnectionInterval, Bot bot)
+        public TcpServer(IPEndPoint? ipEndPoint, Bot bot)
         {
             IPEndPoint = ipEndPoint;
-            ReconnectionInterval = reconnectionInterval;
             this.bot = bot;
             if (ipEndPoint != null) 
                 Listener = new TcpListener(ipEndPoint);
@@ -131,11 +131,6 @@ namespace DiscordIntegration.Bot.Services
         public bool IsConnected => TcpClient?.Connected ?? false;
 
         /// <summary>
-        /// Gets the reconnection interval.
-        /// </summary>
-        public TimeSpan ReconnectionInterval { get; private set; }
-
-        /// <summary>
         /// Gets the <see cref="Newtonsoft.Json.JsonSerializerSettings"/> instance.
         /// </summary>
         public JsonSerializerSettings JsonSerializerSettings { get; } = new()
@@ -160,6 +155,8 @@ namespace DiscordIntegration.Bot.Services
             if (isDisposed)
                 throw new ObjectDisposedException(GetType().FullName);
 
+            await bot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
+            await bot.Client.SetActivityAsync(new Game("Waiting for connection..."));
             await Update(cancellationToken).ContinueWith(task => OnTerminated(this, new TerminatedEventArgs(task)), cancellationToken).ConfigureAwait(false);
         }
 
@@ -189,14 +186,14 @@ namespace DiscordIntegration.Bot.Services
             {
                 if (!IsConnected)
                 {
-                    Log.Debug($"[{bot.ServerNumber}]", "Sending aborted, not connected.");
+                    Log.Debug(bot.ServerNumber, nameof(SendAsync), "Sending aborted, not connected.");
                     return;
                 }
                 
 
                 string serializedObject = JsonConvert.SerializeObject(data, JsonSerializerSettings);
 
-                Log.Debug($"[{bot.ServerNumber}]", $"Sending {serializedObject}");
+                Log.Debug(bot.ServerNumber, nameof(SendAsync), $"Sending {serializedObject}");
                 byte[] bytesToSend = Encoding.UTF8.GetBytes(serializedObject + '\0');
 
                 await TcpClient?.GetStream().WriteAsync(bytesToSend, 0, bytesToSend.Length, cancellationToken)!;
@@ -303,71 +300,121 @@ namespace DiscordIntegration.Bot.Services
         /// <param name="ev">The <see cref="TerminatedEventArgs"/> instance.</param>
         protected virtual void OnTerminated(object sender, TerminatedEventArgs ev) => Terminated?.Invoke(sender, ev);
 
-        private async Task ReceiveAsync(CancellationToken cancellationToken)
+        private async Task ReceiveAsync(CancellationTokenSource cancellationToken)
         {
             StringBuilder totalReceivedData = new();
             byte[] buffer = new byte[ReceptionBuffer];
 
+            if (TcpClient is null)
+            {
+                Log.Debug(bot.ServerNumber, nameof(ReceiveAsync), "Client is null, aborting.");
+                return;
+            }
+
+            try
+            {
+                await SendAsync("heartbeat", cancellationToken.Token);
+            }
+            catch (Exception e)
+            {
+                Log.Error(bot.ServerNumber, nameof(ReceiveAsync), $"{TcpClient.Client.RemoteEndPoint} has disconnected.\n{e.Message}");
+                TcpClient.Dispose();
+                cancellationToken.Cancel();
+                return;
+            }
+
             while (true)
             {
-                Task<int> readTask = TcpClient!.GetStream().ReadAsync(buffer, 0, buffer.Length, cancellationToken);
-                
-                await Task.WhenAny(readTask, Task.Delay(5000, cancellationToken));
-                
-                cancellationToken.ThrowIfCancellationRequested();
-
-                int bytesRead = await readTask;
-
-                if (bytesRead > 0)
+                try
                 {
-                    string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    read:
+                    Task<int> readTask = TcpClient.GetStream().ReadAsync(buffer, 0, buffer.Length, cancellationToken.Token);
+                    
+                    await Task.WhenAny(readTask, Task.Delay(1000, cancellationToken.Token)).ConfigureAwait(false);
 
-                    if (receivedData.IndexOf('\0') != -1)
+                    cancellationToken.Token.ThrowIfCancellationRequested();
+
+                    int bytesRead = await readTask;
+                    
+                    try
                     {
-                        foreach (string splitData in receivedData.Split('\0'))
+                        await SendAsync("heartbeat", cancellationToken.Token);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(bot.ServerNumber, nameof(ReceiveAsync), $"{TcpClient.Client.RemoteEndPoint} has disconnected.\n{e.Message}");
+                        cancellationToken.Cancel();
+                        TcpClient.Dispose();
+                        await bot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
+                        await bot.Client.SetActivityAsync(new Game("Waiting for connection..."));
+                        break;
+                    }
+                    
+                    if (bytesRead == 0)
+                        goto read;
+
+                    if (bytesRead > 0)
+                    {
+                        string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+
+                        if (receivedData.IndexOf('\0') != -1)
                         {
-                            if (totalReceivedData.Length > 0)
+                            foreach (string splitData in receivedData.Split('\0'))
                             {
-                                try
+                                if (splitData is "\"heartbeat\"" or "heartbeat")
+                                    continue;
+                                if (totalReceivedData.Length > 0)
                                 {
-                                    _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
-                                }
-                                catch (Exception e)
-                                {
-                                    Log.Error(nameof(ReceiveAsync), $"Received unusable data. Clearing buffer. - {totalReceivedData + splitData}");
+                                    try
+                                    {
+                                        _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        Log.Error(bot.ServerNumber, nameof(ReceiveAsync), $"Received unusable data. Clearing buffer.");
+                                        Log.Error(bot.ServerNumber, nameof(ReceiveAsync), receivedData);
+                                        totalReceivedData.Clear();
+                                        continue;
+                                    }
+
+                                    OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData + splitData, bytesRead));
+
                                     totalReceivedData.Clear();
-                                    continue;
                                 }
-
-                                OnReceivedFull(this, new ReceivedFullEventArgs(totalReceivedData + splitData, bytesRead));
-
-                                totalReceivedData.Clear();
-                            }
-                            else if (!string.IsNullOrEmpty(splitData))
-                            {
-                                try
+                                else if (!string.IsNullOrEmpty(splitData))
                                 {
-                                    _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
-                                }
-                                catch (Exception e)
-                                {
-                                    Log.Error(nameof(ReceiveAsync), $"Received partial data, caching to buffer - {splitData}");
-                                    totalReceivedData.Append(splitData);
-                                    continue;
-                                }
+                                    try
+                                    {
+                                        _ = JsonConvert.DeserializeObject<RemoteCommand>(totalReceivedData + splitData)!;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        totalReceivedData.Append(splitData);
+                                        continue;
+                                    }
 
-                                OnReceivedFull(this, new ReceivedFullEventArgs(splitData, bytesRead));
-                                
-                                totalReceivedData.Clear();
+                                    OnReceivedFull(this, new ReceivedFullEventArgs(splitData, bytesRead));
+
+                                    totalReceivedData.Clear();
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        OnReceivedPartial(this, new ReceivedPartialEventArgs(receivedData, bytesRead));
+                        else
+                        {
+                            OnReceivedPartial(this, new ReceivedPartialEventArgs(receivedData, bytesRead));
 
-                        totalReceivedData.Append(receivedData);
+                            totalReceivedData.Append(receivedData);
+                        }
                     }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(bot.ServerNumber, nameof(ReceiveAsync), e.Message);
+                    cancellationToken.Cancel();
+                    TcpClient.Dispose();
+                    await bot.Client.SetStatusAsync(UserStatus.DoNotDisturb);
+                    await bot.Client.SetActivityAsync(new Game("Waiting for connection..."));
+                    break;
                 }
             }
         }
@@ -378,20 +425,19 @@ namespace DiscordIntegration.Bot.Services
             {
                 try
                 {
-                    ConnectingEventArgs ev = new(IPEndPoint!.Address, (ushort)IPEndPoint.Port, ReconnectionInterval);
+                    ConnectingEventArgs ev = new(IPEndPoint!.Address, (ushort)IPEndPoint.Port);
 
                     OnConnecting(this, ev);
 
                     IPEndPoint.Address = ev.IPAddress;
                     IPEndPoint.Port = ev.Port;
-                    ReconnectionInterval = ev.ReconnectionInterval;
 
                     Listener.Start();
                     TcpClient = await Listener.AcceptTcpClientAsync(cancellationToken);
 
                     OnConnected(this, EventArgs.Empty);
 
-                    await ReceiveAsync(cancellationToken);
+                    await ReceiveAsync(new CancellationTokenSource());
                 }
                 catch (IOException ioException)
                 {
@@ -407,8 +453,6 @@ namespace DiscordIntegration.Bot.Services
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
-
-                await Task.Delay(ReconnectionInterval, cancellationToken);
             }
         }
     }

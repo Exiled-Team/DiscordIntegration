@@ -4,14 +4,14 @@ using Dependency;
 
 public class LogChannels
 {
-    public List<ulong>? Commands { get; set; } = new();
-    public List<ulong>? GameEvents { get; set; } = new();
-    public List<ulong>? Bans { get; set; } = new();
-    public List<ulong>? Reports { get; set; } = new();
-    public List<ulong>? StaffCopy { get; set; } = new();
-    public List<ulong>? Errors { get; set; } = new();
+    public List<LogChannel>? Commands { get; set; } = new();
+    public List<LogChannel>? GameEvents { get; set; } = new();
+    public List<LogChannel>? Bans { get; set; } = new();
+    public List<LogChannel>? Reports { get; set; } = new();
+    public List<LogChannel>? StaffCopy { get; set; } = new();
+    public List<LogChannel>? Errors { get; set; } = new();
 
-    public IEnumerable<ulong> this[ChannelType result] => (result switch
+    public IEnumerable<LogChannel> this[ChannelType result] => (result switch
     {
         ChannelType.Command => Commands,
         ChannelType.GameEvents => GameEvents,

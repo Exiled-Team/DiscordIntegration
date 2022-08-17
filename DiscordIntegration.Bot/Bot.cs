@@ -10,6 +10,9 @@ using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
+
+using DiscordIntegration.Bot.ConfigObjects;
+
 using Newtonsoft.Json;
 using Services;
 using ActionType = Dependency.ActionType;
@@ -20,8 +23,10 @@ public class Bot
     private DiscordSocketClient? client;
     private SocketGuild? guild;
     private string token;
-    private Dictionary<ulong, string> messages = new();
-    private int lastCount;
+    private int lastCount = -1;
+    private int lastTotal = 0;
+
+    internal readonly Dictionary<LogChannel, string> Messages = new();
 
     public ushort ServerNumber { get; }
     public DiscordSocketClient Client => client ??= new DiscordSocketClient();
@@ -47,61 +52,63 @@ public class Bot
         }
         catch (Exception e)
         {
-            Log.Error($"[{ServerNumber}] {nameof(Init)}", e);
+            Log.Error(ServerNumber, nameof(Init), e);
             return;
         }
 
-        Log.Debug($"[{ServerNumber}] {nameof(Init)}", "Setting up commands...");
+        Log.Debug(ServerNumber, nameof(Init), "Setting up commands...");
         InteractionService = new(Client, new InteractionServiceConfig()
         {
             AutoServiceScopes = false,
         });
         CommandHandler = new(InteractionService, Client, this);
 
-        Log.Debug($"[{ServerNumber}] {nameof(Init)}", "Setting up logging..");
-        InteractionService.Log += Log.Send;
-        Client.Log += Log.Send;
+        Log.Debug(ServerNumber, nameof(Init), "Setting up logging..");
+        InteractionService.Log += SendLog;
+        Client.Log += SendLog;
 
-        Log.Debug($"[{ServerNumber}] {nameof(Init)}", "Registering commands..");
+        Log.Debug(ServerNumber, nameof(Init), "Registering commands..");
         await CommandHandler.InstallCommandsAsync();
         Client.Ready += async () =>
         {
             int slashCommands = (await InteractionService.RegisterCommandsToGuildAsync(Guild.Id)).Count;
 
-            Log.Debug($"[{ServerNumber}] {nameof(Init)}", $"{slashCommands} slash commands registered.");
+            Log.Debug(ServerNumber, nameof(Init), $"{slashCommands} slash commands registered.");
         };
 
-        Log.Debug($"[{ServerNumber}] {nameof(Init)}", "Logging in..");
+        Log.Debug(ServerNumber, nameof(Init), "Logging in..");
         await Client.LoginAsync(TokenType.Bot, token);
         await Client.StartAsync();
 
-        Log.Debug($"[{ServerNumber}] {nameof(Init)}", "Login successful.");
+        Log.Debug(ServerNumber, nameof(Init), "Login successful.");
 
-        Server = new TcpServer(Program.Config.TcpServers[ServerNumber].IpAddress, Program.Config.TcpServers[ServerNumber].Port, TimeSpan.FromSeconds(5), this);
+        Server = new TcpServer(Program.Config.TcpServers[ServerNumber].IpAddress, Program.Config.TcpServers[ServerNumber].Port, this);
         _ = Server.Start();
         Server.ReceivedFull += OnReceived;
         await DequeueMessages();
         await Task.Delay(-1);
     }
 
+    private Task SendLog(LogMessage arg) => Log.Send(ServerNumber, arg);
+
     private async void OnReceived(object? sender, ReceivedFullEventArgs ev)
     {
         try
         {
-            Log.Debug($"[{ServerNumber}]", $"Received data {ev.Data}");
+            Log.Debug(ServerNumber, nameof(OnReceived), $"Received data {ev.Data}");
             RemoteCommand command = JsonConvert.DeserializeObject<RemoteCommand>(ev.Data)!;
-            Log.Debug($"[{ServerNumber}]", $"Received command {command.Action}.");
+            Log.Debug(ServerNumber, nameof(OnReceived), $"Received command {command.Action}.");
 
             switch (command.Action)
             {
                 case ActionType.Log:
                     if (Enum.TryParse(command.Parameters[0].ToString(), true, out ChannelType type))
                     {
-                        foreach (ulong channelId in Program.Config.Channels[ServerNumber].Logs[type])
+                        foreach (LogChannel channel in Program.Config.Channels[ServerNumber].Logs[type])
                         {
-                            if (!messages.ContainsKey(channelId))
-                                messages.Add(channelId, string.Empty);
-                            messages[channelId] += $"[{DateTime.Now}] {command.Parameters[1]}\n";
+                            if (!Messages.ContainsKey(channel))
+                                Messages.Add(channel, string.Empty);
+                            Messages[channel] += $"[{DateTime.Now}] {command.Parameters[1]}\n";
                         }
                     }
 
@@ -115,22 +122,40 @@ public class Bot
 
                     break;
                 case ActionType.UpdateActivity:
-                    if (int.TryParse(((string) command.Parameters[0]).AsSpan(0, 1), out int count))
+                    string commandMessage = string.Empty;
+                    foreach (object obj in command.Parameters)
+                        commandMessage += (string) obj + " ";
+                    Log.Debug(ServerNumber, nameof(OnReceived), $"Updating activity status.. {commandMessage}");
+                    try
                     {
-                        switch (count)
+                        if (int.TryParse(((string) command.Parameters[0]).AsSpan(0, 1), out int count))
                         {
-                            case > 0 when Client.Status != UserStatus.Online:
-                                await Client.SetStatusAsync(UserStatus.Online);
-                                break;
-                            case 0 when Client.Status != UserStatus.AFK:
-                                await Client.SetStatusAsync(UserStatus.AFK);
-                                break;
+                            switch (count)
+                            {
+                                case > 0 when Client.Status != UserStatus.Online:
+                                    await Client.SetStatusAsync(UserStatus.Online);
+                                    break;
+                                case 0 when Client.Status != UserStatus.AFK:
+                                    await Client.SetStatusAsync(UserStatus.AFK);
+                                    break;
+                            }
+                        }
+
+                        int.TryParse(((string) command.Parameters[0]).Substring(((string) command.Parameters[0]).IndexOf(@"/", StringComparison.Ordinal)).Replace("/", string.Empty), out int total);
+                        Log.Debug(ServerNumber, nameof(OnReceived), $"Status message total: {((string)command.Parameters[0]).Substring(((string)command.Parameters[0]).IndexOf(@"/", StringComparison.Ordinal)).Replace("/", string.Empty)}");
+                        if (count != lastCount || total != lastTotal)
+                        {
+                            lastCount = count;
+                            if (total > 0)
+                                lastTotal = total;
+                            await Client.SetActivityAsync(new Game($"{lastCount}/{lastTotal}"));
                         }
                     }
-
-                    if (count != lastCount)
-                        await Client.SetActivityAsync(new Game(command.Parameters[0].ToString()));
-                    lastCount = count;
+                    catch (Exception e)
+                    {
+                        Log.Error(ServerNumber, nameof(OnReceived), "Error updating bot status. Enable debug for more information.");
+                        Log.Debug(ServerNumber, nameof(OnReceived), e);
+                    }
 
                     break;
                 case ActionType.UpdateChannelActivity:
@@ -146,9 +171,9 @@ public class Bot
         }
         catch (Exception e)
         {
-            Log.Error(nameof(OnReceived), e.Message);
+            Log.Error(ServerNumber, nameof(OnReceived), e.Message);
             if (e.StackTrace is not null) 
-                Log.Error(nameof(OnReceived), e.StackTrace);
+                Log.Error(ServerNumber, nameof(OnReceived), e.StackTrace);
         }
     }
 
@@ -156,16 +181,16 @@ public class Bot
     {
         for (;;)
         {
-            List<KeyValuePair<ulong, string>> toSend = new();
-            lock (messages)
+            List<KeyValuePair<LogChannel, string>> toSend = new();
+            lock (Messages)
             {
-                foreach (KeyValuePair<ulong, string> message in messages)
+                foreach (KeyValuePair<LogChannel, string> message in Messages)
                     toSend.Add(message);
 
-                messages.Clear();
+                Messages.Clear();
             }
 
-            foreach (KeyValuePair<ulong, string> message in toSend)
+            foreach (KeyValuePair<LogChannel, string> message in toSend)
             {
                 try
                 {
@@ -180,16 +205,36 @@ public class Bot
                             i++;
                         }
 
-                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", msg, Color.Green));
-                        messages.Add(message.Key, message.Value.Substring(msg.Length));
+                        switch (message.Key.LogType)
+                        {
+                            case LogType.Embed:
+                                _ = Guild.GetTextChannel(message.Key.Id).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", msg, Color.Green));
+                                break;
+                            case LogType.Text:
+                                _ = Guild.GetTextChannel(message.Key.Id).SendMessageAsync($"[{ServerNumber}]: {msg}");
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        Messages.Add(message.Key, message.Value.Substring(msg.Length));
                     }
                     else
-                        _ = Guild.GetTextChannel(message.Key).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message.Value, Color.Green));
+                        switch (message.Key.LogType)
+                        {
+                            case LogType.Embed:
+                                _ = Guild.GetTextChannel(message.Key.Id).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message.Value, Color.Green));
+                                break;
+                            case LogType.Text:
+                                _ = Guild.GetTextChannel(message.Key.Id).SendMessageAsync($"[{ServerNumber}]: {message.Value}");
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                 }
                 catch (Exception e)
                 {
-                    Log.Error(nameof(DequeueMessages), $"{e.Message}\nThis is likely caused because {message.Key} is not a valid channel ID, or an invalid GuildID: {Program.Config.DiscordServerIds[ServerNumber]}. If the GuildID is correct, to avoid this error, disabling the logging of events targeting channels that you've purposefully set to an invalid channel ID.\nEnable debug mode to show the contents of the messages causing this error.");
-                    Log.Debug(nameof(DequeueMessages), $"{e.Message}\n{message.Value}");
+                    Log.Error(ServerNumber, nameof(DequeueMessages), $"{e.Message}\nThis is likely caused because {message.Key} is not a valid channel ID, or an invalid GuildID: {Program.Config.DiscordServerIds[ServerNumber]}. If the GuildID is correct, to avoid this error, disabling the logging of events targeting channels that you've purposefully set to an invalid channel ID.\nEnable debug mode to show the contents of the messages causing this error.");
+                    Log.Debug(ServerNumber, nameof(DequeueMessages), $"{e.Message}\n{message.Value}");
                 }
             }
 

@@ -49,7 +49,7 @@ namespace DiscordIntegration.API.Configs
         /// Gets the bot status update interval.
         /// </summary>
         [Description("Bot status update interval, in seconds")]
-        public float StatusUpdateInterval { get; private set; } = 5;
+        public float StatusUpdateInterval { get; private set; } = 25;
 
         /// <summary>
         /// Gets the channel topic update interval.
@@ -72,8 +72,17 @@ namespace DiscordIntegration.API.Configs
         {
             while (true)
             {
-                await Network.SendAsync(new RemoteCommand(ActionType.UpdateActivity, $"{Player.Dictionary.Count}/{Instance.Slots}"));
-                await Task.Delay(TimeSpan.FromSeconds(Instance.Config.Bot.StatusUpdateInterval), cancellationToken);
+                try
+                {
+                    Log.Debug($"{nameof(UpdateActivity)}: Updating bot activity: {Player.Dictionary.Count}/{Instance.Slots}", Instance.Config.IsDebugEnabled);
+                    await Network.SendAsync(new RemoteCommand(ActionType.UpdateActivity, $"{Player.Dictionary.Count}/{Instance.Slots}"), cancellationToken);
+                    await Task.Delay(TimeSpan.FromSeconds(Instance.Config.Bot.StatusUpdateInterval), cancellationToken);
+                }
+                catch (Exception)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(Instance.Config.Bot.StatusUpdateInterval), cancellationToken);
+                    // ignored
+                }
             }
         }
 

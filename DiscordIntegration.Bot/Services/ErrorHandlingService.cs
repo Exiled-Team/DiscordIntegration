@@ -58,12 +58,9 @@ public static class ErrorHandlingService
         ? ErrorDescriptions[e]
         : ErrorDescriptions[ErrorCodes.Unspecified];
 
-    public static async Task<Embed> GetErrorEmbed(ErrorCodes errorCode, string extra = "")
-    {
-        Log.Debug(nameof(GetErrorEmbed), $"Sending error code: {errorCode}");
-        return await EmbedBuilderService.CreateBasicEmbed(GetErrorMessage(errorCode),
+    public static async Task<Embed> GetErrorEmbed(ErrorCodes errorCode, string extra = "") =>
+        await EmbedBuilderService.CreateBasicEmbed(GetErrorMessage(errorCode),
             !string.IsNullOrEmpty(extra)
                 ? string.Format(GetErrorDescription(errorCode), $"\"{extra}\"")
                 : GetErrorDescription(errorCode).Replace("{0}", string.Empty) + "\n**Please report all bugs on Github.**", Color.Red);
-    }
 }

@@ -28,7 +28,7 @@ public static class Program
 
         if (Config.Debug)
         {
-            Log.Warn(nameof(Main), "Shutting down..");
+            Log.Warn(0, nameof(Main), "Shutting down..");
             Thread.Sleep(10000);
         }
         
@@ -45,7 +45,7 @@ public static class Program
 
     private static async Task KeepAlive()
     {
-        Log.Debug(nameof(KeepAlive), "Keeping alive bots.");
+        Log.Debug(0, nameof(KeepAlive), "Keeping alive bots.");
         await Task.Delay(-1);
     }
 }
