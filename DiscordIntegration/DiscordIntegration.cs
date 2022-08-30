@@ -54,9 +54,9 @@ namespace DiscordIntegration
         public static Network Network { get; private set; }
 
         /// <summary>
-        /// Gets the network <see cref="CancellationTokenSource"/> instance.
+        /// Gets or sets the network <see cref="CancellationTokenSource"/> instance.
         /// </summary>
-        public static CancellationTokenSource NetworkCancellationTokenSource { get; private set; }
+        public static CancellationTokenSource NetworkCancellationTokenSource { get; internal set; }
 
         /// <summary>
         /// Gets the <see cref="DiscordIntegration"/> instance.

@@ -34,6 +34,8 @@ namespace DiscordIntegration.API
 
         private bool isDisposed;
 
+        private bool canSend;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Network"/> class.
         /// </summary>
@@ -177,8 +179,24 @@ namespace DiscordIntegration.API
         {
             try
             {
-                if (!IsConnected)
+                if (!canSend)
                     return;
+
+                int counter = 0;
+                while (!IsConnected)
+                {
+                    canSend = false;
+                    counter++;
+                    await Task.Delay(500, cancellationToken);
+
+                    if (counter >= 50)
+                    {
+                        Log.Warn($"{nameof(SendAsync)}: Connection timed out.");
+                        Dispose();
+
+                        return;
+                    }
+                }
 
                 string serializedObject = JsonConvert.SerializeObject(data, JsonSerializerSettings);
 
@@ -190,6 +208,8 @@ namespace DiscordIntegration.API
             }
             catch (Exception exception) when (exception.GetType() != typeof(OperationCanceledException))
             {
+                DiscordIntegration.NetworkCancellationTokenSource.Cancel();
+                Dispose();
                 OnSendingError(this, new SendingErrorEventArgs(exception));
             }
         }
@@ -207,7 +227,7 @@ namespace DiscordIntegration.API
         {
             if (shouldDisposeAllResources)
             {
-                TcpClient.Dispose();
+                TcpClient?.Dispose();
                 TcpClient = null;
 
                 IPEndPoint = null;
@@ -385,6 +405,7 @@ namespace DiscordIntegration.API
 
                     await TcpClient.ConnectAsync(IPEndPoint.Address, IPEndPoint.Port);
 
+                    canSend = true;
                     OnConnected(this, System.EventArgs.Empty);
 
                     await ReceiveAsync(cancellationToken);

@@ -11,14 +11,18 @@ public class LogChannels
     public List<LogChannel>? StaffCopy { get; set; } = new();
     public List<LogChannel>? Errors { get; set; } = new();
 
-    public IEnumerable<LogChannel> this[ChannelType result] => (result switch
+    public IEnumerable<LogChannel> this[ChannelType result]
     {
-        ChannelType.Command => Commands,
-        ChannelType.GameEvents => GameEvents,
-        ChannelType.Bans => Bans,
-        ChannelType.Reports => Reports,
-        ChannelType.StaffCopy => StaffCopy,
-        ChannelType.Errors => Errors,
-        _ => throw new ArgumentOutOfRangeException(nameof(result), result, null)
-    })!;
+        get =>
+            (result switch
+            {
+                ChannelType.Command => Commands,
+                ChannelType.GameEvents => GameEvents,
+                ChannelType.Bans => Bans,
+                ChannelType.Reports => Reports,
+                ChannelType.StaffCopy => StaffCopy,
+                ChannelType.Errors => Errors,
+                _ => throw new ArgumentOutOfRangeException(nameof(result), result, null)
+            })!;
+    }
 }

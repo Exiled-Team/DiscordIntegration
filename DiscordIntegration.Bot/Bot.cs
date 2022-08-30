@@ -128,21 +128,31 @@ public class Bot
                     Log.Debug(ServerNumber, nameof(OnReceived), $"Updating activity status.. {commandMessage}");
                     try
                     {
-                        if (int.TryParse(((string) command.Parameters[0]).AsSpan(0, 1), out int count))
+                        string[] split = ((string)command.Parameters[0]).Split('/');
+                        if (!int.TryParse(split[0], out int count))
                         {
-                            switch (count)
-                            {
-                                case > 0 when Client.Status != UserStatus.Online:
-                                    await Client.SetStatusAsync(UserStatus.Online);
-                                    break;
-                                case 0 when Client.Status != UserStatus.AFK:
-                                    await Client.SetStatusAsync(UserStatus.AFK);
-                                    break;
-                            }
+                            Log.Error(ServerNumber, nameof(ActionType.UpdateActivity), $"Error parsing player count {split[0]}");
+                            return;
                         }
 
-                        int.TryParse(((string) command.Parameters[0]).Substring(((string) command.Parameters[0]).IndexOf(@"/", StringComparison.Ordinal)).Replace("/", string.Empty), out int total);
-                        Log.Debug(ServerNumber, nameof(OnReceived), $"Status message total: {((string)command.Parameters[0]).Substring(((string)command.Parameters[0]).IndexOf(@"/", StringComparison.Ordinal)).Replace("/", string.Empty)}");
+                        if (!int.TryParse(split[1], out int total))
+                        {
+                            Log.Error(ServerNumber, nameof(ActionType.UpdateActivity), $"Error parsing player total {split[1]}");
+                            return;
+                        }
+                        
+                        switch (count)
+                        {
+                            case > 0 when Client.Status != UserStatus.Online:
+                                await Client.SetStatusAsync(UserStatus.Online);
+                                break;
+                            case 0 when Client.Status != UserStatus.AFK:
+                                await Client.SetStatusAsync(UserStatus.AFK);
+                                break;
+                        }
+                        
+                        Log.Debug(ServerNumber, nameof(OnReceived), $"Status message count: {count}");
+                        Log.Debug(ServerNumber, nameof(OnReceived), $"Status message total: {total}");
                         if (count != lastCount || total != lastTotal)
                         {
                             lastCount = count;
@@ -233,7 +243,7 @@ public class Bot
                 }
                 catch (Exception e)
                 {
-                    Log.Error(ServerNumber, nameof(DequeueMessages), $"{e.Message}\nThis is likely caused because {message.Key} is not a valid channel ID, or an invalid GuildID: {Program.Config.DiscordServerIds[ServerNumber]}. If the GuildID is correct, to avoid this error, disabling the logging of events targeting channels that you've purposefully set to an invalid channel ID.\nEnable debug mode to show the contents of the messages causing this error.");
+                    Log.Error(ServerNumber, nameof(DequeueMessages), $"{e.Message}\nThis is likely caused because {message.Key.Id} is not a valid channel ID, or an invalid GuildID: {Program.Config.DiscordServerIds[ServerNumber]}. If the GuildID is correct, to avoid this error, disabling the logging of events targeting channels that you've purposefully set to an invalid channel ID.\nEnable debug mode to show the contents of the messages causing this error.");
                     Log.Debug(ServerNumber, nameof(DequeueMessages), $"{e.Message}\n{message.Value}");
                 }
             }

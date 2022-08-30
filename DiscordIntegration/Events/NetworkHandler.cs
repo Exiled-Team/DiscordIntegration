@@ -111,6 +111,12 @@ namespace DiscordIntegration.Events
                 Log.Error($"[NET] {string.Format(Language.ServerHasBeenTerminatedWithErrors, Instance.Config.IsDebugEnabled ? ev.Task.Exception.ToString() : ev.Task.Exception.Message)}");
             else
                 Log.Warn($"[NET] {Language.ServerHasBeenTerminated}");
+
+            NetworkCancellationTokenSource.Cancel();
+            NetworkCancellationTokenSource.Dispose();
+
+            NetworkCancellationTokenSource = new CancellationTokenSource();
+            _ = Network.Start(NetworkCancellationTokenSource);
         }
     }
 }

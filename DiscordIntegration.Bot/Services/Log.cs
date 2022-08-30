@@ -16,7 +16,7 @@ public class Log
             Directory.CreateDirectory(DirectoryPath);
 
         string filePath = Path.Combine(DirectoryPath, port == 0 ? "Program.log" : $"{port}.log");
-        File.WriteAllText(filePath, $"{DateTime.Now.Date.ToString("MM/dd/yyyy")} {msg}");
+        File.AppendAllText(filePath, $"{DateTime.Now.Date.ToString("MM/dd/yyyy")} {msg}\n");
 
         if (!skipLog)
         {
