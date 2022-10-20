@@ -102,16 +102,21 @@ public class Bot
             switch (command.Action)
             {
                 case ActionType.Log:
+                    Log.Debug(ServerNumber, nameof(OnReceived), $"{Enum.TryParse(command.Parameters[0].ToString(), true, out ChannelType _)}");
                     if (Enum.TryParse(command.Parameters[0].ToString(), true, out ChannelType type))
                     {
                         foreach (LogChannel channel in Program.Config.Channels[ServerNumber].Logs[type])
                         {
+                            Log.Debug(ServerNumber, nameof(OnReceived), "Adding message to queue..");
                             if (!Messages.ContainsKey(channel))
                                 Messages.Add(channel, string.Empty);
                             Messages[channel] += $"[{DateTime.Now}] {command.Parameters[1]}\n";
                         }
+
+                        break;
                     }
 
+                    Log.Debug(ServerNumber, nameof(OnReceived), "Failed to add message to queue.");
                     break;
                 case ActionType.SendMessage:
                     if (ulong.TryParse(command.Parameters[0].ToString(), out ulong chanId))
@@ -191,6 +196,7 @@ public class Bot
     {
         for (;;)
         {
+            Log.Debug(ServerNumber, nameof(DequeueMessages), "Dequeue loop");
             List<KeyValuePair<LogChannel, string>> toSend = new();
             lock (Messages)
             {
@@ -229,17 +235,21 @@ public class Bot
                         Messages.Add(message.Key, message.Value.Substring(msg.Length));
                     }
                     else
+                    {
+                        Log.Debug(ServerNumber, nameof(DequeueMessages), $"Sending message to {message.Key.Id}: {message.Key.LogType} -- {message.Value}");
                         switch (message.Key.LogType)
                         {
                             case LogType.Embed:
-                                _ = Guild.GetTextChannel(message.Key.Id).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message.Value, Color.Green));
+                                await Guild.GetTextChannel(message.Key.Id).SendMessageAsync(embed: await EmbedBuilderService.CreateBasicEmbed($"Server {ServerNumber} Logs", message.Value, Color.Green));
                                 break;
                             case LogType.Text:
-                                _ = Guild.GetTextChannel(message.Key.Id).SendMessageAsync($"[{ServerNumber}]: {message.Value}");
+                                await Guild.GetTextChannel(message.Key.Id).SendMessageAsync($"[{ServerNumber}]: {message.Value}");
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
+                        Log.Debug(ServerNumber, nameof(DequeueMessages), "Message sent.");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -248,6 +258,7 @@ public class Bot
                 }
             }
 
+            Log.Debug(ServerNumber, nameof(DequeueMessages), $"Waiting {Program.Config.MessageDelay} ms");
             await Task.Delay(Program.Config.MessageDelay);
         }
     }

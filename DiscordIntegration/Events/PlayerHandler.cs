@@ -218,7 +218,7 @@ namespace DiscordIntegration.Events
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.HasDamagedForWith, ev.Attacker != null ? ev.Attacker.Nickname : "Server", Instance.Config.ShouldLogUserIds ? ev.Attacker != null ? ev.Attacker.UserId : string.Empty : Language.Redacted, ev.Attacker?.Role ?? RoleType.None, ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role, ev.Amount, ev.Handler.Type))).ConfigureAwait(false);
 
             if (Instance.Config.StaffOnlyEventsToLog.HurtingPlayer && ev.Target != null && (ev.Attacker == null || !Instance.Config.ShouldLogFriendlyFireDamageOnly || ev.Attacker.Role.Side == ev.Target.Role.Side) && !Instance.Config.BlacklistedDamageTypes.Contains(ev.Handler.Type) && (!Instance.Config.OnlyLogPlayerDamage || ev.Attacker != null))
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.HasDamagedForWith, ev.Attacker != null ? ev.Attacker.Nickname : "Server", Instance.Config.ShouldLogUserIds ? ev.Attacker != null ? ev.Attacker.UserId : string.Empty : Language.Redacted, ev.Attacker?.Role ?? RoleType.None, ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role, ev.Amount, ev.Handler.Type))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.HasDamagedForWith, ev.Attacker != null ? ev.Attacker.Nickname : "Server", ev.Attacker != null ? ev.Attacker.UserId : string.Empty, ev.Attacker?.Role ?? RoleType.None, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Amount, ev.Handler.Type))).ConfigureAwait(false);
         }
 
         public async void OnDying(DyingEventArgs ev)
@@ -227,7 +227,7 @@ namespace DiscordIntegration.Events
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.HasKilledWith, ev.Killer != null ? ev.Killer.Nickname : "Server", Instance.Config.ShouldLogUserIds ? ev.Killer != null ? ev.Killer.UserId : string.Empty : Language.Redacted, ev.Killer?.Role ?? RoleType.None, ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role, ev.Handler.Type))).ConfigureAwait(false);
 
             if (Instance.Config.StaffOnlyEventsToLog.PlayerDying && ev.Target != null && (ev.Killer == null || !Instance.Config.ShouldLogFriendlyFireKillsOnly || ev.Killer.Role.Side == ev.Target.Role.Side))
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.HasKilledWith, ev.Killer != null ? ev.Killer.Nickname : "Server", Instance.Config.ShouldLogUserIds ? ev.Killer != null ? ev.Killer.UserId : string.Empty : Language.Redacted, ev.Killer?.Role ?? RoleType.None, ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role, ev.Handler.Type))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.HasKilledWith, ev.Killer != null ? ev.Killer.Nickname : "Server", ev.Killer != null ? ev.Killer.UserId : string.Empty, ev.Killer?.Role ?? RoleType.None, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Handler.Type))).ConfigureAwait(false);
         }
 
         public async void OnThrowingGrenade(ThrowingItemEventArgs ev)
@@ -318,7 +318,7 @@ namespace DiscordIntegration.Events
         {
             if (ev.Player != null && Instance.Config.EventsToLog.ChangingPlayerGroup && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.GroupSet, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.NewGroup?.BadgeText ?? Language.None, ev.NewGroup?.BadgeColor ?? Language.None))).ConfigureAwait(false);
-            if (Instance.Config.StaffOnlyEventsToLog.ChangingPlayerGroup)
+            if (ev.Player != null && Instance.Config.StaffOnlyEventsToLog.ChangingPlayerGroup)
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.GroupSet, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.NewGroup?.BadgeText ?? Language.None, ev.NewGroup?.BadgeColor ?? Language.None))).ConfigureAwait(false);
         }
     }

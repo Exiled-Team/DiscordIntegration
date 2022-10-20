@@ -53,8 +53,9 @@ namespace DiscordIntegration.Patches
 
         private static void LogCommand(string query, CommandSender sender)
         {
-            if (!DiscordIntegration.Instance.Config.EventsToLog.SendingConsoleCommands)
+            if (!DiscordIntegration.Instance.Config.EventsToLog.SendingConsoleCommands && !DiscordIntegration.Instance.Config.StaffOnlyEventsToLog.SendingConsoleCommands)
                 return;
+
             string[] args = query.Trim().Split(QueryProcessor.SpaceArray, 512, StringSplitOptions.RemoveEmptyEntries);
             if (args[0].StartsWith("$"))
                 return;
@@ -64,7 +65,8 @@ namespace DiscordIntegration.Patches
                 : Server.Host;
             if (player == null || (!string.IsNullOrEmpty(player.UserId) && DiscordIntegration.Instance.Config.TrustedAdmins.Contains(player.UserId)))
                 return;
-            _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.Command, string.Format(DiscordIntegration.Language.UsedCommand, sender.Nickname, sender.SenderId ?? DiscordIntegration.Language.DedicatedServer, player.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))));
+            if (DiscordIntegration.Instance.Config.EventsToLog.SendingConsoleCommands)
+                _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.Command, string.Format(DiscordIntegration.Language.UsedCommand, sender.Nickname, sender.SenderId ?? DiscordIntegration.Language.DedicatedServer, player.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))));
             if (DiscordIntegration.Instance.Config.StaffOnlyEventsToLog.SendingConsoleCommands)
                 _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(DiscordIntegration.Language.UsedCommand, sender.Nickname, sender.SenderId ?? DiscordIntegration.Language.DedicatedServer, player.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))));
         }
