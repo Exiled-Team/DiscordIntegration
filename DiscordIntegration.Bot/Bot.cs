@@ -1,3 +1,5 @@
+using DiscordIntegration.Dependency.Database;
+
 namespace DiscordIntegration.Bot;
 
 using System.Collections.Specialized;
@@ -56,6 +58,8 @@ public class Bot
             return;
         }
 
+        DatabaseHandler.Init();
+        
         Log.Debug(ServerNumber, nameof(Init), "Setting up commands...");
         InteractionService = new(Client, new InteractionServiceConfig()
         {

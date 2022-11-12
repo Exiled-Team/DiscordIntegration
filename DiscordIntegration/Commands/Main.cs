@@ -28,11 +28,17 @@ namespace DiscordIntegration.Commands
         {
             RegisterCommand(PlayerList.Instance);
             RegisterCommand(StaffList.Instance);
+
+            if (Instance.Config.UseWatchlist)
+            {
+                RegisterCommand(WatchlistAdd.Instance);
+                RegisterCommand(WatchlistRemove.Instance);
+            }
         }
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            response = $"{Language.InvalidSubcommand} {Language.Available}: playerlist, stafflist, reload, add, remove";
+            response = $"{Language.InvalidSubcommand} {Language.Available}: playerlist, stafflis" + $"{(Instance.Config.UseWatchlist ? "watchadd, watchrem" : string.Empty)}";
             return false;
         }
     }

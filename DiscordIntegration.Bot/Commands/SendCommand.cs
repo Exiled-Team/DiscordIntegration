@@ -22,7 +22,7 @@ public class SendCommand : InteractionModuleBase<SocketInteractionContext>
         ErrorCodes canRunCommand = SlashCommandHandler.CanRunCommand((IGuildUser) Context.User, bot.ServerNumber, command);
         if (canRunCommand != ErrorCodes.None)
         {
-            await RespondAsync(embed: await ErrorHandlingService.GetErrorEmbed(canRunCommand));
+            await RespondAsync(embed: await ErrorHandlingService.GetErrorEmbed(canRunCommand), ephemeral: true);
             return;
         }
         
