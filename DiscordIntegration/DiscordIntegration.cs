@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using DiscordIntegration.Dependency.Database;
+
 namespace DiscordIntegration
 {
     using System;
@@ -104,6 +106,8 @@ namespace DiscordIntegration
             Language.Save();
             Language.Load();
 
+            DatabaseHandler.Init();
+            
             RegisterEvents();
 
             Bot.UpdateActivityCancellationTokenSource = new CancellationTokenSource();

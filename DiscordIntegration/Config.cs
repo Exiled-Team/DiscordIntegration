@@ -117,5 +117,11 @@ namespace DiscordIntegration
         /// </summary>
         [Description("The plugin language")]
         public string Language { get; private set; } = "english";
+
+        /// <summary>
+        /// Gets a value indicating whether to use the player watchlist feature.
+        /// </summary>
+        [Description("Indicates whether the player watchlist feature can be used.")]
+        public bool UseWatchlist { get; set; } = true;
     }
 }

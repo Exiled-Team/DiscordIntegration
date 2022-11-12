@@ -10,6 +10,7 @@ public class LogChannels
     public List<LogChannel>? Reports { get; set; } = new();
     public List<LogChannel>? StaffCopy { get; set; } = new();
     public List<LogChannel>? Errors { get; set; } = new();
+    public List<LogChannel>? Watchlist { get; set; } = new();
 
     public IEnumerable<LogChannel> this[ChannelType result]
     {
@@ -22,6 +23,7 @@ public class LogChannels
                 ChannelType.Reports => Reports,
                 ChannelType.StaffCopy => StaffCopy,
                 ChannelType.Errors => Errors,
+                ChannelType.Watchlist => Watchlist,
                 _ => throw new ArgumentOutOfRangeException(nameof(result), result, null)
             })!;
     }

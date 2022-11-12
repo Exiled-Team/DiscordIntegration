@@ -7,6 +7,7 @@ namespace DiscordIntegration.Dependency
         Bans,
         Reports,
         StaffCopy,
-        Errors
+        Errors,
+        Watchlist
     }
 }

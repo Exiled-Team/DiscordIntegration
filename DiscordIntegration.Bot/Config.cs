@@ -87,6 +87,14 @@ public class Config
                                 LogType = LogType.Embed
                             },
                         },
+                        Watchlist = new List<LogChannel>
+                        {
+                            new()
+                            {
+                                Id = 0,
+                                LogType = LogType.Embed
+                            },
+                        },
                     }
                 }
             }
