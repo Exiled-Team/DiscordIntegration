@@ -5,6 +5,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.Events.EventArgs.Player;
+using Exiled.Events.EventArgs.Server;
+
 namespace DiscordIntegration.Events
 {
     using API.Commands;
@@ -24,13 +27,13 @@ namespace DiscordIntegration.Events
         public async void OnReportingCheater(ReportingCheaterEventArgs ev)
         {
             if (Instance.Config.EventsToLog.ReportingCheater)
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.Reports, string.Format(Language.CheaterReportFilled, ev.Issuer.Nickname, ev.Issuer.UserId, ev.Issuer.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Reason))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.Reports, string.Format(Language.CheaterReportFilled, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Reason))).ConfigureAwait(false);
         }
 
         public async void OnLocalReporting(LocalReportingEventArgs ev)
         {
             if (Instance.Config.EventsToLog.ReportingCheater)
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.Reports, string.Format(Language.CheaterReportFilled, ev.Issuer.Nickname, ev.Issuer.UserId, ev.Issuer.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Reason))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.Reports, string.Format(Language.CheaterReportFilled, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Reason))).ConfigureAwait(false);
         }
 
         public async void OnWaitingForPlayers()

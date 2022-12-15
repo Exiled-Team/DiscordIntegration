@@ -57,8 +57,6 @@ public class Bot
             Log.Error(ServerNumber, nameof(Init), e);
             return;
         }
-
-        DatabaseHandler.Init();
         
         Log.Debug(ServerNumber, nameof(Init), "Setting up commands...");
         InteractionService = new(Client, new InteractionServiceConfig()

@@ -5,6 +5,10 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.Events.EventArgs.Map;
+using Exiled.Events.EventArgs.Scp914;
+using Exiled.Events.EventArgs.Warhead;
+
 namespace DiscordIntegration.Events
 {
     using System;
@@ -81,7 +85,7 @@ namespace DiscordIntegration.Events
         {
             if (Instance.Config.EventsToLog.UpgradingScp914Items)
             {
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.Scp914ProcessedItem, ev.Item.Type)));
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.Scp914ProcessedItem, ev.Pickup.Type)));
             }
         }
     }

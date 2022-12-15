@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using PlayerRoles;
+
 namespace DiscordIntegration.API.Configs
 {
     using System;
@@ -107,7 +109,7 @@ namespace DiscordIntegration.API.Configs
                 try
                 {
                     int aliveHumans = Player.List.Count(player => player.IsAlive && player.IsHuman);
-                    int aliveScps = Player.Get(Team.SCP).Count();
+                    int aliveScps = Player.Get(Team.SCPs).Count();
 
                     string warheadText = Warhead.IsDetonated ? Language.WarheadHasBeenDetonated : Warhead.IsInProgress ? Language.WarheadIsCountingToDetonation : Language.WarheadHasntBeenDetonated;
 

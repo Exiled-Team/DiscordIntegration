@@ -106,8 +106,6 @@ namespace DiscordIntegration
             Language.Save();
             Language.Load();
 
-            DatabaseHandler.Init();
-            
             RegisterEvents();
 
             Bot.UpdateActivityCancellationTokenSource = new CancellationTokenSource();
@@ -182,7 +180,6 @@ namespace DiscordIntegration
             Handlers.Scp079.GainingExperience += playerHandler.OnGainingExperience;
             Handlers.Player.EscapingPocketDimension += playerHandler.OnEscapingPocketDimension;
             Handlers.Player.EnteringPocketDimension += playerHandler.OnEnteringPocketDimension;
-            Handlers.Scp106.CreatingPortal += playerHandler.OnCreatingPortal;
             Handlers.Player.ActivatingWarheadPanel += playerHandler.OnActivatingWarheadPanel;
             Handlers.Player.TriggeringTesla += playerHandler.OnTriggeringTesla;
             Handlers.Player.ThrowingItem += playerHandler.OnThrowingGrenade;
@@ -205,7 +202,6 @@ namespace DiscordIntegration
             Handlers.Player.ChangingGroup += playerHandler.OnChangingGroup;
             Handlers.Player.ChangingItem += playerHandler.OnChangingItem;
             Handlers.Scp914.Activating += playerHandler.OnActivatingScp914;
-            Handlers.Scp106.Containing += playerHandler.OnContaining;
 
             Network.SendingError += networkHandler.OnSendingError;
             Network.ReceivingError += networkHandler.OnReceivingError;
@@ -247,7 +243,6 @@ namespace DiscordIntegration
             Handlers.Scp079.GainingExperience -= playerHandler.OnGainingExperience;
             Handlers.Player.EscapingPocketDimension -= playerHandler.OnEscapingPocketDimension;
             Handlers.Player.EnteringPocketDimension -= playerHandler.OnEnteringPocketDimension;
-            Handlers.Scp106.CreatingPortal -= playerHandler.OnCreatingPortal;
             Handlers.Player.ActivatingWarheadPanel -= playerHandler.OnActivatingWarheadPanel;
             Handlers.Player.TriggeringTesla -= playerHandler.OnTriggeringTesla;
             Handlers.Player.ThrowingItem -= playerHandler.OnThrowingGrenade;
@@ -270,7 +265,6 @@ namespace DiscordIntegration
             Handlers.Player.ChangingGroup -= playerHandler.OnChangingGroup;
             Handlers.Player.ChangingItem -= playerHandler.OnChangingItem;
             Handlers.Scp914.Activating -= playerHandler.OnActivatingScp914;
-            Handlers.Scp106.Containing -= playerHandler.OnContaining;
 
             Network.SendingError -= networkHandler.OnSendingError;
             Network.ReceivingError -= networkHandler.OnReceivingError;
