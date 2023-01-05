@@ -1,15 +1,9 @@
-using DiscordIntegration.Dependency.Database;
-
 namespace DiscordIntegration.Bot;
 
-using System.Collections.Specialized;
-using System.Net;
-using System.Net.Sockets;
 using API.EventArgs.Network;
 using Commands;
 using Dependency;
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 

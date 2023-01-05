@@ -17,7 +17,6 @@ namespace DiscordIntegration.Events
     using System;
     using Dependency;
     using Exiled.API.Features;
-    using Exiled.Events.EventArgs;
     using static DiscordIntegration;
 
     /// <summary>
@@ -198,28 +197,28 @@ namespace DiscordIntegration.Events
 
         public async void OnHurting(HurtingEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.HurtingPlayer && ev.Target != null && (ev.Player == null || !Instance.Config.ShouldLogFriendlyFireDamageOnly || ev.Player.Role.Side == ev.Target.Role.Side) && (!Instance.Config.ShouldRespectDoNotTrack || (ev.Player == null || (!ev.Player.DoNotTrack && !ev.Target.DoNotTrack))) && !Instance.Config.BlacklistedDamageTypes.Contains(ev.DamageHandler.Type) && (!Instance.Config.OnlyLogPlayerDamage || ev.Player != null))
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.HasDamagedForWith, ev.Player != null ? ev.Player.Nickname : "Server", Instance.Config.ShouldLogUserIds ? ev.Player != null ? ev.Player.UserId : string.Empty : Language.Redacted, ev.Player?.Role ?? RoleTypeId.None, ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role, ev.Amount, ev.DamageHandler.Type))).ConfigureAwait(false);
+            if (Instance.Config.EventsToLog.HurtingPlayer && ev.Player != null && (ev.Attacker == null || !Instance.Config.ShouldLogFriendlyFireDamageOnly || ev.Attacker.Role.Side == ev.Player.Role.Side) && (!Instance.Config.ShouldRespectDoNotTrack || (ev.Attacker == null || (!ev.Attacker.DoNotTrack && !ev.Player.DoNotTrack))) && !Instance.Config.BlacklistedDamageTypes.Contains(ev.DamageHandler.Type) && (!Instance.Config.OnlyLogPlayerDamage || ev.Attacker != null))
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.HasDamagedForWith, ev.Attacker != null ? ev.Attacker.Nickname : "Server", Instance.Config.ShouldLogUserIds ? ev.Attacker != null ? ev.Attacker.UserId : string.Empty : Language.Redacted, ev.Attacker?.Role ?? RoleTypeId.None, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.Amount, ev.DamageHandler.Type))).ConfigureAwait(false);
 
-            if (Instance.Config.StaffOnlyEventsToLog.HurtingPlayer && ev.Target != null && (ev.Player == null || !Instance.Config.ShouldLogFriendlyFireDamageOnly || ev.Player.Role.Side == ev.Target.Role.Side) && !Instance.Config.BlacklistedDamageTypes.Contains(ev.DamageHandler.Type) && (!Instance.Config.OnlyLogPlayerDamage || ev.Player != null))
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.HasDamagedForWith, ev.Player != null ? ev.Player.Nickname : "Server", ev.Player != null ? ev.Player.UserId : string.Empty, ev.Player?.Role ?? RoleTypeId.None, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Amount, ev.DamageHandler.Type))).ConfigureAwait(false);
+            if (Instance.Config.StaffOnlyEventsToLog.HurtingPlayer && ev.Player != null && (ev.Attacker == null || !Instance.Config.ShouldLogFriendlyFireDamageOnly || ev.Attacker.Role.Side == ev.Player.Role.Side) && !Instance.Config.BlacklistedDamageTypes.Contains(ev.DamageHandler.Type) && (!Instance.Config.OnlyLogPlayerDamage || ev.Attacker != null))
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.HasDamagedForWith, ev.Attacker != null ? ev.Attacker.Nickname : "Server", ev.Attacker != null ? ev.Attacker.UserId : string.Empty, ev.Attacker?.Role ?? RoleTypeId.None, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Amount, ev.DamageHandler.Type))).ConfigureAwait(false);
         }
 
         public async void OnDying(DyingEventArgs ev)
         {
-            if (Instance.Config.EventsToLog.PlayerDying && ev.Target != null && (ev.Player == null || !Instance.Config.ShouldLogFriendlyFireKillsOnly || ev.Player.Role.Side == ev.Target.Role.Side) && (!Instance.Config.ShouldRespectDoNotTrack || (ev.Player == null || (!ev.Player.DoNotTrack && !ev.Target.DoNotTrack))))
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.HasKilledWith, ev.Player != null ? ev.Player.Nickname : "Server", Instance.Config.ShouldLogUserIds ? ev.Player != null ? ev.Player.UserId : string.Empty : Language.Redacted, ev.Player?.Role ?? RoleTypeId.None, ev.Target.Nickname, Instance.Config.ShouldLogUserIds ? ev.Target.UserId : Language.Redacted, ev.Target.Role, ev.DamageHandler.Type))).ConfigureAwait(false);
+            if (Instance.Config.EventsToLog.PlayerDying && ev.Player != null && (ev.Attacker == null || !Instance.Config.ShouldLogFriendlyFireKillsOnly || ev.Attacker.Role.Side == ev.Player.Role.Side) && (!Instance.Config.ShouldRespectDoNotTrack || (ev.Attacker == null || (!ev.Attacker.DoNotTrack && !ev.Player.DoNotTrack))))
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.HasKilledWith, ev.Attacker != null ? ev.Attacker.Nickname : "Server", Instance.Config.ShouldLogUserIds ? ev.Attacker != null ? ev.Attacker.UserId : string.Empty : Language.Redacted, ev.Attacker?.Role ?? RoleTypeId.None, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.DamageHandler.Type))).ConfigureAwait(false);
 
-            if (Instance.Config.StaffOnlyEventsToLog.PlayerDying && ev.Target != null && (ev.Player == null || !Instance.Config.ShouldLogFriendlyFireKillsOnly || ev.Player.Role.Side == ev.Target.Role.Side))
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.HasKilledWith, ev.Player != null ? ev.Player.Nickname : "Server", ev.Player != null ? ev.Player.UserId : string.Empty, ev.Player?.Role ?? RoleTypeId.None, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.DamageHandler.Type))).ConfigureAwait(false);
+            if (Instance.Config.StaffOnlyEventsToLog.PlayerDying && ev.Player != null && (ev.Attacker == null || !Instance.Config.ShouldLogFriendlyFireKillsOnly || ev.Attacker.Role.Side == ev.Player.Role.Side))
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.HasKilledWith, ev.Attacker != null ? ev.Attacker.Nickname : "Server", ev.Attacker != null ? ev.Attacker.UserId : string.Empty, ev.Attacker?.Role ?? RoleTypeId.None, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.DamageHandler.Type))).ConfigureAwait(false);
         }
 
-        public async void OnThrowingGrenade(ThrowingItemEventArgs ev)
+        public async void OnThrowingGrenade(ThrownItemEventArgs ev)
         {
             if (ev.Player != null && Instance.Config.EventsToLog.PlayerThrowingGrenade && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.ThrewAGrenade, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.Item.Type))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.ThrewAGrenade, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, ev.Player.Role, ev.Throwable.Type))).ConfigureAwait(false);
             if (ev.Player != null && Instance.Config.StaffOnlyEventsToLog.PlayerThrowingGrenade)
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.ThrewAGrenade, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item.Type))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, string.Format(Language.ThrewAGrenade, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Throwable.Type))).ConfigureAwait(false);
         }
 
         public async void OnUsedMedicalItem(UsedItemEventArgs ev)

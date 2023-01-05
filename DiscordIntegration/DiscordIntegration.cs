@@ -5,20 +5,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using DiscordIntegration.Dependency.Database;
-
 namespace DiscordIntegration
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading;
     using API;
     using API.Configs;
-    using API.User;
     using Events;
     using Exiled.API.Features;
     using HarmonyLib;
-    using MEC;
     using Handlers = Exiled.Events.Handlers;
     using Version = System.Version;
 
@@ -27,8 +22,6 @@ namespace DiscordIntegration
     /// </summary>
     public class DiscordIntegration : Plugin<Config>
     {
-        private static readonly DiscordIntegration InstanceValue = new ();
-
         private MapHandler mapHandler;
 
         private ServerHandler serverHandler;
@@ -40,10 +33,6 @@ namespace DiscordIntegration
         private Harmony harmony;
 
         private int slots;
-
-        private DiscordIntegration()
-        {
-        }
 
         /// <summary>
         /// Gets the plugin <see cref="Language"/> instance.
@@ -63,7 +52,7 @@ namespace DiscordIntegration
         /// <summary>
         /// Gets the <see cref="DiscordIntegration"/> instance.
         /// </summary>
-        public static DiscordIntegration Instance => InstanceValue;
+        public static DiscordIntegration Instance { get; private set; }
 
         /// <summary>
         /// Gets the server slots.
@@ -81,13 +70,14 @@ namespace DiscordIntegration
         /// <summary>
         /// Gets the minimum version of Exiled to make the plugin work correctly.
         /// </summary>
-        public override Version RequiredExiledVersion { get; } = new Version(5, 2, 0);
+        public override Version RequiredExiledVersion { get; } = new(6, 0, 0);
 
         /// <summary>
         /// Fired when the plugin is enabled.
         /// </summary>
         public override void OnEnabled()
         {
+            Instance = this;
             try
             {
                 harmony = new Harmony($"com.joker.DI-{DateTime.Now.Ticks}");
@@ -99,7 +89,7 @@ namespace DiscordIntegration
             }
 
             Language = new Language();
-            Network = new Network(Instance.Config.Bot.IPAddress, Instance.Config.Bot.Port, TimeSpan.FromSeconds(Instance.Config.Bot.ReconnectionInterval));
+            Network = new Network(Config.Bot.IPAddress, Config.Bot.Port, TimeSpan.FromSeconds(Config.Bot.ReconnectionInterval));
 
             NetworkCancellationTokenSource = new CancellationTokenSource();
 
@@ -158,7 +148,7 @@ namespace DiscordIntegration
             Handlers.Warhead.Starting += mapHandler.OnStartingWarhead;
             Handlers.Warhead.Stopping += mapHandler.OnStoppingWarhead;
             Handlers.Warhead.Detonated += mapHandler.OnWarheadDetonated;
-            Handlers.Scp914.UpgradingItem += mapHandler.OnUpgradingItems;
+            Handlers.Scp914.UpgradingPickup += mapHandler.OnUpgradingItems;
 
             Handlers.Server.WaitingForPlayers += serverHandler.OnWaitingForPlayers;
             Handlers.Server.RoundStarted += serverHandler.OnRoundStarted;
@@ -182,7 +172,7 @@ namespace DiscordIntegration
             Handlers.Player.EnteringPocketDimension += playerHandler.OnEnteringPocketDimension;
             Handlers.Player.ActivatingWarheadPanel += playerHandler.OnActivatingWarheadPanel;
             Handlers.Player.TriggeringTesla += playerHandler.OnTriggeringTesla;
-            Handlers.Player.ThrowingItem += playerHandler.OnThrowingGrenade;
+            Handlers.Player.ThrownItem += playerHandler.OnThrowingGrenade;
             Handlers.Player.Hurting += playerHandler.OnHurting;
             Handlers.Player.Dying += playerHandler.OnDying;
             Handlers.Player.Kicked += playerHandler.OnKicked;
@@ -221,7 +211,7 @@ namespace DiscordIntegration
             Handlers.Warhead.Starting -= mapHandler.OnStartingWarhead;
             Handlers.Warhead.Stopping -= mapHandler.OnStoppingWarhead;
             Handlers.Warhead.Detonated -= mapHandler.OnWarheadDetonated;
-            Handlers.Scp914.UpgradingItem -= mapHandler.OnUpgradingItems;
+            Handlers.Scp914.UpgradingPickup -= mapHandler.OnUpgradingItems;
 
             Handlers.Server.WaitingForPlayers -= serverHandler.OnWaitingForPlayers;
             Handlers.Server.RoundStarted -= serverHandler.OnRoundStarted;
@@ -245,7 +235,7 @@ namespace DiscordIntegration
             Handlers.Player.EnteringPocketDimension -= playerHandler.OnEnteringPocketDimension;
             Handlers.Player.ActivatingWarheadPanel -= playerHandler.OnActivatingWarheadPanel;
             Handlers.Player.TriggeringTesla -= playerHandler.OnTriggeringTesla;
-            Handlers.Player.ThrowingItem -= playerHandler.OnThrowingGrenade;
+            Handlers.Player.ThrownItem -= playerHandler.OnThrowingGrenade;
             Handlers.Player.Hurting -= playerHandler.OnHurting;
             Handlers.Player.Dying -= playerHandler.OnDying;
             Handlers.Player.Kicked -= playerHandler.OnKicked;

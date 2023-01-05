@@ -14,13 +14,9 @@ namespace DiscordIntegration.Events
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Text;
-    using API.Commands;
     using Dependency;
     using Exiled.API.Enums;
     using Exiled.API.Features;
-    using Exiled.Events.EventArgs;
-    using NorthwoodLib.Pools;
     using static DiscordIntegration;
 
     /// <summary>
@@ -81,7 +77,7 @@ namespace DiscordIntegration.Events
             }
         }
 
-        public async void OnUpgradingItems(UpgradingItemEventArgs ev)
+        public async void OnUpgradingItems(UpgradingPickupEventArgs ev)
         {
             if (Instance.Config.EventsToLog.UpgradingScp914Items)
             {

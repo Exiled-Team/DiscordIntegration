@@ -28,13 +28,13 @@ namespace DiscordIntegration.Events
         {
             try
             {
-                Log.Debug($"[NET] {string.Format(Language.ReceivedData, ev.Data, ev.Length)}", Instance.Config.IsDebugEnabled);
+                Log.Debug($"[NET] {string.Format(Language.ReceivedData, ev.Data, ev.Length)}");
                 if (ev.Data.Contains("heartbeat"))
                     return;
 
                 RemoteCommand remoteCommand = JsonConvert.DeserializeObject<RemoteCommand>(ev.Data, Network.JsonSerializerSettings);
 
-                Log.Debug($"[NET] {string.Format(Language.HandlingRemoteCommand, remoteCommand.Action, remoteCommand.Parameters[0], Network.TcpClient?.Client?.RemoteEndPoint)}", Instance.Config.IsDebugEnabled);
+                Log.Debug($"[NET] {string.Format(Language.HandlingRemoteCommand, remoteCommand.Action, remoteCommand.Parameters[0], Network.TcpClient?.Client?.RemoteEndPoint)}");
 
                 switch (remoteCommand.Action)
                 {
@@ -49,24 +49,24 @@ namespace DiscordIntegration.Events
             }
             catch (Exception exception)
             {
-                Log.Error($"[NET] {string.Format(Language.HandlingRemoteCommandError, Instance.Config.IsDebugEnabled ? exception.ToString() : exception.Message)}");
+                Log.Error($"[NET] {string.Format(Language.HandlingRemoteCommandError, Instance.Config.Debug ? exception.ToString() : exception.Message)}");
             }
         }
 
         /// <inheritdoc cref="API.Network.OnSendingError(object, SendingErrorEventArgs)"/>
         public void OnSendingError(object _, SendingErrorEventArgs ev)
         {
-            Log.Error($"[NET] {string.Format(Language.SendingDataError, Instance.Config.IsDebugEnabled ? ev.Exception.ToString() : ev.Exception.Message)}");
+            Log.Error($"[NET] {string.Format(Language.SendingDataError, Instance.Config.Debug ? ev.Exception.ToString() : ev.Exception.Message)}");
         }
 
         /// <inheritdoc cref="API.Network.OnReceivingError(object, ReceivingErrorEventArgs)"/>
         public void OnReceivingError(object _, ReceivingErrorEventArgs ev)
         {
-            Log.Error($"[NET] {string.Format(Language.ReceivingDataError, Instance.Config.IsDebugEnabled ? ev.Exception.ToString() : ev.Exception.Message)}");
+            Log.Error($"[NET] {string.Format(Language.ReceivingDataError, Instance.Config.Debug ? ev.Exception.ToString() : ev.Exception.Message)}");
         }
 
         /// <inheritdoc cref="API.Network.OnSent(object, SentEventArgs)"/>
-        public void OnSent(object _, SentEventArgs ev) => Log.Debug(string.Format(Language.SentData, ev.Data, ev.Length), Instance.Config.IsDebugEnabled);
+        public void OnSent(object _, SentEventArgs ev) => Log.Debug(string.Format(Language.SentData, ev.Data, ev.Length));
 
         /// <inheritdoc cref="API.Network.OnConnecting(object, ConnectingEventArgs)"/>
         public void OnConnecting(object _, ConnectingEventArgs ev)
@@ -95,20 +95,20 @@ namespace DiscordIntegration.Events
         /// <inheritdoc cref="API.Network.OnConnectingError(object, ConnectingErrorEventArgs)"/>
         public void OnConnectingError(object _, ConnectingErrorEventArgs ev)
         {
-            Log.Error($"[NET] {string.Format(Language.ConnectingError, Instance.Config.IsDebugEnabled ? ev.Exception.ToString() : ev.Exception.Message)}");
+            Log.Error($"[NET] {string.Format(Language.ConnectingError, Instance.Config.Debug ? ev.Exception.ToString() : ev.Exception.Message)}");
         }
 
         /// <inheritdoc cref="API.Network.OnConnectingError(object, ConnectingErrorEventArgs)"/>
         public void OnUpdatingConnectionError(object _, UpdatingConnectionErrorEventArgs ev)
         {
-            Log.Error($"[NET] {string.Format(Language.UpdatingConnectionError, Instance.Config.IsDebugEnabled ? ev.Exception.ToString() : ev.Exception.Message)}");
+            Log.Error($"[NET] {string.Format(Language.UpdatingConnectionError, Instance.Config.Debug ? ev.Exception.ToString() : ev.Exception.Message)}");
         }
 
         /// <inheritdoc cref="API.Network.OnTerminated(object, TerminatedEventArgs)"/>
         public void OnTerminated(object _, TerminatedEventArgs ev)
         {
             if (ev.Task.IsFaulted)
-                Log.Error($"[NET] {string.Format(Language.ServerHasBeenTerminatedWithErrors, Instance.Config.IsDebugEnabled ? ev.Task.Exception.ToString() : ev.Task.Exception.Message)}");
+                Log.Error($"[NET] {string.Format(Language.ServerHasBeenTerminatedWithErrors, Instance.Config.Debug ? ev.Task.Exception.ToString() : ev.Task.Exception.Message)}");
             else
                 Log.Warn($"[NET] {Language.ServerHasBeenTerminated}");
 

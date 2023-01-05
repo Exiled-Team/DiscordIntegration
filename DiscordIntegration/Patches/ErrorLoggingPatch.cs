@@ -9,13 +9,10 @@ namespace DiscordIntegration.Patches
 {
 #pragma warning disable SA1118
 
-    using System;
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
-
-    using global::DiscordIntegration.API;
     using global::DiscordIntegration.Dependency;
 
     using HarmonyLib;
@@ -28,12 +25,15 @@ namespace DiscordIntegration.Patches
     [HarmonyPatch(typeof(Log), nameof(Log.Error), typeof(string))]
     internal class ErrorLoggingPatch
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             int offset = -2;
             int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Call) + offset;
+            Label nullLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
+            LocalBuilder message = generator.DeclareLocal(typeof(object));
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -47,7 +47,7 @@ namespace DiscordIntegration.Patches
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        private static void LogError(string message)
+        private static void LogError(object message)
         {
             if (DiscordIntegration.Instance.Config.LogErrors)
                 _ = DiscordIntegration.Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.Errors, message));

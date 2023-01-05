@@ -12,11 +12,8 @@ namespace DiscordIntegration.Patches
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection.Emit;
-    using System.Threading.Tasks;
     using Dependency;
     using Exiled.API.Features;
-    using global::DiscordIntegration.API;
-    using global::DiscordIntegration.API.Commands;
     using HarmonyLib;
     using NorthwoodLib.Pools;
     using RemoteAdmin;
