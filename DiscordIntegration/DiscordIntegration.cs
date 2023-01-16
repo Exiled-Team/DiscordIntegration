@@ -13,6 +13,8 @@ namespace DiscordIntegration
     using API.Configs;
     using Events;
     using Exiled.API.Features;
+    using Exiled.Events.EventArgs.Interfaces;
+    using Exiled.Loader;
     using HarmonyLib;
     using Handlers = Exiled.Events.Handlers;
     using Version = System.Version;
@@ -172,7 +174,7 @@ namespace DiscordIntegration
             Handlers.Player.EnteringPocketDimension += playerHandler.OnEnteringPocketDimension;
             Handlers.Player.ActivatingWarheadPanel += playerHandler.OnActivatingWarheadPanel;
             Handlers.Player.TriggeringTesla += playerHandler.OnTriggeringTesla;
-            Handlers.Player.ThrownItem += playerHandler.OnThrowingGrenade;
+            Handlers.Player.ThrownProjectile += playerHandler.OnThrowingGrenade;
             Handlers.Player.Hurting += playerHandler.OnHurting;
             Handlers.Player.Dying += playerHandler.OnDying;
             Handlers.Player.Kicked += playerHandler.OnKicked;
@@ -235,7 +237,7 @@ namespace DiscordIntegration
             Handlers.Player.EnteringPocketDimension -= playerHandler.OnEnteringPocketDimension;
             Handlers.Player.ActivatingWarheadPanel -= playerHandler.OnActivatingWarheadPanel;
             Handlers.Player.TriggeringTesla -= playerHandler.OnTriggeringTesla;
-            Handlers.Player.ThrownItem -= playerHandler.OnThrowingGrenade;
+            Handlers.Player.ThrownProjectile -= playerHandler.OnThrowingGrenade;
             Handlers.Player.Hurting -= playerHandler.OnHurting;
             Handlers.Player.Dying -= playerHandler.OnDying;
             Handlers.Player.Kicked -= playerHandler.OnKicked;
