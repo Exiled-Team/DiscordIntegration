@@ -243,7 +243,7 @@ namespace DiscordIntegration.Events
             {
                 if (DatabaseHandler.CheckWatchlist(ev.Player.UserId, out string reason))
                     if (!string.IsNullOrEmpty(reason))
-                        await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.Watchlist, string.Format(Language.WatchlistedUserJoined, ev.Player.Nickname, ev.Player.UserId, ev.Player.IPAddress, reason)));
+                        await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.Watchlist, string.Format(Language.WatchlistedUserJoined, ev.Player.Nickname, Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Language.Redacted, Instance.Config.ShouldLogIPAddresses ? ev.Player.IPAddress : Language.Redacted, reason)));
             }
 
             if (Instance.Config.EventsToLog.PlayerJoined && (!ev.Player.DoNotTrack || !Instance.Config.ShouldRespectDoNotTrack))

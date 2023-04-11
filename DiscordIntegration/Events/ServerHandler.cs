@@ -10,8 +10,13 @@ using Exiled.Events.EventArgs.Server;
 
 namespace DiscordIntegration.Events
 {
+    using System.Diagnostics;
+
     using Dependency;
     using Exiled.API.Features;
+
+    using global::DiscordIntegration.Patches;
+
     using Respawning;
     using static DiscordIntegration;
 
@@ -20,6 +25,9 @@ namespace DiscordIntegration.Events
     /// </summary>
     internal sealed class ServerHandler
     {
+        private Process? process;
+
+        public Process Process => process ??= Process.GetCurrentProcess();
 #pragma warning disable SA1600 // Elements should be documented
 
         public async void OnReportingCheater(ReportingCheaterEventArgs ev)
@@ -40,6 +48,10 @@ namespace DiscordIntegration.Events
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, Language.WaitingForPlayers)).ConfigureAwait(false);
             if (Instance.Config.StaffOnlyEventsToLog.WaitingForPlayers)
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.StaffCopy, Language.WaitingForPlayers)).ConfigureAwait(false);
+
+            Process.BeginErrorReadLine();
+            Process.EnableRaisingEvents = true;
+            Process.ErrorDataReceived += ErrorLoggingPatch.LogError;
         }
 
         public async void OnRoundStarted()
@@ -52,6 +64,7 @@ namespace DiscordIntegration.Events
         {
             if (Instance.Config.EventsToLog.RoundEnded)
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.RoundEnded, ev.LeadingTeam, Player.Dictionary.Count, Instance.Slots))).ConfigureAwait(false);
+            Process.ErrorDataReceived -= ErrorLoggingPatch.LogError;
         }
 
         public async void OnRespawningTeam(RespawningTeamEventArgs ev)
