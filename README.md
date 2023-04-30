@@ -37,38 +37,8 @@ Fill out the bot's config for the bot token, discord server id, and channel IDs,
 ## How configure the execution of game commands through Discord
 
 1. Open your bot `config.json` file.
-2. Add to the `CommandChannel` config, channel IDs in which commands are allowed to be executed.
 
-```json  "Channels": {
-    "1": {
-      "Logs": {
-        "Commands": [
-          940821568186109974
-        ],
-        "GameEvents": [
-          940821568186109974
-        ],
-        "Bans": [
-          940821568186109974
-        ],
-        "Reports": [
-          940821568186109974
-        ],
-        "StaffCopy": [
-          940821568186109974
-        ]
-      },
-      "TopicInfo": [
-        940821568186109974
-      ],
-      "CommandChannel": [
-        940821568186109974
-      ]
-    }
-  },
-```
-
-3. Add role IDs and list every command they can execute. You can use `.*` to permit to that role ID to use all game commands without restrictions.
+2. Add role IDs and list every command they can execute. You can use `.*` to permit to that role ID to use all game commands without restrictions.
 
 ```json
   "ValidCommands": {
@@ -80,7 +50,7 @@ Fill out the bot's config for the bot token, discord server id, and channel IDs,
   },
  ```
 
-4. **Never duplicate commands.** Higher roles on your Discord server will be able to use lower roles commands as well, based on the position of the roles.
+3. **Never duplicate commands.** Higher roles on your Discord server will be able to use lower roles commands as well, based on the position of the roles.
 
 ## Available commands
 
