@@ -20,8 +20,10 @@ Bot token is located on the Bot page under username, Do NOT share the token beca
 
 ## How to run the bot
 
-Open the bot once to let it automatically generate config.yml and synced-roles.yml files.
+Open the bot once to let it automatically generate config.json file.
 Remember to always wrap configs with quotation marks, even if it's not necessary for strings.
+
+Fill out the bot's config for the bot token, discord server id, and channel IDs, then start the bot.
 
 ### Windows
 
@@ -34,7 +36,7 @@ Remember to always wrap configs with quotation marks, even if it's not necessary
 
 ## How configure the execution of game commands through Discord
 
-1. Open your bot `config.yml` file.
+1. Open your bot `config.json` file.
 2. Add to the `CommandChannel` config, channel IDs in which commands are allowed to be executed.
 
 ```json  "Channels": {
