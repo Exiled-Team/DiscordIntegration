@@ -228,7 +228,11 @@ public class Bot
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
-                        Messages.Add(message.Key, message.Value.Substring(msg.Length));
+
+                        if (!Messages.ContainsKey(message.Key))
+                            Messages.Add(message.Key, message.Value[msg.Length..]);
+                        else
+                            Messages[message.Key] += $"\n{message.Value[msg.Length..]}";
                     }
                     else
                     {

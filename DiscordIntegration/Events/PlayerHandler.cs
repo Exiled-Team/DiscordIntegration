@@ -271,7 +271,7 @@ namespace DiscordIntegration.Events
         public async void OnKicked(KickedEventArgs ev)
         {
             if (Instance.Config.EventsToLog.PlayerBanned)
-                await Network.SendAsync(new RemoteCommand(ActionType.Log, "kicks", string.Format(Language.WasKicked, ev.Player?.Nickname ?? Language.NotAuthenticated, ev.Player?.UserId ?? Language.NotAuthenticated, ev.Reason))).ConfigureAwait(false);
+                await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.WasKicked, ev.Player?.Nickname ?? Language.NotAuthenticated, ev.Player?.UserId ?? Language.NotAuthenticated, ev.Reason))).ConfigureAwait(false);
         }
 
         public async void OnBanned(BannedEventArgs ev)
