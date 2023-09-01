@@ -72,7 +72,7 @@ namespace DiscordIntegration
         /// <summary>
         /// Gets the minimum version of Exiled to make the plugin work correctly.
         /// </summary>
-        public override Version RequiredExiledVersion { get; } = new(6, 0, 0);
+        public override Version RequiredExiledVersion { get; } = new(8, 0, 0);
 
         /// <summary>
         /// Fired when the plugin is enabled.
@@ -146,7 +146,7 @@ namespace DiscordIntegration
             networkHandler = new NetworkHandler();
 
             Handlers.Map.Decontaminating += mapHandler.OnDecontaminating;
-            Handlers.Map.GeneratorActivated += mapHandler.OnGeneratorActivated;
+            Handlers.Map.GeneratorActivating += mapHandler.OnGeneratorActivated;
             Handlers.Warhead.Starting += mapHandler.OnStartingWarhead;
             Handlers.Warhead.Stopping += mapHandler.OnStoppingWarhead;
             Handlers.Warhead.Detonated += mapHandler.OnWarheadDetonated;
@@ -209,7 +209,7 @@ namespace DiscordIntegration
         private void UnregisterEvents()
         {
             Handlers.Map.Decontaminating -= mapHandler.OnDecontaminating;
-            Handlers.Map.GeneratorActivated -= mapHandler.OnGeneratorActivated;
+            Handlers.Map.GeneratorActivating -= mapHandler.OnGeneratorActivated;
             Handlers.Warhead.Starting -= mapHandler.OnStartingWarhead;
             Handlers.Warhead.Stopping -= mapHandler.OnStoppingWarhead;
             Handlers.Warhead.Detonated -= mapHandler.OnWarheadDetonated;

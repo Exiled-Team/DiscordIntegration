@@ -31,7 +31,7 @@ namespace DiscordIntegration.Events
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, Language.WarheadHasDetonated)).ConfigureAwait(false);
         }
 
-        public async void OnGeneratorActivated(GeneratorActivatedEventArgs ev)
+        public async void OnGeneratorActivated(GeneratorActivatingEventArgs ev)
         {
             if (Instance.Config.EventsToLog.GeneratorActivated)
                 await Network.SendAsync(new RemoteCommand(ActionType.Log, ChannelType.GameEvents, string.Format(Language.GeneratorFinished, ev.Generator.Room, Generator.Get(GeneratorState.Engaged).Count() + 1))).ConfigureAwait(false);
