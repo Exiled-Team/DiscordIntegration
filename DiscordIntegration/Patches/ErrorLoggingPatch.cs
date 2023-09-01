@@ -47,7 +47,7 @@ namespace DiscordIntegration.Patches
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 new (OpCodes.Dup),
-                new (OpCodes.Call, Method(typeof(ErrorLoggingPatch), nameof(LogError))),
+                new (OpCodes.Call, Method(typeof(ErrorLoggingPatch), nameof(LogError), new[] { typeof(object) })),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)
