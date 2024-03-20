@@ -8,6 +8,7 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 ## Installation
 1. Extract `DiscordIntegration.dll` and its dependencies from `Plugin.tar.gz`.
 2. Place `DiscordIntegration.dll` inside the EXILED `Plugins` folder like any other plugin and its dependencies in the `Plugins/dependencies` folder.
+3. Download the `DiscordIntegration.Bot` (Linux) or `DiscordIntegration.Bot.exe` (Windows) file, and place it anywhere within the system running the SL server.
 
 ## How to create a Discord bot
 1. Go to https://discord.com/developers/applications and create a new application.
@@ -32,7 +33,7 @@ Fill out the bot's config for the bot token, discord server id, and channel IDs,
 ### Linux
 
 1. Run `cd path/to/bot` replacing `path/to/bot` with the path of where the extracted bot is located.
-2. Run `./DiscordIntegration.Bot-Linux`.
+2. Run `./DiscordIntegration.Bot`.
 
 ## How configure the execution of game commands through Discord
 
