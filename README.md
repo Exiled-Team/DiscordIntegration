@@ -17,6 +17,13 @@ A bot and server plugin to allow server logs to be sent to Discord channels, and
 
 Bot token is located on the Bot page under username, Do NOT share the token because people can control the bot if they get it.
 
+## How to invite the bot to your discord
+1. Go to "OAuth2" tab of the bot application on the above link.
+2. Click the boxes labled "bot" and "application.commands".
+3. Give the bot appropriate permissions (this is usually either Admin, or at the very least Send Messages).
+4. Copy & paste the oauth2 URL link provided at the bottom of the page into a browser window.
+5. The new page will ask you which server to invite the bot to, and once  you select the correct server, click Authorize.
+
 **Note that before generating the link, check that you have applications.commands scope.**
 
 ## How to run the bot
